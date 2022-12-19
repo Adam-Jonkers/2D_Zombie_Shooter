@@ -2,23 +2,16 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #define PLAYER_ATTACKING true
 #define PLAYER_DEFENDING false
 
-#define Warrior 1
-#define Mage 2
-#define Rogue 3
-
-#define Sword 1
-#define Staff 2
-#define Dagger 3
+#define MAX_CLASS_NAMR_LENGTH 16
 
 typedef struct {
-    // 1: Warrior, 2: Mage, 3: Rogue
-    int Class;
-    // 1: Sword, 2: Staff, 3: Dagger
-    int Weapon;
+    char Class[MAX_CLASS_NAMR_LENGTH];
+    char Weapon[MAX_CLASS_NAMR_LENGTH];
     int Level;
     int MaxHp;
     int Hp;
@@ -27,10 +20,8 @@ typedef struct {
 } Player;
 
 typedef struct {
-    // 1: Warrior, 2: Mage, 3: Rogue
-    int Class;
-    // 1: Sword, 2: Staff, 3: Dagger
-    int Weapon;
+    char Class[MAX_CLASS_NAMR_LENGTH];
+    char Weapon[MAX_CLASS_NAMR_LENGTH];
     int Difficulty;
     int Hp;
     int Attack;
@@ -39,20 +30,30 @@ typedef struct {
 
 int get_random_number(int min, int max)
 {
-    srand ( time(NULL) );
     return (rand() % (max - min + 1) + min);
 }
 
 int calculate_damage(Player player, Enemy enemy, bool Attacking)
 {
     int damage;
+    int block_chance = get_random_number(0, 100);
     if (Attacking == true)
     {
-        damage = player.Attack - enemy.Defense;
-    }
-    else
-    {
-        damage = enemy.Attack - player.Defense;
+        if (block_chance < enemy.Defense) {
+            printf("The enemy blocked your attack!\n\n");
+            damage = 0;
+        } else {
+            damage = player.Attack;
+            printf("You dealt %d damage\n\n", damage);
+        }
+    } else {
+        if (block_chance < player.Defense) {
+            printf("You blocked the enemy's attack!\n\n");
+            damage = 0;
+        } else {
+            damage = enemy.Attack;
+            printf("The enemy dealt %d damage\n\n", damage);
+        }
     }
     if (damage < 0) { 
         damage = 0;
@@ -72,18 +73,18 @@ Player Setup_Player()
     switch (class - '0')
     {
     case 1:
-        player.Class = Warrior;
-        player.Weapon = Sword;
+        strcpy(player.Class, "Warrior");
+        strcpy(player.Weapon, "Sword");
         player.MaxHp = 100;
         player.Hp = 100;
         player.Attack = 10;
-        player.Defense = 5;
+        player.Defense = 15;
         valid_class = true;
         break;
     
     case 2:
-        player.Class = Mage;
-        player.Weapon = Staff;
+        strcpy(player.Class, "Mage");
+        strcpy(player.Weapon, "Staff");
         player.MaxHp = 100;
         player.Hp = 100;
         player.Attack = 5;
@@ -92,12 +93,12 @@ Player Setup_Player()
         break;
     
     case 3:
-        player.Class = Rogue;
-        player.Weapon = Dagger;
+        strcpy(player.Class, "Rogue");
+        strcpy(player.Weapon, "Dagger");
         player.MaxHp = 100;
         player.Hp = 100;
         player.Attack = 7;
-        player.Defense = 7;
+        player.Defense = 5;
         valid_class = true;
         break;
 
@@ -106,6 +107,7 @@ Player Setup_Player()
         break;
     }
     }
+    printf("You are a %s with a %s\n\n", player.Class, player.Weapon);
     return player;
 }
 
@@ -116,27 +118,27 @@ Enemy Setup_Enemy()
     switch (enemy_class)
     {
     case 1:
-        enemy.Class = Warrior;
-        enemy.Weapon = Sword;
+        strcpy(enemy.Class, "Warrior");
+        strcpy(enemy.Weapon, "Sword");
         enemy.Hp = 100/2;
         enemy.Attack = 10/2;
-        enemy.Defense = 5/2;
+        enemy.Defense = get_random_number(5, 15);
         break;
     
     case 2:
-        enemy.Class = Mage;
-        enemy.Weapon = Staff;
+        strcpy(enemy.Class, "Mage");
+        strcpy(enemy.Weapon, "Staff");
         enemy.Hp = 100/2;
         enemy.Attack = 5/2;
-        enemy.Defense = 10/2;
+        enemy.Defense = get_random_number(0, 10);
         break;
     
     case 3:
-        enemy.Class = Rogue;
-        enemy.Weapon = Dagger;
+        strcpy(enemy.Class, "Rogue");
+        strcpy(enemy.Weapon, "Dagger");
         enemy.Hp = 100/2;
         enemy.Attack = 7/2;
-        enemy.Defense = 7/2;
+        enemy.Defense = get_random_number(0, 5);
         break;
     }
     return enemy;
@@ -145,7 +147,7 @@ Enemy Setup_Enemy()
 bool battle(Player* player)
 {
     Enemy enemy = Setup_Enemy();
-    printf("You are fighting a %d with a %d\n\n", enemy.Class, enemy.Weapon);
+    printf("You are fighting a %s with a %s\n\n", enemy.Class, enemy.Weapon);
     while (player->Hp > 0 && enemy.Hp > 0)
     {
         printf("You have %d HP left\n", player->Hp);
@@ -166,9 +168,9 @@ bool battle(Player* player)
             break;
         
         case 2:
-            player->Defense += 5;
+            player->Defense += 25;
             player->Hp -= calculate_damage(*player, enemy, PLAYER_DEFENDING);
-            player->Defense -= 5;
+            player->Defense -= 25;
             break;
         
         default:
@@ -190,8 +192,13 @@ bool battle(Player* player)
 
 int main()
 {
+    // Seed random number generator
+    srand(time(NULL));
+
+    // Setup player
     Player player = Setup_Player();
-    printf("You are a %d with a %d\n\n", player.Class, player.Weapon);
+
+    // Start battle
     bool won = battle(&player);
     if (won == false)
     {
