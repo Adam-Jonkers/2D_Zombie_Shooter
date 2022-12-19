@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define PLAYER_ATTACKING true
 #define PLAYER_DEFENDING false
@@ -38,6 +39,7 @@ typedef struct {
 
 int get_random_number(int min, int max)
 {
+    srand ( time(NULL) );
     return (rand() % (max - min + 1) + min);
 }
 
@@ -65,9 +67,9 @@ Player Setup_Player()
     player.Level = 1;
     while (valid_class == false)
     {
-    printf("Choose your class: 1. Warrior \n2. Mage \n3. Rogue");
+    printf("Choose your class: \n1. Warrior \n2. Mage \n3. Rogue\n\n");
     int class = getchar();
-    switch (class)
+    switch (class - '0')
     {
     case 1:
         player.Class = Warrior;
@@ -100,7 +102,7 @@ Player Setup_Player()
         break;
 
     default:
-        printf("Invalid class \n Please enter 1, 2 or 3");
+        printf("Invalid class \n Please enter 1, 2 or 3\n");
         break;
     }
     }
@@ -143,14 +145,20 @@ Enemy Setup_Enemy()
 bool battle(Player* player)
 {
     Enemy enemy = Setup_Enemy();
-    printf("You are fighting a %s with a %s", enemy.Class, enemy.Weapon);
+    printf("You are fighting a %d with a %d\n\n", enemy.Class, enemy.Weapon);
     while (player->Hp > 0 && enemy.Hp > 0)
     {
-        printf("You have %d HP left", player->Hp);
-        printf("The enemy has %d HP left", enemy.Hp);
-        printf("What do you want to do? 1. Attack \n2. Defend");
-        int action = getchar();
-        switch (action)
+        printf("You have %d HP left\n", player->Hp);
+        printf("The enemy has %d HP left\n", enemy.Hp);
+        printf("What do you want to do? \n1. Attack \n2. Defend\n\n");
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) 
+        { 
+            continue;
+        }
+        char action = getchar();
+        printf("\nYou chose %c, \n", action);
+        switch (action - '0')
         {
         case 1:
             enemy.Hp -= calculate_damage(*player, enemy, PLAYER_ATTACKING);
@@ -164,18 +172,18 @@ bool battle(Player* player)
             break;
         
         default:
-            printf("Invalid action \n Please enter 1 or 2");
+            printf("Invalid action \n Please enter 1 or 2\n\n");
             break;
         }
     }
     if (player->Hp > 0)
     {
-        printf("You won!");
+        printf("You won!\n");
         return true;
     }
     else
     {
-        printf("You lost!");
+        printf("You lost!\n");
         return false;
     }
 }
@@ -183,11 +191,11 @@ bool battle(Player* player)
 int main()
 {
     Player player = Setup_Player();
-    printf("You are a %s with a %s", player.Class, player.Weapon);
+    printf("You are a %d with a %d\n\n", player.Class, player.Weapon);
     bool won = battle(&player);
     if (won == false)
     {
-        printf("You Lost!");
+        printf("You Lost!\n");
         // Restart game
     }
 
