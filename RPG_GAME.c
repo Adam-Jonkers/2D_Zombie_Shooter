@@ -9,6 +9,9 @@
 
 #define MAX_CLASS_NAMR_LENGTH 16
 
+#define MAP_WIDTH 80
+#define MAP_HEIGHT 20
+
 typedef struct {
     char Class[MAX_CLASS_NAMR_LENGTH];
     char Weapon[MAX_CLASS_NAMR_LENGTH];
@@ -17,6 +20,8 @@ typedef struct {
     int Hp;
     int Attack;
     int Defense;
+    int player_x;
+    int player_y;
 } Player;
 
 typedef struct {
@@ -108,6 +113,8 @@ Player Setup_Player()
     }
     }
     printf("You are a %s with a %s\n\n", player.Class, player.Weapon);
+    player.player_x = get_random_number(1, MAP_WIDTH - 2);
+    player.player_y = get_random_number(1, MAP_HEIGHT - 2);
     return player;
 }
 
@@ -190,13 +197,51 @@ bool battle(Player* player)
     }
 }
 
+void Setup_Map(char map[MAP_HEIGHT][MAP_WIDTH])
+{
+    printf("Generating map...\n\n");
+    // Setup map
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (y == 0 || y == MAP_HEIGHT - 1 || x == 0 || x == MAP_WIDTH - 1) {
+                map[y][x] = '#';
+            } else if (y % 2 == 0 && x % 2 == 0) {
+                map[y][x] = 'O';
+            } else {
+                map[y][x] = '.';
+            }
+        }
+    }
+}
+
+void Display_Map(char map[MAP_HEIGHT][MAP_WIDTH])
+{
+    // Display map
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            printf("%c", map[y][x]);
+        }
+        printf("\n");
+    }
+}
+
 int main()
 {
     // Seed random number generator
     srand(time(NULL));
 
+    // Setup map
+    char map[MAP_HEIGHT][MAP_WIDTH];
+    Setup_Map(map);
+
     // Setup player
     Player player = Setup_Player();
+
+    // Place player on map
+    map[player.player_y][player.player_x] = '@';
+
+    // Display map
+    Display_Map(map);
 
     // Start battle
     bool won = battle(&player);
