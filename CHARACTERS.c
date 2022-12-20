@@ -1,3 +1,5 @@
+#incldue CHARACTERS.h
+
 #define MAX_CLASS_NAMR_LENGTH 16
 
 typedef struct {

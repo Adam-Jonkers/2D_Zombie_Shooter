@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
 #include "MAP.h"
 #include "CHARACTERS.h"
 #include "BATTLE.h"
