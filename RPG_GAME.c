@@ -8,23 +8,23 @@
 #include "BATTLE.h"
 #include "CORE.h"
 
-int main()
+#define MAP_WIDTH 80
+#define MAP_HEIGHT 20
+
+int main(void)
 {
     // Seed random number generator
     srand(time(NULL));
 
-    // Setup map
-    char map[MAP_HEIGHT][MAP_WIDTH];
-    Setup_Map(map);
-
     // Setup player
     Player player = Setup_Player();
 
-    // Place player on map
-    map[player.player_y][player.player_x] = '@';
+    // Setup map
+    char map[MAP_HEIGHT][MAP_WIDTH];
+    Setup_Map(MAP_WIDTH, MAP_HEIGHT, map, &player);
 
     // Display map
-    Display_Map(map);
+    Display_Map(MAP_WIDTH, MAP_HEIGHT, map);
 
     // Start battle
     bool won = battle(&player);

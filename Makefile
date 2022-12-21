@@ -4,8 +4,8 @@
 # Descr:  Makefile for game
 
 # Definitions.
-CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g 
+CC = gcc
+CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g 
 DEL = rm
 
 
@@ -14,32 +14,31 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-RPG_GAME.o: RPG_GAME.c MAP.h CHARACHTERS.h CORE.h BATTLE.h
+RPG_GAME.o: RPG_GAME.c MAP.h CHARACTERS.h CORE.h BATTLE.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-CHARACHTERS.o: CHARACHTERS.c CHARACHTERS.h
+CHARACTERS.o: CHARACTERS.c CHARACTERS.h CORE.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 CORE.o: CORE.c CORE.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-BATTLE.o: BATTLE.c BATTLE.h
+BATTLE.o: BATTLE.c BATTLE.h CORE.h CHARACTERS.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-MAP.o: MAP.c MAP.h
+MAP.o: MAP.c MAP.h CORE.h CHARACTERS.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: RPG_GAME.o CHARACHTERS.o CORE.o BATTLE.o MAP.o
+game.out: RPG_GAME.o CHARACTERS.o CORE.o BATTLE.o MAP.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
-	$(SIZE) $@\
-	
+
 
 # Target: clean project.
 .PHONY: clean
 clean: 
-	-$(DEL) *.o *.out *.hex
+	-$(DEL) *.o *.out
 
 
 

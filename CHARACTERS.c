@@ -1,27 +1,9 @@
-#incldue CHARACTERS.h
+#include "stdbool.h"
+#include "stdio.h"
+#include "string.h"
 
-#define MAX_CLASS_NAMR_LENGTH 16
-
-typedef struct {
-    char Class[MAX_CLASS_NAMR_LENGTH];
-    char Weapon[MAX_CLASS_NAMR_LENGTH];
-    int Level;
-    int MaxHp;
-    int Hp;
-    int Attack;
-    int Defense;
-    int player_x;
-    int player_y;
-} Player;
-
-typedef struct {
-    char Class[MAX_CLASS_NAMR_LENGTH];
-    char Weapon[MAX_CLASS_NAMR_LENGTH];
-    int Difficulty;
-    int Hp;
-    int Attack;
-    int Defense;
-} Enemy;
+#include "CHARACTERS.h"
+#include "CORE.h"
 
 Player Setup_Player()
 {
@@ -70,8 +52,6 @@ Player Setup_Player()
     }
     }
     printf("You are a %s with a %s\n\n", player.Class, player.Weapon);
-    player.player_x = get_random_number(1, MAP_WIDTH - 2);
-    player.player_y = get_random_number(1, MAP_HEIGHT - 2);
     return player;
 }
 

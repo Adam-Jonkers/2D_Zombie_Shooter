@@ -1,3 +1,9 @@
+#include <stdio.h>
+
+#include "BATTLE.h"
+#include "CHARACTERS.h"
+#include "CORE.h"
+
 #define PLAYER_ATTACKING true
 #define PLAYER_DEFENDING false
 
