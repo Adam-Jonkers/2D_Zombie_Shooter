@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
@@ -33,5 +34,52 @@ void Display_Map(int map_width, int map_height, char map[map_height][map_width])
             printf("%c", map[y][x]);
         }
         printf("\n");
+    }
+}
+
+void Move_Player(int map_width, int map_height, char map[map_height][map_width], Player* player)
+{
+    // Move player
+    printf("Where do you want to move? \n1. Up \n2. Down \n3. Left \n4. Right\n\n");
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) 
+    { 
+        continue;
+    }
+    char action = getchar();
+    printf("\nYou chose %c, \n", action);
+    switch (action - '0')
+    {
+    case 1:
+        if (map[player->player_y - 1][player->player_x] != '#') {
+            map[player->player_y][player->player_x] = '.';
+            player->player_y -= 1;
+            map[player->player_y][player->player_x] = '@';
+        }
+        break;
+    case 2:
+        if (map[player->player_y + 1][player->player_x] != '#') {
+            map[player->player_y][player->player_x] = '.';
+            player->player_y += 1;
+            map[player->player_y][player->player_x] = '@';
+        }
+        break;
+    case 3:
+        if (map[player->player_y][player->player_x - 1] != '#') {
+            map[player->player_y][player->player_x] = '.';
+            player->player_x -= 1;
+            map[player->player_y][player->player_x] = '@';
+        }
+        break;
+    case 4:
+        if (map[player->player_y][player->player_x + 1] != '#') {
+            map[player->player_y][player->player_x] = '.';
+            player->player_x += 1;
+            map[player->player_y][player->player_x] = '@';
+        }
+        break;
+    default:
+        printf("Invalid input\n");
+        break;
     }
 }

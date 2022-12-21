@@ -1,11 +1,11 @@
 #ifndef CHARACTERS_H
 #define CHARACTERS_H
 
-#define MAX_CLASS_NAMR_LENGTH 20
+#define MAX_NAME_LENGTH 20
 
 typedef struct Player {
-    char Class[MAX_CLASS_NAMR_LENGTH];
-    char Weapon[MAX_CLASS_NAMR_LENGTH];
+    char Class[MAX_NAME_LENGTH];
+    char Weapon[MAX_NAME_LENGTH];
     int Level;
     int MaxHp;
     int Hp;
@@ -16,8 +16,8 @@ typedef struct Player {
 } Player;
 
 typedef struct Enemy {
-    char Class[MAX_CLASS_NAMR_LENGTH];
-    char Weapon[MAX_CLASS_NAMR_LENGTH];
+    char Class[MAX_NAME_LENGTH];
+    char Weapon[MAX_NAME_LENGTH];
     int Difficulty;
     int Hp;
     int Attack;
