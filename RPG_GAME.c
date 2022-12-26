@@ -14,11 +14,20 @@
 
 int main(void)
 {
+    int Gamestate = 1;
+    /*
+    1 = Moving
+    2 = Battle
+    3 = Shutdown
+    */
+    bool playing = true;
+
     // Seed random number generator
     srand(time(NULL));
 
     // Setup display
     int max_y, max_x;
+
     // initilise_display(&max_y, &max_x);
     initscr();
     noecho();
@@ -57,19 +66,24 @@ int main(void)
 
     // Display map
     Display_Map(max_x, max_y, map, &player);
-
-    Move_Player(max_x, max_y, map, &player);
-    Move_Player(max_x, max_y, map, &player);
-    Move_Player(max_x, max_y, map, &player);
-    Move_Player(max_x, max_y, map, &player);
-    Move_Player(max_x, max_y, map, &player);
-
-    // Start battle
-    bool won = battle(&player);
-    if (won == false)
-    {
-        printf("You Lost!\n");
-        // Restart game
+    while (playing) {
+        if (Gamestate == 1)
+        {
+            // Move player
+            Move_Player(max_x, max_y, map, &player, &Gamestate);
+        } else if (Gamestate == 2)
+        {
+            bool result = battle(&player);
+            if (result) {
+                Gamestate = 1;
+                Display_Map(max_x, max_y, map, &player);
+            } else {
+                Gamestate = 3;
+            }
+        } else if (Gamestate == 3)
+        {
+            endwin();
+            playing = false;
+        }   
     }
-    endwin();
 }

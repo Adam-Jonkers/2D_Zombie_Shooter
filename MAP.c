@@ -170,7 +170,7 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player)
     wrefresh(stdscr);
 }
 
-void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player)
+void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate)
 {
     // Move player
     bool valid_move = false;
@@ -194,5 +194,40 @@ void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player)
         wrefresh(stdscr);
     }
     }
+    int battlechance = 0;
+    switch (map[player->player_x][player->player_y])
+    {
+    case '~':
+        battlechance = 30;
+        break;
+    case '-':
+        battlechance = 20;
+        break;
+    case ' ':
+        battlechance = 20;
+        break;
+    case 'L':
+        battlechance = 40;
+        break;
+    case 'M':
+        battlechance = 50;
+        break;
+    case 'H':
+        battlechance = 60;
+        break;
+    case '^':
+        battlechance = 70;
+        break;
+    case '+':
+        battlechance = 80;
+        break;
+    }
+
+    int battleRNG = get_random_number(0, 100);
     Display_Map(max_x, max_y, map, player);
+    if (battleRNG < battlechance)
+    {
+        *Gamestate = 2;
+    }
+    
 }
