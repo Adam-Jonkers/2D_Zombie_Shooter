@@ -29,7 +29,7 @@ void Setup_Noise_Map(int max_x, int max_y, float noisemap[max_x][max_y]);
 
 void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y], Player* player);
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y]);
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player);
 
 void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player);
 

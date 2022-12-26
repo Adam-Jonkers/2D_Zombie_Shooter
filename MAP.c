@@ -7,6 +7,8 @@
 #include "CHARACTERS.h"
 #include "CORE.h"
 
+#define PLAYER_PAIR 9
+
 void generate_texture_map(int max_x, int max_y, float noisemap[max_x][max_y]) {
     for (int x = 0; x < max_x; x++) {
         for (int y = 0; y < max_y; y++)
@@ -108,10 +110,9 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
     // Place player on map
     player->player_x = get_random_number(1, max_x - 2);
     player->player_y = get_random_number(1, max_y - 2);
-    map[player->player_y][player->player_x] = '@';
 }
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y])
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player)
 {
     wclear(stdscr);
     wrefresh(stdscr);
@@ -120,91 +121,78 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y])
     {
         for (int x = 0; x < max_x; x++)
         {
-            char c = map[x][y];
-            if (c == '~') {
-                attron(COLOR_PAIR(1));
-                wprintw(stdscr, "~");
-                attroff(COLOR_PAIR(1));
-            } else if (c == '-') {
-                attron(COLOR_PAIR(2));
-                wprintw(stdscr, "-");
-                attroff(COLOR_PAIR(2));
-            } else if (c == ' ') {
-                attron(COLOR_PAIR(3));
-                wprintw(stdscr, " ");
-                attroff(COLOR_PAIR(3));
-            } else if (c == 'L') {
-                attron(COLOR_PAIR(4));
-                wprintw(stdscr, "L");
-                attroff(COLOR_PAIR(4));
-            } else if (c == 'M') {
-                attron(COLOR_PAIR(5));
-                wprintw(stdscr, "M");
-                attroff(COLOR_PAIR(5));
-            } else if (c == 'H') {
-                attron(COLOR_PAIR(6));
-                wprintw(stdscr, "H");
-                attroff(COLOR_PAIR(6));
-            } else if (c == '^') {
-                attron(COLOR_PAIR(7));
-                wprintw(stdscr, "^");
-                attroff(COLOR_PAIR(7));
-            } else if (c == '+') {
-                attron(COLOR_PAIR(8));
-                wprintw(stdscr, "^");
-                attroff(COLOR_PAIR(8));
+            if (x == player->player_x && y == player->player_y)
+            {
+                attron(COLOR_PAIR(9));
+                wprintw(stdscr, "P");
+                attroff(COLOR_PAIR(9));
+            }
+            else
+            {
+                char c = map[x][y];
+                if (c == '~') {
+                    attron(COLOR_PAIR(1));
+                    wprintw(stdscr, "~");
+                    attroff(COLOR_PAIR(1));
+                } else if (c == '-') {
+                    attron(COLOR_PAIR(2));
+                    wprintw(stdscr, "-");
+                    attroff(COLOR_PAIR(2));
+                } else if (c == ' ') {
+                    attron(COLOR_PAIR(3));
+                    wprintw(stdscr, " ");
+                    attroff(COLOR_PAIR(3));
+                } else if (c == 'L') {
+                    attron(COLOR_PAIR(4));
+                    wprintw(stdscr, "L");
+                    attroff(COLOR_PAIR(4));
+                } else if (c == 'M') {
+                    attron(COLOR_PAIR(5));
+                    wprintw(stdscr, "M");
+                    attroff(COLOR_PAIR(5));
+                } else if (c == 'H') {
+                    attron(COLOR_PAIR(6));
+                    wprintw(stdscr, "H");
+                    attroff(COLOR_PAIR(6));
+                } else if (c == '^') {
+                    attron(COLOR_PAIR(7));
+                    wprintw(stdscr, "^");
+                    attroff(COLOR_PAIR(7));
+                } else if (c == '+') {
+                    attron(COLOR_PAIR(8));
+                    wprintw(stdscr, "+");
+                    attroff(COLOR_PAIR(8));
+                }
             }
         }
         wprintw(stdscr, "\n");
     }
     wrefresh(stdscr);
-
-    getch();
 }
 
 void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player)
 {
     // Move player
-    printf("Where do you want to move? \n1. Up \n2. Down \n3. Left \n4. Right\n\n");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) 
-    { 
-        continue;
-    }
-    char action = getchar();
-    printf("\nYou chose %c, \n", action);
-    switch (action - '0')
+    bool valid_move = false;
+    while (valid_move == false)
     {
-    case 1:
-        if (map[player->player_y - 1][player->player_x] != '#') {
-            map[player->player_y][player->player_x] = '.';
-            player->player_y -= 1;
-            map[player->player_y][player->player_x] = '@';
-        }
-        break;
-    case 2:
-        if (map[player->player_y + 1][player->player_x] != '#') {
-            map[player->player_y][player->player_x] = '.';
-            player->player_y += 1;
-            map[player->player_y][player->player_x] = '@';
-        }
-        break;
-    case 3:
-        if (map[player->player_y][player->player_x - 1] != '#') {
-            map[player->player_y][player->player_x] = '.';
-            player->player_x -= 1;
-            map[player->player_y][player->player_x] = '@';
-        }
-        break;
-    case 4:
-        if (map[player->player_y][player->player_x + 1] != '#') {
-            map[player->player_y][player->player_x] = '.';
-            player->player_x += 1;
-            map[player->player_y][player->player_x] = '@';
-        }
-        break;
-    default:
-        printf("Invalid input\n");
-        break;
+    int action = getch();
+    if (action == KEY_DOWN && map[player->player_y - 1][player->player_x] != '#') {
+        player->player_y += 1;
+        valid_move = true;
+    } else if (action == KEY_UP && map[player->player_y + 1][player->player_x] != '#') {
+        player->player_y -= 1;
+        valid_move = true;
+    } else if (action == KEY_LEFT && map[player->player_y][player->player_x - 1] != '#') {
+        player->player_x -= 1;
+        valid_move = true;
+    } else if (action == KEY_RIGHT && map[player->player_y][player->player_x + 1] != '#') {
+        player->player_x += 1;
+        valid_move = true;
+    } else {
+        printw("%c is an invalid move!\n", action);
+        wrefresh(stdscr);
     }
+    }
+    Display_Map(max_x, max_y, map, player);
 }

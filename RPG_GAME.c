@@ -10,6 +10,8 @@
 #include "BATTLE.h"
 #include "CORE.h"
 
+#define PLAYER_PAIR 9
+
 int main(void)
 {
     // Seed random number generator
@@ -20,6 +22,8 @@ int main(void)
     // initilise_display(&max_y, &max_x);
     initscr();
     noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
     getmaxyx(stdscr, max_y, max_x);
     max_x -= 10;
     max_y -= 5;
@@ -40,6 +44,7 @@ int main(void)
     init_pair(6, 13, 13);
     init_pair(7, 14, 14);
     init_pair(8, 15, 15);
+    init_pair(PLAYER_PAIR, COLOR_BLACK, COLOR_RED);
 
     // Setup player
     Player player = Setup_Player();
@@ -51,7 +56,13 @@ int main(void)
     Setup_Map(max_x, max_y, map, noisemap, &player);
 
     // Display map
-    Display_Map(max_x, max_y, map);
+    Display_Map(max_x, max_y, map, &player);
+
+    Move_Player(max_x, max_y, map, &player);
+    Move_Player(max_x, max_y, map, &player);
+    Move_Player(max_x, max_y, map, &player);
+    Move_Player(max_x, max_y, map, &player);
+    Move_Player(max_x, max_y, map, &player);
 
     // Start battle
     bool won = battle(&player);
