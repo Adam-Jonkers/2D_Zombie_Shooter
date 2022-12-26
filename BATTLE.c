@@ -52,7 +52,7 @@ bool battle(Player* player)
         printw("What do you want to do? \n1. Attack \n2. Defend\n\n");
         wrefresh(stdscr);
         char action = getch();
-        printf("\nYou chose %c, \n", action);
+        printw("\nYou chose %c, \n", action);
         switch (action - '0')
         {
         case 1:
