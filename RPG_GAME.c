@@ -10,8 +10,6 @@
 #include "BATTLE.h"
 #include "CORE.h"
 
-#define MAP_SIZE 40
-
 int main(void)
 {
     // Seed random number generator
@@ -48,7 +46,7 @@ int main(void)
 
     // Setup map
     float noisemap[max_x][max_y];
-    char map[MAP_SIZE][MAP_SIZE];
+    char map[max_x][max_y];
     Setup_Noise_Map(max_x, max_y, noisemap);
     Setup_Map(max_x, max_y, map, noisemap, &player);
 
