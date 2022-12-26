@@ -1,6 +1,7 @@
-#include "stdbool.h"
-#include "stdio.h"
-#include "string.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <ncurses.h>
 
 #include "CHARACTERS.h"
 #include "CORE.h"
@@ -12,8 +13,11 @@ Player Setup_Player()
     player.Level = 1;
     while (valid_class == false)
     {
-    printf("Choose your class: \n1. Warrior \n2. Mage \n3. Rogue\n\n");
-    int class = getchar();
+    printw("Choose your class: \n1. Warrior \n2. Mage \n3. Rogue\n");
+    refresh();
+    int class = getch();
+    printw("\nYou chose %c, \n", class);
+    refresh();
     switch (class - '0')
     {
     case 1:
@@ -47,11 +51,18 @@ Player Setup_Player()
         break;
 
     default:
-        printf("Invalid class \n Please enter 1, 2 or 3\n");
+        //wclear(stdscr);
+        printw("Invalid class \n");
+        refresh();
+        getch();
+        wclear(stdscr);
+        refresh();
         break;
     }
     }
-    printf("You are a %s with a %s\n\n", player.Class, player.Weapon);
+    printw("You are a %s with a %s \nPRESS ANY KEY TO CONTINUE\n\n", player.Class, player.Weapon);
+    refresh();
+    getch();
     return player;
 }
 
