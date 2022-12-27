@@ -6,7 +6,7 @@
 #include "CHARACTERS.h"
 #include "CORE.h"
 
-Player Setup_Player()
+Player Setup_Player(int max_x, int max_y)
 {
     bool valid_class = false;
     Player player;
@@ -14,10 +14,10 @@ Player Setup_Player()
     while (valid_class == false)
     {
     printw("Choose your class: \n1. Warrior \n2. Mage \n3. Rogue\n");
-    refresh();
+    wrefresh(stdscr);
     int class = getch();
     printw("\nYou chose %c, \n", class);
-    refresh();
+    wrefresh(stdscr);
     switch (class - '0')
     {
     case 1:
@@ -53,15 +53,17 @@ Player Setup_Player()
     default:
         //wclear(stdscr);
         printw("Invalid class \n");
-        refresh();
+        wrefresh(stdscr);
         getch();
         wclear(stdscr);
-        refresh();
+        wrefresh(stdscr);
         break;
     }
     }
+    player.player_x = get_random_number(40, max_x - 40);
+    player.player_y = get_random_number(40, max_y - 40);
     printw("You are a %s with a %s \nPRESS ANY KEY TO CONTINUE\n\n", player.Class, player.Weapon);
-    refresh();
+    wrefresh(stdscr);
     getch();
     return player;
 }

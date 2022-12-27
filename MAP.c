@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <unistd.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
@@ -73,7 +74,7 @@ void Setup_Noise_Map(int max_x, int max_y,float noisemap[max_x][max_y], float ra
     }
 }
 
-void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y], Player* player)
+void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y])
 {
     wclear(stdscr);
     printw("Generating map...\n\n");
@@ -103,19 +104,16 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
             }
         }
     }
-    // Place player on map
-    player->player_x = get_random_number(1, max_x - 2);
-    player->player_y = get_random_number(1, max_y - 2);
 }
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player)
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, int display_x, int display_y, int displaysize_x, int displaysize_y)
 {
     wclear(stdscr);
     wrefresh(stdscr);
     // Display map
-    for (int y = 0; y < max_y; y++)
+    for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
     {
-        for (int x = 0; x < max_x; x++)
+        for (int x = display_x; x < displaysize_x + display_x && x <= max_x; x++)
         {
             if (x == player->player_x && y == player->player_y)
             {
@@ -166,64 +164,76 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player)
     wrefresh(stdscr);
 }
 
-void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate)
+void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y)
 {
     // Move player
+    flushinp();
     bool valid_move = false;
     while (valid_move == false)
     {
     int action = getch();
-    if (action == KEY_DOWN && map[player->player_y - 1][player->player_x] != '#') {
+    if (action == KEY_DOWN && player->player_y + 1 < max_y) {
         player->player_y += 1;
         valid_move = true;
-    } else if (action == KEY_UP && map[player->player_y + 1][player->player_x] != '#') {
+    } else if (action == KEY_UP && player->player_y - 1 >= 0) {
         player->player_y -= 1;
         valid_move = true;
-    } else if (action == KEY_LEFT && map[player->player_y][player->player_x - 1] != '#') {
+    } else if (action == KEY_LEFT && player->player_x - 1 >= 0) {
         player->player_x -= 1;
         valid_move = true;
-    } else if (action == KEY_RIGHT && map[player->player_y][player->player_x + 1] != '#') {
+    } else if (action == KEY_RIGHT && player->player_x + 1 < max_x) {
         player->player_x += 1;
         valid_move = true;
-    } else {
-        printw("%c is an invalid move!\n", action);
-        wrefresh(stdscr);
     }
     }
+    *display_y = player->player_y - displaysize_y / 2;
+    *display_x = player->player_x - displaysize_x / 2;
+    if (*display_x < 0) {
+        *display_x = 0;
+    } else if (*display_x > max_x - displaysize_x) {
+        *display_x = max_x - displaysize_x;
+    } else if (*display_y < 0) {
+        *display_y = 0;
+    } else if (*display_y > max_y - displaysize_y) {
+        *display_y = max_y - displaysize_y;
+    }
+    
+
     int battlechance = 0;
     switch (map[player->player_x][player->player_y])
     {
     case '~':
-        battlechance = 30;
+        battlechance = 0;
         break;
     case '-':
-        battlechance = 20;
+        battlechance = 0;
         break;
     case ' ':
-        battlechance = 20;
+        battlechance = 0;
         break;
     case 'L':
-        battlechance = 40;
+        battlechance = 0;
         break;
     case 'M':
-        battlechance = 50;
+        battlechance = 0;
         break;
     case 'H':
-        battlechance = 60;
+        battlechance = 0;
         break;
     case '^':
-        battlechance = 70;
+        battlechance = 0;
         break;
     case '+':
-        battlechance = 80;
+        battlechance = 0;
         break;
     }
-
-    int battleRNG = get_random_number(0, 100);
-    Display_Map(max_x, max_y, map, player);
+    int battleRNG = get_random_number(0, 100);   
     if (battleRNG < battlechance)
     {
         *Gamestate = 2;
     }
+    usleep(50000);
+    Display_Map(max_x, max_y, map, player, *display_x, *display_y, displaysize_x, displaysize_y);
+
     
 }

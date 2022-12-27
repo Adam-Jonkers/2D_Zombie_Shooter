@@ -27,10 +27,10 @@ float noise(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]);
 
 void Setup_Noise_Map(int max_x, int max_y, float noisemap[max_x][max_y], float randarray[max_x][max_y]);
 
-void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y], Player* player);
+void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y]);
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player);
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, int display_x, int display_y, int displaysize_x, int displaysize_y);
 
-void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate);
+void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
 
 #endif

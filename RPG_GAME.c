@@ -26,16 +26,20 @@ int main(void)
     srand(time(NULL));
 
     // Setup display
-    int max_y, max_x;
+    int max_y = 600;
+    int max_x = 600;
+    int display_y;
+    int display_x;
+    int displaysize_y, displaysize_x;
 
     // initilise_display(&max_y, &max_x);
     initscr();
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
-    getmaxyx(stdscr, max_y, max_x);
-    max_x -= 10;
-    max_y -= 5;
+    getmaxyx(stdscr, displaysize_y, displaysize_x);
+    displaysize_x -= 10;
+    displaysize_y -= 5;
     start_color();
     init_color(8, 294, 714, 937);
     init_color(9, 204, 549, 192);
@@ -56,28 +60,30 @@ int main(void)
     init_pair(PLAYER_PAIR, COLOR_BLACK, COLOR_RED);
 
     // Setup player
-    Player player = Setup_Player();
+    Player player = Setup_Player(max_x, max_y);
 
     // Setup map
+    display_x = player.player_x - displaysize_x / 2;
+    display_y = player.player_y - displaysize_y / 2;
     float randarray[max_x][max_y];
     float noisemap[max_x][max_y];
     char map[max_x][max_y];
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
-    Setup_Map(max_x, max_y, map, noisemap, &player);
+    Setup_Map(max_x, max_y, map, noisemap);
 
     // Display map
-    Display_Map(max_x, max_y, map, &player);
+    Display_Map(max_x, max_y, map, &player, display_x, display_y, displaysize_x, displaysize_y);
     while (playing) {
         if (Gamestate == 1)
         {
             // Move player
-            Move_Player(max_x, max_y, map, &player, &Gamestate);
+            Move_Player(max_x, max_y, map, &player, &Gamestate, &display_x, &display_y, displaysize_x, displaysize_y);
         } else if (Gamestate == 2)
         {
             bool result = battle(&player);
             if (result) {
                 Gamestate = 1;
-                Display_Map(max_x, max_y, map, &player);
+                Display_Map(max_x, max_y, map, &player, display_x, display_y, displaysize_x, displaysize_y);
             } else {
                 Gamestate = 3;
             }
