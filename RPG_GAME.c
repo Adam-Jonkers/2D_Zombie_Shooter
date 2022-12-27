@@ -59,9 +59,10 @@ int main(void)
     Player player = Setup_Player();
 
     // Setup map
+    float randarray[max_x][max_y];
     float noisemap[max_x][max_y];
     char map[max_x][max_y];
-    Setup_Noise_Map(max_x, max_y, noisemap);
+    Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap, &player);
 
     // Display map

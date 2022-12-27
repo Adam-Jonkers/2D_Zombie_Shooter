@@ -9,11 +9,11 @@
 
 #define PLAYER_PAIR 9
 
-void generate_texture_map(int max_x, int max_y, float noisemap[max_x][max_y]) {
+void generate_texture_map(int max_x, int max_y, float randarray[max_x][max_y]) {
     for (int x = 0; x < max_x; x++) {
         for (int y = 0; y < max_y; y++)
         {
-            noisemap[x][y] = (float)rand() / RAND_MAX;
+            randarray[x][y] = (float)rand() / RAND_MAX;
         } 
     }
 }
@@ -24,11 +24,8 @@ float fade(float t) {
 
 vec2 grad(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]) {
     vec2 v;
-    if (p.x < (max_x - 1) && p.y < (max_y - 1))
-    {
     v.x = noisemap[(int)p.x][(int)p.y] - noisemap[((int)p.x) + 1][(int)p.y];
     v.y = noisemap[(int)p.x][(int)p.y] - noisemap[(int)p.x][((int)p.y) + 1];
-    }
     return normalise(v);
 }
 
@@ -55,26 +52,25 @@ float noise(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]) {
     return (1.0 - fade_t1) * p0p1 + fade_t1 * p2p3;
 }
 
-void Setup_Noise_Map(int max_x, int max_y, float noisemap[max_x][max_y])
+void Setup_Noise_Map(int max_x, int max_y,float noisemap[max_x][max_y], float randarray[max_x][max_y])
 {
     wclear(stdscr);
     printw("Generating noise map...\n\n");
     wrefresh(stdscr);
     // Setup noise map
-    generate_texture_map(max_x, max_y, noisemap);
+    generate_texture_map(max_x, max_y, randarray);
     for (int y = 0; y < max_y; y++)
     {
         for (int x = 0; x < max_x; x++)
         {
             vec2 i = (vec2){x, y};
-            float n = noise(divide_vec2(i, 64), max_x, max_y, noisemap) * 1.0 +
-            noise(divide_vec2(i, 32), max_x, max_y, noisemap) * 0.5 +
-            noise(divide_vec2(i, 16), max_x, max_y, noisemap) * 0.25 +
-            noise(divide_vec2(i, 8), max_x, max_y, noisemap) * 0.125;
+            float n = noise(divide_vec2(i, 64), max_x, max_y, randarray) * 1.0 +
+            noise(divide_vec2(i, 32), max_x, max_y, randarray) * 0.5 +
+            noise(divide_vec2(i, 16), max_x, max_y, randarray) * 0.25 +
+            noise(divide_vec2(i, 8), max_x, max_y, randarray) * 0.125;
             noisemap[x][y] = n;
         }
     }
-    wrefresh(stdscr);
 }
 
 void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y], Player* player)
