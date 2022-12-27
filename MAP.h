@@ -58,4 +58,10 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, i
 
 void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
 
+void Generate_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y]);
+
+void Draw_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y], int x, int y);
+
+int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y);
+
 #endif

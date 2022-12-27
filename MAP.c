@@ -23,8 +23,8 @@ float fade(float t) {
 
 vec2 grad(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]) {
     vec2 v;
-    v.x = noisemap[(int)p.x][(int)p.y] - noisemap[((int)p.x) + 1][(int)p.y];
-    v.y = noisemap[(int)p.x][(int)p.y] - noisemap[(int)p.x][((int)p.y) + 1];
+    v.x = noisemap[(int)p.x + 1][(int)p.y] - noisemap[((int)p.x)][(int)p.y];
+    v.y = noisemap[(int)p.x][(int)p.y + 1] - noisemap[(int)p.x][((int)p.y)];
     return normalise(v);
 }
 
@@ -97,10 +97,10 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
                 map[x][y] = 'H';
             } else if (n < 0.5) {
                 map[x][y] = '^';
-            } else if (n < 0.8) {
+            } else if (n < 0.7) {
                 map[x][y] = '+';
             } else {
-                map[x][y] = '+';
+                map[x][y] = 'R';
             }
         }
     }
@@ -246,6 +246,101 @@ void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, i
     }
     usleep(50000);
     Display_Map(max_x, max_y, map, player, *display_x, *display_y, displaysize_x, displaysize_y);
+}
 
-    
+void Generate_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y]) 
+{
+    char c;
+    for (int x = 0; x < max_x; x++) {
+        for (int y = 0; y < max_y; y++)
+        {
+            c = map[x][y];
+            if (c == 'R') {
+                Draw_River(max_x, max_y, map, noisemap, x, y);
+            }
+        } 
+    }
+}
+
+void Draw_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y], int x, int y)
+{
+    bool rivercomplete = false;
+    int direction;
+    while (rivercomplete == false)
+    {
+        direction = Find_Steepest_Local_Gradient(max_x, max_y, noisemap, x, y);
+        if (map[x][y] == '+') {
+            map[x][y] = '-';
+        } else {
+            map[x][y] = '~';
+        }
+        
+        switch (direction)
+        {
+        case 0:
+            y--;
+            break;
+        
+        case 1:
+            y++;
+            break;
+        
+        case 2:
+            x--;
+            break;
+        
+        case 3:
+            x++;
+            break;
+        
+        case -1:
+            rivercomplete = true;
+            break;
+        }
+    }
+}
+
+int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y)
+{
+    int direction = -1;
+    /*
+    -1 = ERROR
+     0 = UP
+     1 = DOWN
+     2 = LEFT
+     3 = RIGHT
+    */
+    int gradientup = 5;
+    int gradientdown = 5;
+    int gradientleft = 5;
+    int gradientright = 5;
+
+    if (y - 1 >= 0) {
+        gradientup = noisemap[x][y - 1] - noisemap[x][y];
+    }
+    if (y + 1 < max_y) {
+        gradientdown = noisemap[x][y + 1] - noisemap[x][y];
+    }
+    if (x - 1 >= 0) {
+        gradientleft = noisemap[x - 1][y] - noisemap[x][y];
+    }
+    if (x + 1 < max_x) {
+        gradientright = noisemap[x + 1][y] - noisemap[x][y];
+    }
+
+    if (gradientup < 0 && gradientdown < 0 && gradientleft < 0 && gradientright < 0)
+    {
+        return -1;
+    }
+
+    if (gradientup < gradientdown && gradientup < gradientleft && gradientup < gradientright) {
+        direction = 0;
+    } else if (gradientdown < gradientup && gradientdown < gradientleft && gradientdown < gradientright) {
+        direction = 1;
+    } else if (gradientleft < gradientup && gradientleft < gradientdown && gradientleft < gradientright) {
+        direction = 2;
+    } else if (gradientright < gradientup && gradientright < gradientdown && gradientright < gradientleft) {
+        direction = 3;
+    }
+    return direction;
 }

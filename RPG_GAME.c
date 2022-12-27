@@ -73,6 +73,7 @@ int main(void)
     char map[max_x][max_y];
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap);
+    Generate_River(max_x, max_y, map, noisemap);
 
     // Display map
     Display_Map(max_x, max_y, map, &player, display_x, display_y, displaysize_x, displaysize_y);
