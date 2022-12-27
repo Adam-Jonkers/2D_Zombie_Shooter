@@ -11,6 +11,9 @@
 #include "CORE.h"
 
 #define PLAYER_PAIR 9
+#define ERROR_PAIR 10
+#define MAP_WIDTH 600
+#define MAP_HEIGHT 600
 
 int main(void)
 {
@@ -26,8 +29,8 @@ int main(void)
     srand(time(NULL));
 
     // Setup display
-    int max_y = 600;
-    int max_x = 600;
+    int max_y = MAP_HEIGHT;
+    int max_x = MAP_WIDTH;
     int display_y;
     int display_x;
     int displaysize_y, displaysize_x;
@@ -36,6 +39,7 @@ int main(void)
     initscr();
     noecho();
     cbreak();
+    curs_set(0);
     keypad(stdscr, TRUE);
     getmaxyx(stdscr, displaysize_y, displaysize_x);
     displaysize_x -= 10;
@@ -58,6 +62,7 @@ int main(void)
     init_pair(7, 14, 14);
     init_pair(8, 15, 15);
     init_pair(PLAYER_PAIR, COLOR_BLACK, COLOR_RED);
+    init_pair(ERROR_PAIR, COLOR_BLACK, COLOR_RED);
 
     // Setup player
     Player player = Setup_Player();

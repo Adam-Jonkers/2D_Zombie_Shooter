@@ -9,6 +9,7 @@
 #include "CORE.h"
 
 #define PLAYER_PAIR 9
+#define ERROR_PAIR 10
 
 void generate_texture_map(int max_x, int max_y, float randarray[max_x][max_y]) {
     for (int x = 0; x < max_x; x++) {
@@ -99,7 +100,9 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
                 map[x][y] = 'H';
             } else if (n < 0.5) {
                 map[x][y] = '^';
-            } else if (n < 0.80) {
+            } else if (n < 0.8) {
+                map[x][y] = '+';
+            } else {
                 map[x][y] = '+';
             }
         }
@@ -108,58 +111,67 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
 
 void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, int display_x, int display_y, int displaysize_x, int displaysize_y)
 {
+    char c;
+    int screenx;
+    int screeny;
     wclear(stdscr);
-    wrefresh(stdscr);
     // Display map
     for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
     {
         for (int x = display_x; x < displaysize_x + display_x && x <= max_x; x++)
         {
+            screenx = x - display_x;
+            screeny = y - display_y;
             if (x == player->player_x && y == player->player_y)
             {
-                attron(COLOR_PAIR(9));
-                wprintw(stdscr, "P");
-                attroff(COLOR_PAIR(9));
+                attron(COLOR_PAIR(PLAYER_PAIR));
+                mvaddch(screeny, screenx, 'P');
+                attroff(COLOR_PAIR(PLAYER_PAIR));
             }
             else
             {
-                char c = map[x][y];
+                c = map[x][y];
                 if (c == '~') {
                     attron(COLOR_PAIR(1));
-                    wprintw(stdscr, "~");
+                    mvaddch(screeny, screenx, '~');
                     attroff(COLOR_PAIR(1));
                 } else if (c == '-') {
                     attron(COLOR_PAIR(2));
-                    wprintw(stdscr, "-");
+                    mvaddch(screeny, screenx, '-');
                     attroff(COLOR_PAIR(2));
                 } else if (c == ' ') {
                     attron(COLOR_PAIR(3));
-                    wprintw(stdscr, " ");
+                    mvaddch(screeny, screenx, ' ');
                     attroff(COLOR_PAIR(3));
                 } else if (c == 'L') {
                     attron(COLOR_PAIR(4));
-                    wprintw(stdscr, "L");
+                    mvaddch(screeny, screenx, 'L');
                     attroff(COLOR_PAIR(4));
                 } else if (c == 'M') {
                     attron(COLOR_PAIR(5));
-                    wprintw(stdscr, "M");
+                    mvaddch(screeny, screenx, 'M');
                     attroff(COLOR_PAIR(5));
                 } else if (c == 'H') {
                     attron(COLOR_PAIR(6));
-                    wprintw(stdscr, "H");
+                    mvaddch(screeny, screenx, 'H');
                     attroff(COLOR_PAIR(6));
                 } else if (c == '^') {
                     attron(COLOR_PAIR(7));
-                    wprintw(stdscr, "^");
+                    mvaddch(screeny, screenx, '^');
                     attroff(COLOR_PAIR(7));
                 } else if (c == '+') {
                     attron(COLOR_PAIR(8));
-                    wprintw(stdscr, "+");
+                    mvaddch(screeny, screenx, '+');
                     attroff(COLOR_PAIR(8));
+                } else
+                {
+                    attron(COLOR_PAIR(ERROR_PAIR));
+                    mvaddch(screeny, screenx, 'E');
+                    attroff(COLOR_PAIR(ERROR_PAIR));
                 }
+                
             }
         }
-        wprintw(stdscr, "\n");
     }
     wrefresh(stdscr);
 }
@@ -188,11 +200,14 @@ void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, i
     }
     *display_y = player->player_y - displaysize_y / 2;
     *display_x = player->player_x - displaysize_x / 2;
+    
     if (*display_x < 0) {
         *display_x = 0;
     } else if (*display_x > max_x - displaysize_x) {
         *display_x = max_x - displaysize_x;
-    } else if (*display_y < 0) {
+    }
+
+    if (*display_y < 0) {
         *display_y = 0;
     } else if (*display_y > max_y - displaysize_y) {
         *display_y = max_y - displaysize_y;
