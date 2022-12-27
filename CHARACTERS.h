@@ -24,7 +24,7 @@ typedef struct Enemy {
     int Defense;
 } Enemy;
 
-Player Setup_Player(int max_x, int max_y);
+Player Setup_Player(void);
 
 Enemy Setup_Enemy(void);
 

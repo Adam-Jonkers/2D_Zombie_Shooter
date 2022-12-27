@@ -6,7 +6,7 @@
 #include "CHARACTERS.h"
 #include "CORE.h"
 
-Player Setup_Player(int max_x, int max_y)
+Player Setup_Player()
 {
     bool valid_class = false;
     Player player;
@@ -60,8 +60,6 @@ Player Setup_Player(int max_x, int max_y)
         break;
     }
     }
-    player.player_x = get_random_number(40, max_x - 40);
-    player.player_y = get_random_number(40, max_y - 40);
     printw("You are a %s with a %s \nPRESS ANY KEY TO CONTINUE\n\n", player.Class, player.Weapon);
     wrefresh(stdscr);
     getch();

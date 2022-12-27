@@ -60,9 +60,12 @@ int main(void)
     init_pair(PLAYER_PAIR, COLOR_BLACK, COLOR_RED);
 
     // Setup player
-    Player player = Setup_Player(max_x, max_y);
+    Player player = Setup_Player();
 
     // Setup map
+    player.player_x = get_random_number(displaysize_x / 2, max_x - displaysize_x / 2);
+    player.player_y = get_random_number(displaysize_y / 2, max_y - displaysize_y / 2);
+
     display_x = player.player_x - displaysize_x / 2;
     display_y = player.player_y - displaysize_y / 2;
     float randarray[max_x][max_y];
