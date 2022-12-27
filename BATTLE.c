@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ncurses.h>
+#include <unistd.h>
 
 #include "BATTLE.h"
 #include "CHARACTERS.h"
@@ -43,35 +44,41 @@ int calculate_damage(Player player, Enemy enemy, bool Attacking)
 bool battle(Player* player)
 {
     wclear(stdscr);
+    refresh();
     Enemy enemy = Setup_Enemy();
     printw("You are fighting a %s with a %s\n\n", enemy.Class, enemy.Weapon);
     while (player->Hp > 0 && enemy.Hp > 0)
     {
+        flushinp();
         printw("You have %d HP left\n", player->Hp);
         printw("The enemy has %d HP left\n", enemy.Hp);
         printw("What do you want to do? \n1. Attack \n2. Defend\n\n");
         wrefresh(stdscr);
         char action = getch();
+        wclear(stdscr);
         printw("\nYou chose %c, \n", action);
         switch (action - '0')
         {
         case 1:
             enemy.Hp -= calculate_damage(*player, enemy, PLAYER_ATTACKING);
             player->Hp -= calculate_damage(*player, enemy, PLAYER_DEFENDING);
-            getch();
+            refresh();
+            sleep(2);
             break;
         
         case 2:
             player->Defense += 25;
             player->Hp -= calculate_damage(*player, enemy, PLAYER_DEFENDING);
             player->Defense -= 25;
-            getch();
+            refresh();
+            sleep(2);
             break;
         
         default:
+            wclear(stdscr);
             printw("Invalid action \n");
             wrefresh(stdscr);
-            getch();
+            sleep(2);
             break;
         }
         wclear(stdscr);
