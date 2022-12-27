@@ -67,9 +67,9 @@ bool battle(Player* player)
             break;
         
         case 2:
-            player->Defense += 25;
+            player->Defense += 40;
             player->Hp -= calculate_damage(*player, enemy, PLAYER_DEFENDING);
-            player->Defense -= 25;
+            player->Defense -= 40;
             refresh();
             sleep(2);
             break;
