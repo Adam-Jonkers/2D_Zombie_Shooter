@@ -8,9 +8,6 @@
 #include "CHARACTERS.h"
 #include "CORE.h"
 
-#define PLAYER_PAIR 9
-#define ERROR_PAIR 10
-
 void generate_texture_map(int max_x, int max_y, float randarray[max_x][max_y]) {
     for (int x = 0; x < max_x; x++) {
         for (int y = 0; y < max_y; y++)
@@ -132,37 +129,37 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, i
             {
                 c = map[x][y];
                 if (c == '~') {
-                    attron(COLOR_PAIR(1));
+                    attron(COLOR_PAIR(LAKE_PAIR));
                     mvaddch(screeny, screenx, '~');
-                    attroff(COLOR_PAIR(1));
+                    attroff(COLOR_PAIR(LAKE_PAIR));
                 } else if (c == '-') {
-                    attron(COLOR_PAIR(2));
+                    attron(COLOR_PAIR(PLAINS_PAIR));
                     mvaddch(screeny, screenx, '-');
-                    attroff(COLOR_PAIR(2));
+                    attroff(COLOR_PAIR(PLAINS_PAIR));
                 } else if (c == ' ') {
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(FOREST_PAIR));
                     mvaddch(screeny, screenx, ' ');
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(FOREST_PAIR));
                 } else if (c == 'L') {
-                    attron(COLOR_PAIR(4));
+                    attron(COLOR_PAIR(MOUNTAIN_1_PAIR));
                     mvaddch(screeny, screenx, 'L');
-                    attroff(COLOR_PAIR(4));
+                    attroff(COLOR_PAIR(MOUNTAIN_1_PAIR));
                 } else if (c == 'M') {
-                    attron(COLOR_PAIR(5));
+                    attron(COLOR_PAIR(MOUNTAIN_2_PAIR));
                     mvaddch(screeny, screenx, 'M');
-                    attroff(COLOR_PAIR(5));
+                    attroff(COLOR_PAIR(MOUNTAIN_2_PAIR));
                 } else if (c == 'H') {
-                    attron(COLOR_PAIR(6));
+                    attron(COLOR_PAIR(MOUNTAIN_3_PAIR));
                     mvaddch(screeny, screenx, 'H');
-                    attroff(COLOR_PAIR(6));
+                    attroff(COLOR_PAIR(MOUNTAIN_3_PAIR));
                 } else if (c == '^') {
-                    attron(COLOR_PAIR(7));
+                    attron(COLOR_PAIR(MOUNTAIN_4_PAIR));
                     mvaddch(screeny, screenx, '^');
-                    attroff(COLOR_PAIR(7));
+                    attroff(COLOR_PAIR(MOUNTAIN_4_PAIR));
                 } else if (c == '+') {
-                    attron(COLOR_PAIR(8));
+                    attron(COLOR_PAIR(SNOW_PAIR));
                     mvaddch(screeny, screenx, '+');
-                    attroff(COLOR_PAIR(8));
+                    attroff(COLOR_PAIR(SNOW_PAIR));
                 } else
                 {
                     attron(COLOR_PAIR(ERROR_PAIR));
