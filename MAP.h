@@ -25,6 +25,7 @@
 #define MOUNTAIN_4_PAIR 7
 #define SNOW_PAIR 8
 
+#define RIVER_LENGTH 100
 
 #define PLAYER_PAIR 9
 #define ERROR_PAIR 10
@@ -41,6 +42,11 @@ typedef struct {
     int x;
     int y;
 } Location;
+
+typedef struct {
+    int x;
+    int y;
+} Loc;
 
 void generate_texture_map(int max_x, int max_y, float noisemap[max_x][max_y]);
 
@@ -62,6 +68,6 @@ void Generate_River(int max_x, int max_y, char map[max_x][max_y], float noisemap
 
 void Draw_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y], int x, int y);
 
-int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y);
+int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y, char map[max_x][max_y]);
 
 #endif

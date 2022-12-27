@@ -256,6 +256,38 @@ void Generate_River(int max_x, int max_y, char map[max_x][max_y], float noisemap
         {
             c = map[x][y];
             if (c == 'R') {
+                if (map[x][y + 1] == 'R')
+                {
+                    map[x][y + 1] = '+';
+                }
+                if (map[x][y - 1] == 'R')
+                {
+                    map[x][y - 1] = '+';
+                }
+                if (map[x + 1][y] == 'R')
+                {
+                    map[x + 1][y] = '+';
+                }
+                if (map[x - 1][y] == 'R')
+                {
+                    map[x - 1][y] = '+';
+                }
+                if (map[x + 1][y + 1] == 'R')
+                {
+                    map[x + 1][y + 1] = '+';
+                }
+                if (map[x - 1][y - 1] == 'R')
+                {
+                    map[x - 1][y - 1] = '+';
+                }
+                if (map[x + 1][y - 1] == 'R')
+                {
+                    map[x + 1][y - 1] = '+';
+                }
+                if (map[x - 1][y + 1] == 'R')
+                {
+                    map[x - 1][y + 1] = '+';
+                }
                 Draw_River(max_x, max_y, map, noisemap, x, y);
             }
         } 
@@ -264,17 +296,30 @@ void Generate_River(int max_x, int max_y, char map[max_x][max_y], float noisemap
 
 void Draw_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max_x][max_y], int x, int y)
 {
-    bool rivercomplete = false;
+    bool rivernotcomplete = true;
     int direction;
-    while (rivercomplete == false)
+    Loc riverpos[RIVER_LENGTH];
+    for (size_t i = 0; i < RIVER_LENGTH; i++)
     {
-        direction = Find_Steepest_Local_Gradient(max_x, max_y, noisemap, x, y);
-        if (map[x][y] == '+') {
-            map[x][y] = '-';
-        } else {
-            map[x][y] = '~';
+        riverpos[i].x = -1;
+        riverpos[i].y = -1;
+    }
+    int count = 0;
+    while (rivernotcomplete && count < RIVER_LENGTH)
+    {
+        if (count == RIVER_LENGTH)
+        {
+            map[riverpos[0].x][riverpos[0].y] = 'E';
+            wclear(stdscr);
+            wrefresh(stdscr);
+            wprintw(stdscr, "River too long! %d %d", riverpos[0].x, riverpos[0].y);
+            wrefresh(stdscr);
+            usleep(10000);
+            return;
         }
-        
+        riverpos[count].x = x;
+        riverpos[count].y = y;
+        direction = Find_Steepest_Local_Gradient(max_x, max_y, noisemap, x, y, map);
         switch (direction)
         {
         case 0:
@@ -294,26 +339,45 @@ void Draw_River(int max_x, int max_y, char map[max_x][max_y], float noisemap[max
             break;
         
         case -1:
-            rivercomplete = true;
+            rivernotcomplete = false;
             break;
         }
+        count++;
     }
+    for (size_t i = 0; i < RIVER_LENGTH; i++)
+    {
+        if (riverpos[i].x != -1 && riverpos[i].y != -1)
+        {
+            if (map[riverpos[i].x][riverpos[i].y] == 'R' || map[riverpos[i].x][riverpos[i].y] == '+')
+            {
+                map[riverpos[i].x][riverpos[i].y] = '+';
+            } else
+            {
+                map[riverpos[i].x][riverpos[i].y] = '~';
+            }
+        }
+    }
+    wclear(stdscr);
+    wrefresh(stdscr);
+    wprintw(stdscr, "River Generated %d %d" , riverpos[0].x, riverpos[0].y);
+    wrefresh(stdscr);
+    usleep(10000);
 }
 
-int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y)
+int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max_y], int x, int y, char map[max_x][max_y])
 {
-    int direction = -1;
+    int direction = 0;
     /*
-    -1 = ERROR
+    -1 = END
      0 = UP
      1 = DOWN
      2 = LEFT
      3 = RIGHT
     */
-    int gradientup = 5;
-    int gradientdown = 5;
-    int gradientleft = 5;
-    int gradientright = 5;
+    float gradientup = 5;
+    float gradientdown = 5;
+    float gradientleft = 5;
+    float gradientright = 5;
 
     if (y - 1 >= 0) {
         gradientup = noisemap[x][y - 1] - noisemap[x][y];
@@ -328,7 +392,7 @@ int Find_Steepest_Local_Gradient(int max_x, int max_y, float noisemap[max_x][max
         gradientright = noisemap[x + 1][y] - noisemap[x][y];
     }
 
-    if (gradientup < 0 && gradientdown < 0 && gradientleft < 0 && gradientright < 0)
+    if (map[x][y] == '~')
     {
         return -1;
     }
