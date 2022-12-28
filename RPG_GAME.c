@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
+#include <locale.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
@@ -31,6 +32,7 @@ int main(void)
     int displaysize_y, displaysize_x;
 
     // initilise_display(&max_y, &max_x);
+    setlocale(LC_CTYPE, "");
     initscr();
     noecho();
     cbreak();

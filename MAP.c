@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 #include <unistd.h>
 
 #include "MAP.h"
@@ -111,6 +111,7 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, i
     char c;
     int screenx;
     int screeny;
+    const wchar_t* star = L"\U0001F469";
     wclear(stdscr);
     // Display map
     for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
@@ -119,54 +120,84 @@ void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, i
         {
             screenx = x - display_x;
             screeny = y - display_y;
-            if (x == player->player_x && y == player->player_y)
-            {
-                attron(COLOR_PAIR(PLAYER_PAIR));
-                mvaddch(screeny, screenx, 'P');
-                attroff(COLOR_PAIR(PLAYER_PAIR));
-            }
-            else
-            {
+            if (x == player->player_x +1 && y == player->player_y) {
+                
+            } else {
                 c = map[x][y];
                 if (c == '~') {
                     attron(COLOR_PAIR(LAKE_PAIR));
-                    mvaddch(screeny, screenx, '~');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, '~'); 
+                    }
                     attroff(COLOR_PAIR(LAKE_PAIR));
                 } else if (c == '-') {
                     attron(COLOR_PAIR(PLAINS_PAIR));
-                    mvaddch(screeny, screenx, '-');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, '-');
+                    }
                     attroff(COLOR_PAIR(PLAINS_PAIR));
                 } else if (c == ' ') {
                     attron(COLOR_PAIR(FOREST_PAIR));
-                    mvaddch(screeny, screenx, ' ');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, ' '); 
+                    }                    
                     attroff(COLOR_PAIR(FOREST_PAIR));
                 } else if (c == 'L') {
                     attron(COLOR_PAIR(MOUNTAIN_1_PAIR));
-                    mvaddch(screeny, screenx, 'L');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, 'L'); 
+                    }       
                     attroff(COLOR_PAIR(MOUNTAIN_1_PAIR));
                 } else if (c == 'M') {
                     attron(COLOR_PAIR(MOUNTAIN_2_PAIR));
-                    mvaddch(screeny, screenx, 'M');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, 'M'); 
+                    }
                     attroff(COLOR_PAIR(MOUNTAIN_2_PAIR));
                 } else if (c == 'H') {
                     attron(COLOR_PAIR(MOUNTAIN_3_PAIR));
-                    mvaddch(screeny, screenx, 'H');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, 'H'); 
+                    }
                     attroff(COLOR_PAIR(MOUNTAIN_3_PAIR));
                 } else if (c == '^') {
                     attron(COLOR_PAIR(MOUNTAIN_4_PAIR));
-                    mvaddch(screeny, screenx, '^');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, '^'); 
+                    }
                     attroff(COLOR_PAIR(MOUNTAIN_4_PAIR));
                 } else if (c == '+') {
                     attron(COLOR_PAIR(SNOW_PAIR));
-                    mvaddch(screeny, screenx, '+');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, '+'); 
+                    }
                     attroff(COLOR_PAIR(SNOW_PAIR));
                 } else
                 {
                     attron(COLOR_PAIR(ERROR_PAIR));
-                    mvaddch(screeny, screenx, 'E');
+                    if (x == player->player_x && y == player->player_y) {   
+                        mvaddwstr(screeny, screenx, star);
+                    } else {
+                        mvaddch(screeny, screenx, 'E'); 
+                    }
                     attroff(COLOR_PAIR(ERROR_PAIR));
                 }
-                
             }
         }
     }
@@ -190,7 +221,7 @@ void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, i
     } else if (action == KEY_LEFT && player->player_x - 1 >= 0) {
         player->player_x -= 1;
         valid_move = true;
-    } else if (action == KEY_RIGHT && player->player_x + 1 < max_x) {
+    } else if (action == KEY_RIGHT && player->player_x + 2 < max_x) {
         player->player_x += 1;
         valid_move = true;
     }

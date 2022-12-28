@@ -5,8 +5,8 @@
 
 # Definitions.
 CC = gcc
-CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g 
-LINKS = -lm -lncurses
+CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g -D_GNU_SOURCE 
+LINKS = -lm -lncursesw
 DEL = rm
 
 

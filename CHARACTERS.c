@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 
 #include "CHARACTERS.h"
 #include "CORE.h"
