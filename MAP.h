@@ -54,7 +54,7 @@ void Setup_Noise_Map(int max_x, int max_y, float noisemap[max_x][max_y], float r
 
 void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y]);
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, int display_x, int display_y, int displaysize_x, int displaysize_y);
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], SDL_Renderer* renderer);
 
 void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
 

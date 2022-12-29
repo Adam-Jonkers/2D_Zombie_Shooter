@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <ncursesw/ncurses.h>
 #include <unistd.h>
+#include <SDL2/SDL.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
@@ -55,9 +55,6 @@ float noise(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]) {
 
 void Setup_Noise_Map(int max_x, int max_y,float noisemap[max_x][max_y], float randarray[max_x][max_y])
 {
-    wclear(stdscr);
-    printw("Generating noise map...\n\n");
-    wrefresh(stdscr);
     // Setup noise map
     generate_texture_map(max_x, max_y, randarray);
     for (int y = 0; y < max_y; y++)
@@ -76,9 +73,6 @@ void Setup_Noise_Map(int max_x, int max_y,float noisemap[max_x][max_y], float ra
 
 void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y])
 {
-    wclear(stdscr);
-    printw("Generating map...\n\n");
-    wrefresh(stdscr);
     // Setup map
     for (int y = 0; y < max_y; y++)
     {
@@ -108,177 +102,125 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
     }
 }
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y], Player* player, int display_x, int display_y, int displaysize_x, int displaysize_y)
+void Display_Map(int max_x, int max_y, char map[max_x][max_y], SDL_Renderer* renderer)
 {
     char c;
-    int screenx;
-    int screeny;
-    const wchar_t* star = L"\U0001F469";
-    wclear(stdscr);
+    //int screenx;
+    //int screeny;
     // Display map
-    for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
+    for (int y = 0/*display_y*/; y < /*displaysize_y + display_y && y <=*/ max_y; y++)
     {
-        for (int x = display_x; x < displaysize_x + display_x && x <= max_x; x++)
+        for (int x = 0/*display_x*/; x < /*displaysize_x + display_x && x <=*/ max_x; x++)
         {
-            screenx = x - display_x;
-            screeny = y - display_y;
-            if (x == player->player_x +1 && y == player->player_y) {
-                
+            //screenx = x - display_x;
+            //screeny = y - display_y;
+            c = map[x][y];
+            if (c == '~') {
+                SDL_SetRenderDrawColor(renderer, 75, 182, 239, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == '-') {
+                SDL_SetRenderDrawColor(renderer, 52, 140, 49, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == ' ') {
+                SDL_SetRenderDrawColor(renderer, 0, 51, 0, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == 'L') {
+                SDL_SetRenderDrawColor(renderer, 102, 102, 102, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == 'M') {
+                SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == 'H') {
+                SDL_SetRenderDrawColor(renderer, 153, 153, 153, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == '^') {
+                SDL_SetRenderDrawColor(renderer, 178, 178, 178, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
+            } else if (c == '+') {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
             } else {
-                c = map[x][y];
-                if (c == '~') {
-                    attron(COLOR_PAIR(LAKE_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, '~'); 
-                    }
-                    attroff(COLOR_PAIR(LAKE_PAIR));
-                } else if (c == '-') {
-                    attron(COLOR_PAIR(PLAINS_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, '-');
-                    }
-                    attroff(COLOR_PAIR(PLAINS_PAIR));
-                } else if (c == ' ') {
-                    attron(COLOR_PAIR(FOREST_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, ' '); 
-                    }                    
-                    attroff(COLOR_PAIR(FOREST_PAIR));
-                } else if (c == 'L') {
-                    attron(COLOR_PAIR(MOUNTAIN_1_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, 'L'); 
-                    }       
-                    attroff(COLOR_PAIR(MOUNTAIN_1_PAIR));
-                } else if (c == 'M') {
-                    attron(COLOR_PAIR(MOUNTAIN_2_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, 'M'); 
-                    }
-                    attroff(COLOR_PAIR(MOUNTAIN_2_PAIR));
-                } else if (c == 'H') {
-                    attron(COLOR_PAIR(MOUNTAIN_3_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, 'H'); 
-                    }
-                    attroff(COLOR_PAIR(MOUNTAIN_3_PAIR));
-                } else if (c == '^') {
-                    attron(COLOR_PAIR(MOUNTAIN_4_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, '^'); 
-                    }
-                    attroff(COLOR_PAIR(MOUNTAIN_4_PAIR));
-                } else if (c == '+') {
-                    attron(COLOR_PAIR(SNOW_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, '+'); 
-                    }
-                    attroff(COLOR_PAIR(SNOW_PAIR));
-                } else
-                {
-                    attron(COLOR_PAIR(ERROR_PAIR));
-                    if (x == player->player_x && y == player->player_y) {   
-                        mvaddwstr(screeny, screenx, star);
-                    } else {
-                        mvaddch(screeny, screenx, 'E'); 
-                    }
-                    attroff(COLOR_PAIR(ERROR_PAIR));
-                }
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                SDL_RenderDrawPoint(renderer, x, y);
             }
         }
     }
-    wrefresh(stdscr);
 }
 
-void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y)
-{
-    // Move player
-    flushinp();
-    bool valid_move = false;
-    while (valid_move == false)
-    {
-    int action = getch();
-    if (action == KEY_DOWN && player->player_y + 1 < max_y) {
-        player->player_y += 1;
-        valid_move = true;
-    } else if (action == KEY_UP && player->player_y - 1 >= 0) {
-        player->player_y -= 1;
-        valid_move = true;
-    } else if (action == KEY_LEFT && player->player_x - 1 >= 0) {
-        player->player_x -= 1;
-        valid_move = true;
-    } else if (action == KEY_RIGHT && player->player_x + 2 < max_x) {
-        player->player_x += 1;
-        valid_move = true;
-    }
-    }
-    *display_y = player->player_y - displaysize_y / 2;
-    *display_x = player->player_x - displaysize_x / 2;
-    
-    if (*display_x < 0) {
-        *display_x = 0;
-    } else if (*display_x > max_x - displaysize_x) {
-        *display_x = max_x - displaysize_x;
-    }
 
-    if (*display_y < 0) {
-        *display_y = 0;
-    } else if (*display_y > max_y - displaysize_y) {
-        *display_y = max_y - displaysize_y;
-    }
+// void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y)
+// {
+//     // Move player
+//     flushinp();
+//     bool valid_move = false;
+//     while (valid_move == false)
+//     {
+//     int action = getch();
+//     if (action == KEY_DOWN && player->player_y + 1 < max_y) {
+//         player->player_y += 1;
+//         valid_move = true;
+//     } else if (action == KEY_UP && player->player_y - 1 >= 0) {
+//         player->player_y -= 1;
+//         valid_move = true;
+//     } else if (action == KEY_LEFT && player->player_x - 1 >= 0) {
+//         player->player_x -= 1;
+//         valid_move = true;
+//     } else if (action == KEY_RIGHT && player->player_x + 2 < max_x) {
+//         player->player_x += 1;
+//         valid_move = true;
+//     }
+//     }
+//     *display_y = player->player_y - displaysize_y / 2;
+//     *display_x = player->player_x - displaysize_x / 2;
+    
+//     if (*display_x < 0) {
+//         *display_x = 0;
+//     } else if (*display_x > max_x - displaysize_x) {
+//         *display_x = max_x - displaysize_x;
+//     }
+
+//     if (*display_y < 0) {
+//         *display_y = 0;
+//     } else if (*display_y > max_y - displaysize_y) {
+//         *display_y = max_y - displaysize_y;
+//     }
     
 
-    int battlechance = 0;
-    switch (map[player->player_x][player->player_y])
-    {
-    case '~':
-        battlechance = 0;
-        break;
-    case '-':
-        battlechance = 0;
-        break;
-    case ' ':
-        battlechance = 0;
-        break;
-    case 'L':
-        battlechance = 0;
-        break;
-    case 'M':
-        battlechance = 0;
-        break;
-    case 'H':
-        battlechance = 0;
-        break;
-    case '^':
-        battlechance = 0;
-        break;
-    case '+':
-        battlechance = 0;
-        break;
-    }
-    int battleRNG = get_random_number(0, 100);   
-    if (battleRNG < battlechance)
-    {
-        *Gamestate = 2;
-    }
-    usleep(50000);
-    Display_Map(max_x, max_y, map, player, *display_x, *display_y, displaysize_x, displaysize_y);
+//     int battlechance = 0;
+//     switch (map[player->player_x][player->player_y])
+//     {
+//     case '~':
+//         battlechance = 0;
+//         break;
+//     case '-':
+//         battlechance = 0;
+//         break;
+//     case ' ':
+//         battlechance = 0;
+//         break;
+//     case 'L':
+//         battlechance = 0;
+//         break;
+//     case 'M':
+//         battlechance = 0;
+//         break;
+//     case 'H':
+//         battlechance = 0;
+//         break;
+//     case '^':
+//         battlechance = 0;
+//         break;
+//     case '+':
+//         battlechance = 0;
+//         break;
+//     }
+//     int battleRNG = get_random_number(0, 100);   
+//     if (battleRNG < battlechance)
+//     {
+//         *Gamestate = 2;
+//     }
+//     usleep(50000);
+//     Display_Map(max_x, max_y, map, player, *display_x, *display_y, displaysize_x, displaysize_y);
 
     
-}
+// }

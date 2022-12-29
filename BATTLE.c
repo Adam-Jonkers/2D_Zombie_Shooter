@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <ncursesw/ncurses.h>
 #include <unistd.h>
 
 #include "BATTLE.h"
@@ -39,8 +38,6 @@ int calculate_damage(Player player, Enemy enemy, bool Attacking)
 
 bool battle(Player* player)
 {
-    wclear(stdscr);
-    refresh();
     Enemy enemy = Setup_Enemy();
     //printw("You are fighting a %s with a %s\n\n", enemy.Class, enemy.Weapon);
     while (player->Hp > 0 && enemy.Hp > 0)

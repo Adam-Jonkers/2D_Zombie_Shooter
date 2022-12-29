@@ -13,7 +13,7 @@ Player Setup_Player()
     while (valid_class == false)
     {
     //printw("Choose your class: \n1. Warrior \n2. Mage \n3. Rogue\n");
-    int class = getch();
+    int class = 1; //getch();
     //printw("\nYou chose %c, \n", class);
     switch (class - '0')
     {

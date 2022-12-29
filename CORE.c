@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <math.h>
-#include <ncursesw/ncurses.h>
 
 #include "CORE.h"
 
