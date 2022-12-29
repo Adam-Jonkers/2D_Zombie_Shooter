@@ -8,6 +8,8 @@
 #include "CHARACTERS.h"
 #include "CORE.h"
 
+#define FREQUENCY 8
+
 void generate_texture_map(int max_x, int max_y, float randarray[max_x][max_y]) {
     for (int x = 0; x < max_x; x++) {
         for (int y = 0; y < max_y; y++)
@@ -63,10 +65,10 @@ void Setup_Noise_Map(int max_x, int max_y,float noisemap[max_x][max_y], float ra
         for (int x = 0; x < max_x; x++)
         {
             vec2 i = (vec2){x, y};
-            float n = noise(divide_vec2(i, 64), max_x, max_y, randarray) * 1.0 +
-            noise(divide_vec2(i, 32), max_x, max_y, randarray) * 0.5 +
-            noise(divide_vec2(i, 16), max_x, max_y, randarray) * 0.25 +
-            noise(divide_vec2(i, 8), max_x, max_y, randarray) * 0.125;
+            float n = noise(divide_vec2(i, FREQUENCY * 8), max_x, max_y, randarray) * 1.0 +
+            noise(divide_vec2(i, FREQUENCY * 4), max_x, max_y, randarray) * 0.5 +
+            noise(divide_vec2(i, FREQUENCY * 2), max_x, max_y, randarray) * 0.25 +
+            noise(divide_vec2(i, FREQUENCY), max_x, max_y, randarray) * 0.125;
             noisemap[x][y] = n;
         }
     }

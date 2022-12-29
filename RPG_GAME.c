@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <ncursesw/ncurses.h>
-#include <locale.h>
+#include <SDL2/SDL.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
@@ -13,53 +12,37 @@
 
 int main(void)
 {
+    // SETUP
+
     int Gamestate = 1;
     /*
     1 = Moving
     2 = Battle
     3 = Shutdown
     */
+
     bool playing = true;
 
     // Seed random number generator
     srand(time(NULL));
 
     // Setup display
-    int max_y = MAP_HEIGHT;
-    int max_x = MAP_WIDTH;
+    static const int max_y = MAP_HEIGHT;
+    static const int max_x = MAP_WIDTH;
     int display_y;
     int display_x;
-    int displaysize_y, displaysize_x;
+    static const int displaysize_y = 600;
+    static const int displaysize_x = 600;
 
-    // initilise_display(&max_y, &max_x);
-    setlocale(LC_CTYPE, "");
-    initscr();
-    noecho();
-    cbreak();
-    curs_set(0);
-    keypad(stdscr, TRUE);
-    getmaxyx(stdscr, displaysize_y, displaysize_x);
-    displaysize_x -= 10;
-    displaysize_y -= 5;
-    start_color();
-    init_color(LAKE_COLOR, 294, 714, 937);
-    init_color(PLAINS_COLOR, 204, 549, 192);
-    init_color(FOREST_COLOR, 0, 200, 0);
-    init_color(MOUNTAIN_1_COLOR, 400, 400, 400);
-    init_color(MOUNTAIN_2_COLOR, 500, 500, 500);
-    init_color(MOUNTAIN_3_COLOR, 600, 600, 600);
-    init_color(MOUNTAIN_4_COLOR, 700, 700, 700);
-    init_color(SNOW_COLOR, 1000, 1000, 1000);
-    init_pair(LAKE_PAIR, LAKE_COLOR, LAKE_COLOR);
-    init_pair(PLAINS_PAIR, PLAINS_COLOR, PLAINS_COLOR);
-    init_pair(FOREST_PAIR, FOREST_COLOR, FOREST_COLOR);
-    init_pair(MOUNTAIN_1_PAIR, MOUNTAIN_1_COLOR, MOUNTAIN_1_COLOR);
-    init_pair(MOUNTAIN_2_PAIR, MOUNTAIN_2_COLOR, MOUNTAIN_2_COLOR);
-    init_pair(MOUNTAIN_3_PAIR, MOUNTAIN_3_COLOR, MOUNTAIN_3_COLOR);
-    init_pair(MOUNTAIN_4_PAIR, MOUNTAIN_4_COLOR, MOUNTAIN_4_COLOR);
-    init_pair(SNOW_PAIR, SNOW_COLOR, SNOW_COLOR);
-    init_pair(PLAYER_PAIR, COLOR_BLACK, COLOR_RED);
-    init_pair(ERROR_PAIR, COLOR_BLACK, COLOR_RED);
+    // initilize SDL
+    SDL_Init(SDL_INIT_VIDEO);
+
+    // create a window
+    SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, displaysize_x, displaysize_y, SDL_WINDOW_OPENGL);
+
+    // create a renderer
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
 
     // Setup player
     Player player = Setup_Player();
@@ -79,6 +62,14 @@ int main(void)
     // Display map
     Display_Map(max_x, max_y, map, &player, display_x, display_y, displaysize_x, displaysize_y);
     while (playing) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                Gamestate = 3;
+            }
+        }
         if (Gamestate == 1)
         {
             // Move player
@@ -94,7 +85,9 @@ int main(void)
             }
         } else if (Gamestate == 3)
         {
-            endwin();
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            SDL_Quit();
             playing = false;
         }   
     }
