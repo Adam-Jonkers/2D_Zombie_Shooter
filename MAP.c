@@ -102,7 +102,7 @@ void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_
     }
 }
 
-void Display_Map(int max_x, int max_y, char map[max_x][max_y], SDL_Renderer* renderer)
+void Draw_Map(int max_x, int max_y, char map[max_x][max_y], SDL_Renderer* renderer)
 {
     char c;
     //int screenx;
