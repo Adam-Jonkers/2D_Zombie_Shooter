@@ -19,14 +19,15 @@ int main(void)
 
     SDL_DisplayMode dm;
     SDL_GetDesktopDisplayMode(0, &dm);
-    int max_y, max_x;
-    max_x = dm.w;
-    max_y = dm.h;
+
+    int max_x = dm.w;
+    int max_y = dm.h;
 
     srand(time(NULL));
-    float noisemap[max_x][max_y];
-    float randarray[max_x][max_y];
-    char map[max_x][max_y];
+    float* noisemap = calloc((dm.w * dm.h), sizeof(float));
+    float* randarray = calloc((dm.w * dm.h), sizeof(float));
+    char* map = calloc((dm.w * dm.h), sizeof(char));
+
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap);
     
@@ -51,5 +52,10 @@ int main(void)
         SDL_RenderPresent(renderer);
     }
     
-
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    free(noisemap);
+    free(randarray);
+    free(map);
 }

@@ -42,19 +42,19 @@ typedef struct {
     int y;
 } Location;
 
-void generate_texture_map(int max_x, int max_y, float noisemap[max_x][max_y]);
+void generate_texture_map(int max_x, int max_y, float* noisemap);
 
 float fade(float t);
 
-vec2 grad(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]);
+vec2 grad(vec2 p, float* noisemap, int width);
 
-float noise(vec2 p, int max_x, int max_y, float noisemap[max_x][max_y]);
+float noise(vec2 p, float* noisemap, int width);
 
-void Setup_Noise_Map(int max_x, int max_y, float noisemap[max_x][max_y], float randarray[max_x][max_y]);
+void Setup_Noise_Map(int max_x, int max_y, float* noisemap, float* randarray);
 
-void Setup_Map(int max_x, int max_y ,char map[max_x][max_y], float noisemap[max_x][max_y]);
+void Setup_Map(int max_x, int max_y ,char* map, float* noisemap);
 
-void Draw_Map(int max_x, int max_y, char map[max_x][max_y], SDL_Renderer* renderer);
+void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer);
 
 void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
 
