@@ -2,13 +2,15 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "MAP.h"
 #include "CHARACTERS.h"
 #include "CORE.h"
 
-#define FREQUENCY 8
+#define FREQUENCY 75
 
 void generate_texture_map(int max_x, int max_y, float* randarray) {
     for (int y = 0; y < max_y; y++) {
@@ -110,7 +112,7 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
 void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer)
 {
     char c;
-    printf("Drawing Map\n");
+    //printf("Drawing Map\n");
     //int screenx;
     //int screeny;
     // Display map

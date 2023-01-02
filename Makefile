@@ -6,7 +6,7 @@
 # Definitions.
 CC = gcc
 CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g -D_GNU_SOURCE 
-LINKS = -lm -lSDL2
+LINKS = -lm -lSDL2 -lSDL2_image
 DEL = rm
 
 
