@@ -7,7 +7,6 @@
 #include <SDL2/SDL_image.h>
 
 #include "MAP.h"
-#include "CHARACTERS.h"
 #include "CORE.h"
 
 #define FREQUENCY 75

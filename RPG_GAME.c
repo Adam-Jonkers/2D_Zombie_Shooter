@@ -8,8 +8,6 @@
 #include <SDL2/SDL_image.h>
 
 #include "MAP.h"
-#include "CHARACTERS.h"
-#include "BATTLE.h"
 #include "CORE.h"
 
 int main(void)

@@ -1,7 +1,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "CHARACTERS.h"
 #include "CORE.h"
 
 typedef struct {
@@ -31,6 +30,6 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap);
 
 void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer);
 
-void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
+//void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y);
 
 #endif
