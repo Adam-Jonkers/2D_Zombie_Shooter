@@ -19,7 +19,7 @@ int main(void)
     IMG_Init(IMG_INIT_PNG);
 
     // Load Images
-    SDL_Surface *image = IMG_Load("image.png");
+    SDL_Surface *image = IMG_Load("Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_0.png");
     SDL_Texture *image_texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
 
@@ -27,8 +27,8 @@ int main(void)
     SDL_GetDesktopDisplayMode(0, &dm);
 
     SDL_FRect texture_destination;
-    texture_destination.w = 400;
-    texture_destination.h = 400;
+    texture_destination.w = 60;
+    texture_destination.h = 60;
     texture_destination.x = 100.0f;//(dm.w / 4);// - (texture_destination.w / 2);
     texture_destination.y = 100.0f;//(dm.h / 4);// - (texture_destination.h / 2);
 
