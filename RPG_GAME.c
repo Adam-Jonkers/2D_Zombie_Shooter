@@ -10,6 +10,9 @@
 #include "MAP.h"
 #include "CORE.h"
 
+#define MAP_WIDTH 5000
+#define MAP_HEIGHT 5000
+
 int main(void)
 {
     // initilize SDL
@@ -29,28 +32,33 @@ int main(void)
     SDL_FRect texture_destination;
     texture_destination.w = 60;
     texture_destination.h = 60;
-    texture_destination.x = 100.0f;//(dm.w / 4);// - (texture_destination.w / 2);
-    texture_destination.y = 100.0f;//(dm.h / 4);// - (texture_destination.h / 2);
+    texture_destination.x = dm.w / 2 - texture_destination.w / 2;
+    texture_destination.y = dm.h / 2 - texture_destination.h / 2;
 
     SDL_FPoint center;
-    center.x = texture_destination.w / 2 + texture_destination.x - 100;
-    center.y = texture_destination.h / 2 + texture_destination.y - 100;
+    center.x = 30;//dm.w / 2;//texture_destination.w / 2 + texture_destination.x - 100;
+    center.y = 30;//dm.h / 2;//texture_destination.h / 2 + texture_destination.y - 100;
 
-    int max_x = dm.w;
-    int max_y = dm.h;
-    float rotation = 0.0f;
+    int max_x = MAP_WIDTH;
+    int max_y = MAP_HEIGHT;
+
+    int player_x = 0;
+    int player_y = 0;
+
+    double rotation = 0.0;
 
     srand(time(NULL));
-    float* noisemap = calloc((dm.w * dm.h), sizeof(float));
-    float* randarray = calloc((dm.w * dm.h), sizeof(float));
-    char* map = calloc((dm.w * dm.h), sizeof(char));
+
+    float* noisemap = calloc((max_x * max_y), sizeof(float));
+    float* randarray = calloc((max_x * max_y), sizeof(float));
+    char* map = calloc((max_x * max_y), sizeof(char));
 
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap);
     
     bool running = true;
 
-    int thing = 0;
+    const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
 
     while (running)
     {
@@ -61,26 +69,46 @@ int main(void)
             {
                 running = false;
             }
-            if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                {
-                    running = false;
-                }
-            }
         }
+        if (keyboard_state[SDL_SCANCODE_ESCAPE])
+        {
+            running = false;
+        }
+        if (keyboard_state[SDL_SCANCODE_W] && player_y - 5 > 0)
+        {
+            player_y -= 5;
+            //printf("W\n");
+        }
+        if (keyboard_state[SDL_SCANCODE_S] && player_y + 5 < MAP_HEIGHT)
+        {
+            player_y += 5;
+            //printf("S\n");
+        }
+        if (keyboard_state[SDL_SCANCODE_A] && player_x - 5 > 0)
+        {
+            player_x -= 5;
+            //printf("A\n");
+        }
+        if (keyboard_state[SDL_SCANCODE_D] && player_x + 5 < MAP_WIDTH)
+        {
+            player_x += 5;
+            //printf("D\n");
+        }
+
+        rotation = mouse_angle(texture_destination);
+        //printf("Rotation: %f\n", rotation);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map(max_x, max_y, map, renderer);
+        Draw_Map(max_x, max_y, map, renderer, player_x, player_y, dm.w, dm.h);
 
         SDL_RenderCopyExF(renderer, image_texture, NULL, &texture_destination, rotation, &center, SDL_FLIP_NONE);
 
         SDL_RenderPresent(renderer);
-        rotation += 0.5f;
-        printf("%d \n", thing);
-        thing++;
+
+        //rotation += 1.0f;
+        //printf("Texture X: %f, Texture Y: %f\n", texture_destination.x, texture_destination.y);
     }
     
     SDL_DestroyTexture(image_texture);

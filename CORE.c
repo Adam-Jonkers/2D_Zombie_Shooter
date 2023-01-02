@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <SDL2/SDL.h>
 
 #include "CORE.h"
 
@@ -32,4 +33,12 @@ vec2 divide_vec2(vec2 v, float f) {
 
 float dot_product(vec2 v1, vec2 v2) {
     return v1.x * v2.x + v1.y * v2.y;
+}
+
+double mouse_angle(SDL_FRect sprite)
+{
+    int mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    double angle = atan2(mouse_y - sprite.y, mouse_x - sprite.x);
+    return angle * (180 / M_PI);
 }

@@ -5,14 +5,13 @@
 
 # Definitions.
 CC = gcc
-CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g -D_GNU_SOURCE 
+CFLAGS = -Os -Wall -Wstrict-prototypes -Wextra -g -D_GNU_SOURCE -lmcheck
 LINKS = -lm -lSDL2 -lSDL2_image
 DEL = rm
 
 
 # Default target.
 all: game.out
-
 
 # Compile: create object files from C source files.
 RPG_GAME.o: RPG_GAME.c MAP.h CORE.h

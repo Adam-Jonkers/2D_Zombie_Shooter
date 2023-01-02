@@ -57,15 +57,14 @@ float noise(vec2 p, float* noisemap, int width) {
 void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
 {
     // Setup noise map
-    printf(" max_x: %d, max_y: %d", max_x, max_y);
-    sleep(1);
+    //printf(" max_x: %d, max_y: %d", max_x, max_y);
     generate_texture_map(max_x, max_y, randarray);
     printf("Made Texture Map\n");
     for (int y = 0; y < max_y; y++)
     {
         for (int x = 0; x < max_x; x++)
         {
-            printf("x: %d, y: %d\n", x, y);
+            //printf("x: %d, y: %d\n", x, y);
             vec2 i = (vec2){x, y};
             float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, max_x) * 1.0 +
             noise(divide_vec2(i, FREQUENCY * 4), randarray, max_x) * 0.5 +
@@ -74,7 +73,7 @@ void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
             noisemap[x + (max_x * y)] = n;
         }
     }
-    printf(" max_x: %d, max_y: %d\n", max_x, max_y);
+    printf("max_x: %d, max_y: %d\n", max_x, max_y);
 }
 
 void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
@@ -108,47 +107,48 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
     }
 }
 
-void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer)
+void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y)
 {
+    //printf("Display X: %d, Display Y: %d\n", display_x, display_y);
     char c;
     //printf("Drawing Map\n");
-    //int screenx;
-    //int screeny;
+    int screenx;
+    int screeny;
     // Display map
-    for (int y = 0/*display_y*/; y < /*displaysize_y + display_y && y <=*/ max_y; y++)
+    for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
     {
-        for (int x = 0/*display_x*/; x < /*displaysize_x + display_x && x <=*/ max_x; x++)
+        for (int x = display_x; x < displaysize_x + display_x && x <= max_x; x++)
         {
-            //screenx = x - display_x;
-            //screeny = y - display_y;
+            screenx = x - display_x;
+            screeny = y - display_y;
             c = map[x + (max_x * y)];
             if (c == '~') {
                 SDL_SetRenderDrawColor(renderer, 75, 182, 239, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == '-') {
                 SDL_SetRenderDrawColor(renderer, 52, 140, 49, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == ' ') {
                 SDL_SetRenderDrawColor(renderer, 0, 51, 0, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == 'L') {
                 SDL_SetRenderDrawColor(renderer, 102, 102, 102, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == 'M') {
                 SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == 'H') {
                 SDL_SetRenderDrawColor(renderer, 153, 153, 153, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == '^') {
                 SDL_SetRenderDrawColor(renderer, 178, 178, 178, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else if (c == '+') {
                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             } else {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderDrawPoint(renderer, x, y);
+                SDL_RenderDrawPoint(renderer, screenx, screeny);
             }
         }
     }

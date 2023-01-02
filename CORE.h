@@ -20,6 +20,6 @@ vec2 divide_vec2(vec2 v, float f);
 
 float dot_product(vec2 v1, vec2 v2);
 
-void initilise_display(int* max_x, int* max_y);
+double mouse_angle(SDL_FRect sprite);
 
 #endif
