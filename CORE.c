@@ -53,18 +53,11 @@ float dot_product(vec2_t v1, vec2_t v2)
 
 SDL_Texture* load_texture(char* path, SDL_Renderer* renderer)
 {
-    SDL_Surface *optimizedSurface = NULL;
     SDL_Surface *surface = IMG_Load(path);
     if (surface == NULL) {
         printf("Unable to load image %s! SDL_image Error: %s", path, IMG_GetError());
-    } else {
-        optimizedSurface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA8888, 0);
-        if (optimizedSurface == NULL) {
-            printf("Unable to optimize image %s! SDL Error: %s", path, SDL_GetError());
-        }
-        SDL_FreeSurface(surface);
     }
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, optimizedSurface);
-    SDL_FreeSurface(optimizedSurface);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
     return texture;
 }
