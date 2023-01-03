@@ -57,14 +57,12 @@ float noise(vec2 p, float* noisemap, int width) {
 void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
 {
     // Setup noise map
-    //printf(" max_x: %d, max_y: %d", max_x, max_y);
     generate_texture_map(max_x, max_y, randarray);
     printf("Made Texture Map\n");
     for (int y = 0; y < max_y; y++)
     {
         for (int x = 0; x < max_x; x++)
         {
-            //printf("x: %d, y: %d\n", x, y);
             vec2 i = (vec2){x, y};
             float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, max_x) * 1.0 +
             noise(divide_vec2(i, FREQUENCY * 4), randarray, max_x) * 0.5 +
@@ -73,7 +71,6 @@ void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
             noisemap[x + (max_x * y)] = n;
         }
     }
-    printf("max_x: %d, max_y: %d\n", max_x, max_y);
 }
 
 void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
@@ -109,9 +106,7 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
 
 void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y)
 {
-    //printf("Display X: %d, Display Y: %d\n", display_x, display_y);
     char c;
-    //printf("Drawing Map\n");
     int screenx;
     int screeny;
     // Display map
@@ -153,81 +148,3 @@ void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int displ
         }
     }
 }
-
-
-// void Move_Player(int max_x, int max_y, char map[max_x][max_y], Player* player, int* Gamestate, int* display_x, int* display_y, int displaysize_x, int displaysize_y)
-// {
-//     // Move player
-//     flushinp();
-//     bool valid_move = false;
-//     while (valid_move == false)
-//     {
-//     int action = getch();
-//     if (action == KEY_DOWN && player->player_y + 1 < max_y) {
-//         player->player_y += 1;
-//         valid_move = true;
-//     } else if (action == KEY_UP && player->player_y - 1 >= 0) {
-//         player->player_y -= 1;
-//         valid_move = true;
-//     } else if (action == KEY_LEFT && player->player_x - 1 >= 0) {
-//         player->player_x -= 1;
-//         valid_move = true;
-//     } else if (action == KEY_RIGHT && player->player_x + 2 < max_x) {
-//         player->player_x += 1;
-//         valid_move = true;
-//     }
-//     }
-//     *display_y = player->player_y - displaysize_y / 2;
-//     *display_x = player->player_x - displaysize_x / 2;
-    
-//     if (*display_x < 0) {
-//         *display_x = 0;
-//     } else if (*display_x > max_x - displaysize_x) {
-//         *display_x = max_x - displaysize_x;
-//     }
-
-//     if (*display_y < 0) {
-//         *display_y = 0;
-//     } else if (*display_y > max_y - displaysize_y) {
-//         *display_y = max_y - displaysize_y;
-//     }
-    
-
-//     int battlechance = 0;
-//     switch (map[player->player_x][player->player_y])
-//     {
-//     case '~':
-//         battlechance = 0;
-//         break;
-//     case '-':
-//         battlechance = 0;
-//         break;
-//     case ' ':
-//         battlechance = 0;
-//         break;
-//     case 'L':
-//         battlechance = 0;
-//         break;
-//     case 'M':
-//         battlechance = 0;
-//         break;
-//     case 'H':
-//         battlechance = 0;
-//         break;
-//     case '^':
-//         battlechance = 0;
-//         break;
-//     case '+':
-//         battlechance = 0;
-//         break;
-//     }
-//     int battleRNG = get_random_number(0, 100);   
-//     if (battleRNG < battlechance)
-//     {
-//         *Gamestate = 2;
-//     }
-//     usleep(50000);
-//     Display_Map(max_x, max_y, map, player, *display_x, *display_y, displaysize_x, displaysize_y);
-
-    
-// }

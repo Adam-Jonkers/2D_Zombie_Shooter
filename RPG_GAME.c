@@ -87,35 +87,29 @@ int main(void)
         }
         if (keyboard_state[SDL_SCANCODE_W])
         {
-            //move player forward
             player_velocity.x += player_speed * cos(rotation);
             player_velocity.y += player_speed * sin(rotation);
-            //printf("r: %f, x: %f, y: %f\n", rotation, 5 * cos(rotation), 5 * sin(rotation));
         }
         if (keyboard_state[SDL_SCANCODE_S])
         {
             player_velocity.x += -player_speed * cos(rotation);
             player_velocity.y += -player_speed * sin(rotation);
-            //printf("S\n");
         }
         if (keyboard_state[SDL_SCANCODE_A])
         {
             player_velocity.x += -player_speed * cos(rotation + 1.5708);
             player_velocity.y += -player_speed * sin(rotation + 1.5708);
-            //printf("A\n");
         }
         if (keyboard_state[SDL_SCANCODE_D])
         {
             player_velocity.x += player_speed * cos(rotation + 1.5708);
             player_velocity.y += player_speed * sin(rotation + 1.5708);
-            //printf("D\n");
         }
 
         player_x += player_velocity.x;
         player_y += player_velocity.y;
 
         rotation = mouse_angle(texture_destination);
-        //printf("Rotation: %f\n", rotation);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -125,9 +119,6 @@ int main(void)
         SDL_RenderCopyExF(renderer, image_texture, NULL, &texture_destination, rotation * (180 / M_PI), &center, SDL_FLIP_NONE);
 
         SDL_RenderPresent(renderer);
-
-        //rotation += 1.0f;
-        //printf("Texture X: %f, Texture Y: %f\n", texture_destination.x, texture_destination.y);
     }
     
     SDL_DestroyTexture(image_texture);
@@ -138,5 +129,6 @@ int main(void)
     free(noisemap);
     free(randarray);
     free(map);
+    
     printf("\nQuit Successfully\n");
 }
