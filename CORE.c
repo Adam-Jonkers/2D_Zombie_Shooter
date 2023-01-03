@@ -4,7 +4,6 @@
 
 #include "CORE.h"
 
-
 int get_random_number(int min, int max)
 {
     return (rand() % (max - min + 1) + min);
@@ -44,4 +43,12 @@ vec2 length_vec2(vec2 v)
 float dot_product(vec2 v1, vec2 v2) 
 {
     return v1.x * v2.x + v1.y * v2.y;
+}
+
+SDL_Texture* load_texture(char* path, SDL_Renderer* renderer)
+{
+    SDL_Surface *surface = IMG_Load(path);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
 }

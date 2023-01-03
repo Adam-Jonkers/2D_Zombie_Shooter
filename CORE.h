@@ -1,6 +1,8 @@
 #ifndef CORE_H
 #define CORE_H
 
+#include <SDL2/SDL.h>
+
 typedef struct {
     float x;
     float y;
@@ -21,5 +23,7 @@ vec2 divide_vec2(vec2 v, float f);
 vec2 length_vec2(vec2 v);
 
 float dot_product(vec2 v1, vec2 v2);
+
+SDL_Texture* load_texture(char* path, SDL_Renderer* renderer);
 
 #endif
