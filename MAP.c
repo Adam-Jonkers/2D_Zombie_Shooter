@@ -24,23 +24,23 @@ float fade(float t) {
     return t*t*t*(t*(t*6.0-15.0)+10.0);
 }
 
-vec2 grad(vec2 p, float* noisemap, int width) {
-    vec2 v;
+vec2_t grad(vec2_t p, float* noisemap, int width) {
+    vec2_t v;
     v.x = noisemap[(int)(p.x) + (width*(int)(p.y))] - noisemap[(int)(p.x + 1) + (width * (int)(p.y))];
     v.y = noisemap[(int)(p.x) + (width*(int)(p.y))] - noisemap[(int)(p.x) + (width * (int)(p.y + 1))];
     return normalise(v);
 }
 
-float noise(vec2 p, float* noisemap, int width) {
-    vec2 p0 = floor_vec2(p);
-    vec2 p1 = add_vec2(p0, (vec2){1.0, 0.0});
-    vec2 p2 = add_vec2(p0, (vec2){0.0, 1.0});
-    vec2 p3 = add_vec2(p0, (vec2){1.0, 1.0});
+float noise(vec2_t p, float* noisemap, int width) {
+    vec2_t p0 = floor_vec2(p);
+    vec2_t p1 = add_vec2(p0, (vec2_t){1.0, 0.0});
+    vec2_t p2 = add_vec2(p0, (vec2_t){0.0, 1.0});
+    vec2_t p3 = add_vec2(p0, (vec2_t){1.0, 1.0});
 
-    vec2 g0 = grad(p0, noisemap, width);
-    vec2 g1 = grad(p1, noisemap, width);
-    vec2 g2 = grad(p2, noisemap, width);
-    vec2 g3 = grad(p3, noisemap, width);
+    vec2_t g0 = grad(p0, noisemap, width);
+    vec2_t g1 = grad(p1, noisemap, width);
+    vec2_t g2 = grad(p2, noisemap, width);
+    vec2_t g3 = grad(p3, noisemap, width);
 
     float t0 = p.x - p0.x;
     float fade_t0 = fade(t0);
@@ -63,7 +63,7 @@ void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
     {
         for (int x = 0; x < max_x; x++)
         {
-            vec2 i = (vec2){x, y};
+            vec2_t i = (vec2_t){x, y};
             float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, max_x) * 1.0 +
             noise(divide_vec2(i, FREQUENCY * 4), randarray, max_x) * 0.5 +
             noise(divide_vec2(i, FREQUENCY * 2), randarray, max_x) * 0.25 +

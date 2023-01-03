@@ -20,9 +20,9 @@ void generate_texture_map(int max_x, int max_y, float* noisemap);
 
 float fade(float t);
 
-vec2 grad(vec2 p, float* noisemap, int width);
+vec2_t grad(vec2_t p, float* noisemap, int width);
 
-float noise(vec2 p, float* noisemap, int width);
+float noise(vec2_t p, float* noisemap, int width);
 
 void Setup_Noise_Map(int max_x, int max_y, float* noisemap, float* randarray);
 
