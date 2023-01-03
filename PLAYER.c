@@ -22,9 +22,11 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
     player.center.x = 30;
     player.center.y = 30;
     player.rotation = 0.0;
+    player.maxspeed = 5.0;
+    player.position.x = 0;
+    player.position.y = 0;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
-    player.maxspeed = 5.0;
     player.acceleration = 0.5;
     return player;
 }

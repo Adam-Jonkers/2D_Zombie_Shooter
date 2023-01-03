@@ -23,31 +23,13 @@ int main(void)
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     IMG_Init(IMG_INIT_PNG);
 
-    // Load Images
-    SDL_Surface *image = IMG_Load("Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_0.png");
-    SDL_Texture *image_texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_FreeSurface(image);
-
     SDL_DisplayMode dm;
     SDL_GetDesktopDisplayMode(0, &dm);
-
-    SDL_FRect texture_destination;
-    texture_destination.w = 60;
-    texture_destination.h = 60;
-    texture_destination.x = dm.w / 2 - texture_destination.w / 2;
-    texture_destination.y = dm.h / 2 - texture_destination.h / 2;
-
-    SDL_FPoint center;
-    center.x = 30;
-    center.y = 30;
 
     int max_x = MAP_WIDTH;
     int max_y = MAP_HEIGHT;
 
-    int player_x = 0;
-    int player_y = 0;
-
-    double rotation = 0.0;
+    Player_t player = Setup_player(dm, renderer);
 
     srand(time(NULL));
 
@@ -61,9 +43,6 @@ int main(void)
     bool running = true;
 
     const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
-
-    vec2 player_velocity = {0, 0};
-    float player_speed = 5.0f;
 
     while (running)
     {
@@ -79,50 +58,50 @@ int main(void)
         {
             running = false;
         }
-        player_velocity.x = 0;
-        player_velocity.y = 0;
-        player_speed = 5.0f;
+        player.velocity.x = 0;
+        player.velocity.y = 0;
+        player.maxspeed = 5.0f;
         if (keyboard_state[SDL_SCANCODE_LSHIFT])
         {
-            player_speed = 10.0f;
+            player.maxspeed = 10.0f;
         }
         if (keyboard_state[SDL_SCANCODE_W])
         {
-            player_velocity.x += player_speed * cos(rotation);
-            player_velocity.y += player_speed * sin(rotation);
+            player.velocity.x += player.maxspeed * cos(player.rotation);
+            player.velocity.y += player.maxspeed * sin(player.rotation);
         }
         if (keyboard_state[SDL_SCANCODE_S])
         {
-            player_velocity.x += -player_speed * cos(rotation);
-            player_velocity.y += -player_speed * sin(rotation);
+            player.velocity.x += -player.maxspeed * cos(player.rotation);
+            player.velocity.y += -player.maxspeed * sin(player.rotation);
         }
         if (keyboard_state[SDL_SCANCODE_A])
         {
-            player_velocity.x += -player_speed * cos(rotation + 1.5708);
-            player_velocity.y += -player_speed * sin(rotation + 1.5708);
+            player.velocity.x += -player.maxspeed * cos(player.rotation + 1.5708);
+            player.velocity.y += -player.maxspeed * sin(player.rotation + 1.5708);
         }
         if (keyboard_state[SDL_SCANCODE_D])
         {
-            player_velocity.x += player_speed * cos(rotation + 1.5708);
-            player_velocity.y += player_speed * sin(rotation + 1.5708);
+            player.velocity.x += player.maxspeed * cos(player.rotation + 1.5708);
+            player.velocity.y += player.maxspeed * sin(player.rotation + 1.5708);
         }
 
-        player_x += player_velocity.x;
-        player_y += player_velocity.y;
+        player.position.x += player.velocity.x;
+        player.position.y += player.velocity.y;
 
-        rotation = mouse_angle(texture_destination);
+        player.rotation = mouse_angle(player.sprite);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map(max_x, max_y, map, renderer, player_x, player_y, dm.w, dm.h);
+        Draw_Map(max_x, max_y, map, renderer, player.position.x, player.position.y, dm.w, dm.h);
 
-        SDL_RenderCopyExF(renderer, image_texture, NULL, &texture_destination, rotation * (180 / M_PI), &center, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(renderer, player.texture, NULL, &player.sprite, player.rotation * (180 / M_PI), &player.center, SDL_FLIP_NONE);
 
         SDL_RenderPresent(renderer);
     }
     
-    SDL_DestroyTexture(image_texture);
+    SDL_DestroyTexture(player.texture);
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

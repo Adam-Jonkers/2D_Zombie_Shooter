@@ -11,8 +11,9 @@ typedef struct {
     SDL_FRect sprite;
     SDL_FPoint center;
     double rotation;
-    vec2_t velocity;
     float maxspeed;
+    vec2_t position;
+    vec2_t velocity;
     float acceleration;
 } Player_t;
 
