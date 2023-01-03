@@ -18,6 +18,8 @@ vec2 subtract_vec2(vec2 v1, vec2 v2);
 
 vec2 divide_vec2(vec2 v, float f);
 
+vec2 length_vec2(vec2 v);
+
 float dot_product(vec2 v1, vec2 v2);
 
 #endif
