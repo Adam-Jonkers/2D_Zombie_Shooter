@@ -10,7 +10,7 @@ int get_random_number(int min, int max)
     return (rand() % (max - min + 1) + min);
 }
 
-vec2_t normalise(vec2_t v) 
+vec2_t normalise_vec2(vec2_t v) 
 {
     float length = length_vec2(v); 
     return (vec2_t){v.x / length, v.y / length};
@@ -34,6 +34,11 @@ vec2_t subtract_vec2(vec2_t v1, vec2_t v2)
 vec2_t divide_vec2(vec2_t v, float f) 
 {
     return (vec2_t){v.x / f, v.y / f};
+}
+
+vec2_t multiply_vec2(vec2_t v, float f) 
+{
+    return (vec2_t){v.x * f, v.y * f};
 }
 
 float length_vec2(vec2_t v) 
