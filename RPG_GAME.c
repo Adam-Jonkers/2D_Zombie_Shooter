@@ -24,7 +24,7 @@ int main(void)
     IMG_Init(IMG_INIT_PNG);
 
     SDL_DisplayMode dm;
-    SDL_GetDesktopDisplayMode(0, &dm);
+    SDL_GetCurrentDisplayMode(0, &dm);
 
     int max_x = MAP_WIDTH;
     int max_y = MAP_HEIGHT;
