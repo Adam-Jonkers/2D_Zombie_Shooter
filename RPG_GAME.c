@@ -33,6 +33,11 @@ int main(void)
     int max_x = MAP_WIDTH;
     int max_y = MAP_HEIGHT;
 
+    SDL_Texture* loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", renderer);
+    SDL_RenderCopy(renderer, loadingScreen, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(loadingScreen);
+
     Player_t player = Setup_player(dm, renderer);
 
     srand(time(NULL));
