@@ -2,7 +2,6 @@
 
 #include "PLAYER.h"
 
-
 double mouse_angle(SDL_FRect sprite)
 {
     int mouse_x, mouse_y;
