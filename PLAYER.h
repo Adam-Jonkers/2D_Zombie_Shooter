@@ -1,8 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "CORE.h"
 
@@ -14,8 +14,10 @@ typedef struct {
     vec2 velocity;
     float maxspeed;
     float acceleration;
-} Player;
+} Player_t;
 
 double mouse_angle(SDL_FRect sprite);
+
+Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer);
 
 #endif
