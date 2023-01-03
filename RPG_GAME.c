@@ -23,6 +23,10 @@ int main(void)
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     IMG_Init(IMG_INIT_PNG);
 
+    SDL_Surface *icon = IMG_Load("Assets/Icon/Icon.png");
+    SDL_SetWindowIcon(window, icon);
+    SDL_FreeSurface(icon);
+
     SDL_DisplayMode dm;
     SDL_GetCurrentDisplayMode(0, &dm);
 
