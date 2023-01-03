@@ -10,6 +10,7 @@
 
 #include "MAP.h"
 #include "CORE.h"
+#include "PLAYER.h"
 
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000

@@ -13,6 +13,7 @@ DEL = rm
 # Default target.
 all: game.out
 
+
 # Compile: create object files from C source files.
 RPG_GAME.o: RPG_GAME.c MAP.h CORE.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
@@ -23,9 +24,12 @@ CORE.o: CORE.c CORE.h
 MAP.o: MAP.c MAP.h CORE.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
+PLAYER.o: PLAYER.c PLAYER.h CORE.h
+	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
+
 
 # Link: create ELF output file from object files.
-game.out: RPG_GAME.o CORE.o MAP.o
+game.out: RPG_GAME.o CORE.o MAP.o PLAYER.o
 	$(CC) $(CFLAGS) $^ $(LINKS) -o $@
 
 
