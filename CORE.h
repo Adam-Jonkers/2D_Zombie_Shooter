@@ -6,23 +6,23 @@
 typedef struct {
     float x;
     float y;
-} vec2;
+} vec2_t;
 
 int get_random_number(int min, int max);
 
-vec2 normalise(vec2 v);
+vec2_t normalise(vec2_t v);
 
-vec2 floor_vec2(vec2 v);
+vec2_t floor_vec2(vec2_t v);
 
-vec2 add_vec2(vec2 v1, vec2 v2);
+vec2_t add_vec2(vec2_t v1, vec2_t v2);
 
-vec2 subtract_vec2(vec2 v1, vec2 v2);
+vec2_t subtract_vec2(vec2_t v1, vec2_t v2);
 
-vec2 divide_vec2(vec2 v, float f);
+vec2_t divide_vec2(vec2_t v, float f);
 
-vec2 length_vec2(vec2 v);
+vec2_t length_vec2(vec2_t v);
 
-float dot_product(vec2 v1, vec2 v2);
+float dot_product(vec2_t v1, vec2_t v2);
 
 SDL_Texture* load_texture(char* path, SDL_Renderer* renderer);
 
