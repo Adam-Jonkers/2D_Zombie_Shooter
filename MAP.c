@@ -28,7 +28,7 @@ vec2_t grad(vec2_t p, float* noisemap, int width) {
     vec2_t v;
     v.x = noisemap[(int)(p.x) + (width*(int)(p.y))] - noisemap[(int)(p.x + 1) + (width * (int)(p.y))];
     v.y = noisemap[(int)(p.x) + (width*(int)(p.y))] - noisemap[(int)(p.x) + (width * (int)(p.y + 1))];
-    return normalise(v);
+    return normalise_vec2(v);
 }
 
 float noise(vec2_t p, float* noisemap, int width) {
