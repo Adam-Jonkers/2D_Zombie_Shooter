@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <math.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -36,8 +37,8 @@ int main(void)
     texture_destination.y = dm.h / 2 - texture_destination.h / 2;
 
     SDL_FPoint center;
-    center.x = 30;//dm.w / 2;//texture_destination.w / 2 + texture_destination.x - 100;
-    center.y = 30;//dm.h / 2;//texture_destination.h / 2 + texture_destination.y - 100;
+    center.x = 30;
+    center.y = 30;
 
     int max_x = MAP_WIDTH;
     int max_y = MAP_HEIGHT;
@@ -60,6 +61,9 @@ int main(void)
 
     const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
 
+    vec2 player_velocity = {0, 0};
+    float player_speed = 5.0f;
+
     while (running)
     {
         SDL_Event event;
@@ -74,26 +78,41 @@ int main(void)
         {
             running = false;
         }
-        if (keyboard_state[SDL_SCANCODE_W] && player_y - 5 > 0)
+        player_velocity.x = 0;
+        player_velocity.y = 0;
+        player_speed = 5.0f;
+        if (keyboard_state[SDL_SCANCODE_LSHIFT])
         {
-            player_y -= 5;
-            //printf("W\n");
+            player_speed = 10.0f;
         }
-        if (keyboard_state[SDL_SCANCODE_S] && player_y + 5 < MAP_HEIGHT)
+        if (keyboard_state[SDL_SCANCODE_W])
         {
-            player_y += 5;
+            //move player forward
+            player_velocity.x += player_speed * cos(rotation);
+            player_velocity.y += player_speed * sin(rotation);
+            //printf("r: %f, x: %f, y: %f\n", rotation, 5 * cos(rotation), 5 * sin(rotation));
+        }
+        if (keyboard_state[SDL_SCANCODE_S])
+        {
+            player_velocity.x += -player_speed * cos(rotation);
+            player_velocity.y += -player_speed * sin(rotation);
             //printf("S\n");
         }
-        if (keyboard_state[SDL_SCANCODE_A] && player_x - 5 > 0)
+        if (keyboard_state[SDL_SCANCODE_A])
         {
-            player_x -= 5;
+            player_velocity.x += -player_speed * cos(rotation + 1.5708);
+            player_velocity.y += -player_speed * sin(rotation + 1.5708);
             //printf("A\n");
         }
-        if (keyboard_state[SDL_SCANCODE_D] && player_x + 5 < MAP_WIDTH)
+        if (keyboard_state[SDL_SCANCODE_D])
         {
-            player_x += 5;
+            player_velocity.x += player_speed * cos(rotation + 1.5708);
+            player_velocity.y += player_speed * sin(rotation + 1.5708);
             //printf("D\n");
         }
+
+        player_x += player_velocity.x;
+        player_y += player_velocity.y;
 
         rotation = mouse_angle(texture_destination);
         //printf("Rotation: %f\n", rotation);
@@ -103,7 +122,7 @@ int main(void)
 
         Draw_Map(max_x, max_y, map, renderer, player_x, player_y, dm.w, dm.h);
 
-        SDL_RenderCopyExF(renderer, image_texture, NULL, &texture_destination, rotation, &center, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(renderer, image_texture, NULL, &texture_destination, rotation * (180 / M_PI), &center, SDL_FLIP_NONE);
 
         SDL_RenderPresent(renderer);
 
