@@ -30,3 +30,39 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
     player.acceleration = 0.5;
     return player;
 }
+
+void Move_player(const Uint8* keyboard_state, Player_t* player) 
+{
+    player->velocity.x = 0;
+    player->velocity.y = 0;
+    player->maxspeed = 5.0f;
+    if (keyboard_state[SDL_SCANCODE_LSHIFT])
+    {
+        player->maxspeed = 10.0f;
+    }
+    if (keyboard_state[SDL_SCANCODE_W])
+    {
+        player->velocity.x += player->maxspeed * cos(player->rotation);
+        player->velocity.y += player->maxspeed * sin(player->rotation);
+    }
+    if (keyboard_state[SDL_SCANCODE_S])
+    {
+        player->velocity.x += -player->maxspeed * cos(player->rotation);
+        player->velocity.y += -player->maxspeed * sin(player->rotation);
+    }
+    if (keyboard_state[SDL_SCANCODE_A])
+    {
+        player->velocity.x += -player->maxspeed * cos(player->rotation + 1.5708);
+        player->velocity.y += -player->maxspeed * sin(player->rotation + 1.5708);
+    }
+    if (keyboard_state[SDL_SCANCODE_D])
+    {
+        player->velocity.x += player->maxspeed * cos(player->rotation + 1.5708);
+        player->velocity.y += player->maxspeed * sin(player->rotation + 1.5708);
+    }
+
+    player->position.x += player->velocity.x;
+    player->position.y += player->velocity.y;
+
+    player->rotation = mouse_angle(player->sprite);
+}
