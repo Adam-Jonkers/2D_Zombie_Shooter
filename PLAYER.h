@@ -7,7 +7,7 @@
 #include "CORE.h"
 
 typedef struct {
-    SDL_Texture *texture;
+    SDL_Texture* moveAnimation[20];
     SDL_FRect sprite;
     SDL_FPoint center;
     double rotation;

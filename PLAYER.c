@@ -14,7 +14,12 @@ double mouse_angle(SDL_FRect sprite)
 Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
 {
     Player_t player;
-    player.texture = load_texture("Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_0.png", renderer);
+    for (int i = 0; i < 19; i++)
+    {
+        char path[100];
+        sprintf(path, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_%d.png", i);
+        player.moveAnimation[i] = load_texture(path, renderer);
+    }
     player.sprite.w = 60;
     player.sprite.h = 60;
     player.sprite.x = dm.w / 2 - player.sprite.w / 2;
@@ -74,5 +79,11 @@ void Move_player(const Uint8* keyboard_state, Player_t* player)
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player)
 {
-    SDL_RenderCopyExF(renderer, player->texture, NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+    static int frame = 0;
+    SDL_RenderCopyExF(renderer, player->moveAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+    frame++;
+    if (frame > 18)
+    {
+        frame = 0;
+    }
 }

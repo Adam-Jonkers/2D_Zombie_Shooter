@@ -71,7 +71,6 @@ int main(void)
         SDL_RenderPresent(renderer);
     }
     
-    SDL_DestroyTexture(player.texture);
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
