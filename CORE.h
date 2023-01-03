@@ -20,7 +20,7 @@ vec2_t subtract_vec2(vec2_t v1, vec2_t v2);
 
 vec2_t divide_vec2(vec2_t v, float f);
 
-vec2_t length_vec2(vec2_t v);
+float length_vec2(vec2_t v);
 
 float dot_product(vec2_t v1, vec2_t v2);
 
