@@ -71,3 +71,8 @@ void Move_player(const Uint8* keyboard_state, Player_t* player)
 
     player->rotation = mouse_angle(player->sprite);
 }
+
+void Draw_Player(SDL_Renderer* renderer, Player_t* player)
+{
+    SDL_RenderCopyExF(renderer, player->texture, NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+}

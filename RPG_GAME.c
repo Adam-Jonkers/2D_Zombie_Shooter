@@ -66,7 +66,7 @@ int main(void)
 
         Draw_Map(max_x, max_y, map, renderer, player.position.x, player.position.y, dm.w, dm.h);
 
-        SDL_RenderCopyExF(renderer, player.texture, NULL, &player.sprite, player.rotation * (180 / M_PI), &player.center, SDL_FLIP_NONE);
+        Draw_Player(renderer, &player);
 
         SDL_RenderPresent(renderer);
     }
