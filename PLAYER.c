@@ -6,6 +6,9 @@
 #define PLAYER_MOVING 0
 #define PLAYER_IDLE 1
 
+#define PLAYER_MOVE_ANIMATION_LENGTH 19
+#define PLAYER_IDLE_ANIMATION_LENGTH 19
+
 double mouse_angle(SDL_FRect sprite)
 {
     int mouse_x, mouse_y;
@@ -17,17 +20,19 @@ double mouse_angle(SDL_FRect sprite)
 Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
 {
     Player_t player;
-    for (int i = 0; i < 19; i++)
+    player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    for (int i = 0; i < player.moveAnimation.length; i++)
     {
         char path[100];
         sprintf(path, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_%d.png", i);
-        player.moveAnimation[i] = load_texture(path, renderer);
+        player.moveAnimation.animation[i] = load_texture(path, renderer);
     }
-    for (int i = 0; i < 19; i++)
+    player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    for (int i = 0; i < player.idleAnimation.length; i++)
     {
         char path[100];
         sprintf(path, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_%d.png", i);
-        player.idleAnimation[i] = load_texture(path, renderer);
+        player.idleAnimation.animation[i] = load_texture(path, renderer);
     }
     player.sprite.w = 60;
     player.sprite.h = 60;
@@ -100,9 +105,9 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player)
         currentAnimation = player->action;
     }
     if (currentAnimation == PLAYER_MOVING) {
-        SDL_RenderCopyExF(renderer, player->moveAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(renderer, player->moveAnimation.animation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
     } else if (currentAnimation == PLAYER_IDLE) {
-        SDL_RenderCopyExF(renderer, player->idleAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(renderer, player->idleAnimation.animation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
     }
     frame++;
     if (frame > 18)

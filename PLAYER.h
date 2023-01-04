@@ -7,8 +7,8 @@
 #include "CORE.h"
 
 typedef struct {
-    SDL_Texture* moveAnimation[20];
-    SDL_Texture* idleAnimation[20];
+    Animation_t moveAnimation;
+    Animation_t idleAnimation;
     SDL_FRect sprite;
     SDL_FPoint center;
     int action;

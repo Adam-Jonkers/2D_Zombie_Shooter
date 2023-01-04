@@ -3,10 +3,17 @@
 
 #include <SDL2/SDL.h>
 
+#define MAXANIMATION 20
+
 typedef struct {
     float x;
     float y;
 } vec2_t;
+
+typedef struct {
+    int length;
+    SDL_Texture* animation[MAXANIMATION];
+} Animation_t;
 
 int get_random_number(int min, int max);
 
