@@ -3,6 +3,9 @@
 #include "PLAYER.h"
 #include "CORE.h"
 
+#define PLAYER_MOVING 0
+#define PLAYER_IDLE 1
+
 double mouse_angle(SDL_FRect sprite)
 {
     int mouse_x, mouse_y;
@@ -19,6 +22,12 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
         char path[100];
         sprintf(path, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_%d.png", i);
         player.moveAnimation[i] = load_texture(path, renderer);
+    }
+    for (int i = 0; i < 19; i++)
+    {
+        char path[100];
+        sprintf(path, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_%d.png", i);
+        player.idleAnimation[i] = load_texture(path, renderer);
     }
     player.sprite.w = 60;
     player.sprite.h = 60;
@@ -75,12 +84,26 @@ void Move_player(const Uint8* keyboard_state, Player_t* player)
     player->position.y += player->velocity.y;
 
     player->rotation = mouse_angle(player->sprite);
+
+    if (length_vec2(player->velocity) > 1.0f) {
+        player->action = PLAYER_MOVING;
+    } else {
+        player->action = PLAYER_IDLE;
+    }
 }
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player)
 {
     static int frame = 0;
-    SDL_RenderCopyExF(renderer, player->moveAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+    static int currentAnimation = PLAYER_IDLE;
+    if (frame == 0 ) {
+        currentAnimation = player->action;
+    }
+    if (currentAnimation == PLAYER_MOVING) {
+        SDL_RenderCopyExF(renderer, player->moveAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+    } else if (currentAnimation == PLAYER_IDLE) {
+        SDL_RenderCopyExF(renderer, player->idleAnimation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
+    }
     frame++;
     if (frame > 18)
     {

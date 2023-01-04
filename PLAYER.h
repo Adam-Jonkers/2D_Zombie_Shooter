@@ -8,8 +8,10 @@
 
 typedef struct {
     SDL_Texture* moveAnimation[20];
+    SDL_Texture* idleAnimation[20];
     SDL_FRect sprite;
     SDL_FPoint center;
+    int action;
     double rotation;
     float maxspeed;
     vec2_t position;
