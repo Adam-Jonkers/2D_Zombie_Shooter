@@ -35,4 +35,6 @@ float dot_product(vec2_t v1, vec2_t v2);
 
 SDL_Texture* load_texture(char* path, SDL_Renderer* renderer);
 
+void load_animation(Animation_t *animation, char* path, SDL_Renderer* renderer);
+
 #endif

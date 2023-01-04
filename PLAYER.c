@@ -21,19 +21,9 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
 {
     Player_t player;
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
-    for (int i = 0; i < player.moveAnimation.length; i++)
-    {
-        char path[100];
-        sprintf(path, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_%d.png", i);
-        player.moveAnimation.animation[i] = load_texture(path, renderer);
-    }
+    load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
     player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
-    for (int i = 0; i < player.idleAnimation.length; i++)
-    {
-        char path[100];
-        sprintf(path, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_%d.png", i);
-        player.idleAnimation.animation[i] = load_texture(path, renderer);
-    }
+    load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
     player.sprite.w = 60;
     player.sprite.h = 60;
     player.sprite.x = dm.w / 2 - player.sprite.w / 2;

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -14,7 +15,7 @@ vec2_t normalise_vec2(vec2_t v)
 {
     float length = length_vec2(v); 
     return (vec2_t){v.x / length, v.y / length};
-}
+} 
 
 vec2_t floor_vec2(vec2_t v) 
 {
@@ -55,9 +56,23 @@ SDL_Texture* load_texture(char* path, SDL_Renderer* renderer)
 {
     SDL_Surface *surface = IMG_Load(path);
     if (surface == NULL) {
-        printf("Unable to load image %s! SDL_image Error: %s", path, IMG_GetError());
+        printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
     }
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     return texture;
+}
+
+void load_animation(Animation_t *animation, char* path, SDL_Renderer* renderer)
+{
+    for (int i = 0; i <= animation->length; i++)
+    {
+        char fullPath[100];
+        strcpy(fullPath, path);
+        char index[20];
+        sprintf(index, "%d", i);
+        strcat(fullPath, index);
+        strcat(fullPath, ".png");
+        animation->animation[i] = load_texture(fullPath, renderer);
+    }
 }
