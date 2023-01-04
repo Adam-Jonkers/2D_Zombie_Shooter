@@ -43,10 +43,12 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
 void Move_player(const Uint8* keyboard_state, Player_t* player) 
 {
     player->maxspeed = 5.0f;
+    player->acceleration = 0.5f;
     player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 20.0f));
     if (keyboard_state[SDL_SCANCODE_LSHIFT])
     {
         player->maxspeed = 10.0f;
+        player->acceleration = 1.0f;
     }
     if (keyboard_state[SDL_SCANCODE_W])
     {
