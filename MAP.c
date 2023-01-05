@@ -95,12 +95,48 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
                 map[x + (max_x * y)] = 'H';
             } else if (n < 0.5) {
                 map[x + (max_x * y)] = '^';
-            } else if (n < 0.8) {
+            } else if (n > 0.5) {
                 map[x + (max_x * y)] = '+';
             } else {
                 map[x + (max_x * y)] = '+';
+                printf("Error: %f\n", n);
             }
         }
+    }
+}
+
+void Setup_Map_Png(bitmap_t map, float* noisemap)
+{
+    // Setup map
+    for (size_t y = 0; y < map.height; y++)
+    {
+        for (size_t x = 0; x < map.width; x++)
+        {
+            float n = noisemap[x + (map.width * y)];
+            if (n < -0.5) {
+                map.pixels[x + (map.width * y)] = (pixel_t){75, 182, 239};
+            } else if (n < 0) {
+                map.pixels[x + (map.width * y)] = (pixel_t){52, 140, 49};
+            } else if (n < 0.1) {
+                map.pixels[x + (map.width * y)] = (pixel_t){0, 51, 0};
+            } else if (n < 0.2) {
+                map.pixels[x + (map.width * y)] = (pixel_t){102, 102, 102};
+            } else if (n < 0.3) {
+                map.pixels[x + (map.width * y)] = (pixel_t){127, 127, 127};
+            } else if (n < 0.4) {
+                map.pixels[x + (map.width * y)] = (pixel_t){153, 153, 153};
+            } else if (n < 0.5) {
+                map.pixels[x + (map.width * y)] = (pixel_t){178, 178, 178};
+            } else if (n > 0.5) {
+                map.pixels[x + (map.width * y)] = (pixel_t){255, 255, 255};
+            } else {
+                map.pixels[x + (map.width * y)] = (pixel_t){255, 0, 0};
+                printf("Error: %f\n", n);
+            }
+        }
+    }
+    if (save_png_to_file(&map, "map.png") != 0) {
+        printf("Failed to save map.png");
     }
 }
 

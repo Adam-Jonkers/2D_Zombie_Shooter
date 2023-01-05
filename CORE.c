@@ -91,7 +91,7 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
     size_t x, y;
     png_byte** row_pointers = NULL;
 
-    int status = -1;
+    int status = 1;
     int pixel_size = 3;
     int depth = 8;
 

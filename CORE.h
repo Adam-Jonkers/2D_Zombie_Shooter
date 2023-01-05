@@ -51,8 +51,6 @@ SDL_Texture* load_texture(char* path, SDL_Renderer* renderer);
 
 void load_animation(Animation_t *animation, char* path, SDL_Renderer* renderer);
 
-static pixel_t* get_pixel(bitmap_t* bitmap, int x, int y);
-
 int save_png_to_file (bitmap_t* bitmap, const char* path);
 
 #endif

@@ -45,9 +45,14 @@ int main(void)
     float* noisemap = calloc((max_x * max_y), sizeof(float));
     float* randarray = calloc((max_x * max_y), sizeof(float));
     char* map = calloc((max_x * max_y), sizeof(char));
+    bitmap_t bmap;
+    bmap.height = max_y;
+    bmap.width = max_x;
+    bmap.pixels = calloc((max_x * max_y), sizeof(pixel_t));
 
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap);
+    Setup_Map_Png(bmap, noisemap);
     
     bool running = true;
 
