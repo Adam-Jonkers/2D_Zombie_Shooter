@@ -95,7 +95,7 @@ void Setup_Map_Png(bitmap_t map, float* noisemap)
                 map.pixels[x + (map.width * y)] = (pixel_t){153, 153, 153};
             } else if (n < 0.5) {
                 map.pixels[x + (map.width * y)] = (pixel_t){178, 178, 178};
-            } else if (n > 0.5) {
+            } else if (n >= 0.5) {
                 map.pixels[x + (map.width * y)] = (pixel_t){255, 255, 255};
             } else {
                 map.pixels[x + (map.width * y)] = (pixel_t){255, 0, 0};
