@@ -73,38 +73,6 @@ void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
     }
 }
 
-void Setup_Map(int max_x, int max_y ,char* map, float* noisemap)
-{
-    // Setup map
-    for (int y = 0; y < max_y; y++)
-    {
-        for (int x = 0; x < max_x; x++)
-        {
-            float n = noisemap[x + (max_x * y)];
-            if (n < -0.5) {
-                map[x + (max_x * y)] = '~';
-            } else if (n < 0) {
-                map[x + (max_x * y)] = '-';
-            } else if (n < 0.1) {
-                map[x + (max_x * y)] = ' ';
-            } else if (n < 0.2) {
-                map[x + (max_x * y)] = 'L';
-            } else if (n < 0.3) {
-                map[x + (max_x * y)] = 'M';
-            } else if (n < 0.4) {
-                map[x + (max_x * y)] = 'H';
-            } else if (n < 0.5) {
-                map[x + (max_x * y)] = '^';
-            } else if (n > 0.5) {
-                map[x + (max_x * y)] = '+';
-            } else {
-                map[x + (max_x * y)] = '+';
-                printf("Error: %f\n", n);
-            }
-        }
-    }
-}
-
 void Setup_Map_Png(bitmap_t map, float* noisemap)
 {
     // Setup map
@@ -150,49 +118,4 @@ void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, int disp
     SDL_Rect src = {display_x, display_y, displaysize_x, displaysize_y};
     SDL_Rect dst = {0, 0, displaysize_x, displaysize_y};
     SDL_RenderCopy(renderer, map_texture, &src, &dst);
-}
-
-void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y)
-{
-    char c;
-    int screenx;
-    int screeny;
-    // Display map
-    for (int y = display_y; y < displaysize_y + display_y && y <= max_y; y++)
-    {
-        for (int x = display_x; x < displaysize_x + display_x && x <= max_x; x++)
-        {
-            screenx = x - display_x;
-            screeny = y - display_y;
-            c = map[x + (max_x * y)];
-            if (c == '~') {
-                SDL_SetRenderDrawColor(renderer, 75, 182, 239, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == '-') {
-                SDL_SetRenderDrawColor(renderer, 52, 140, 49, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == ' ') {
-                SDL_SetRenderDrawColor(renderer, 0, 51, 0, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == 'L') {
-                SDL_SetRenderDrawColor(renderer, 102, 102, 102, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == 'M') {
-                SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == 'H') {
-                SDL_SetRenderDrawColor(renderer, 153, 153, 153, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == '^') {
-                SDL_SetRenderDrawColor(renderer, 178, 178, 178, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else if (c == '+') {
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            } else {
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                SDL_RenderDrawPoint(renderer, screenx, screeny);
-            }
-        }
-    }
 }

@@ -28,10 +28,6 @@ float noise(vec2_t p, float* noisemap, int width);
 
 void Setup_Noise_Map(int max_x, int max_y, float* noisemap, float* randarray);
 
-void Setup_Map(int max_x, int max_y ,char* map, float* noisemap);
-
-void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y);
-
 void Setup_Map_Png(bitmap_t map, float* noisemap);
 
 SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer);

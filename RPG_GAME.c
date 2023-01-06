@@ -69,7 +69,6 @@ int main(void)
     load_Text(&fps, renderer);
 
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
-    Setup_Map(max_x, max_y, map, noisemap);
     Setup_Map_Png(bmap, noisemap);
     
     bool running = true;
