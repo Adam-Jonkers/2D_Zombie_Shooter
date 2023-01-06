@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <stdint.h>
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -192,3 +193,50 @@ void load_Font(TTF_Font** font, char* path)
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     } 
 }
+
+Timer_t create_timer()
+{
+    Timer_t timer;
+    timer.startTicks = 0;
+    timer.pausedTicks = 0;
+    timer.paused = false;
+    timer.started = false;
+    return timer;
+}
+
+void start_timer(Timer_t* timer)
+{
+    timer->started = true;
+    timer->paused = false;
+    timer->startTicks = SDL_GetTicks();
+    timer->pausedTicks = 0;
+}
+
+void stop_timer(Timer_t* timer)
+{
+    timer->started = false;
+    timer->paused = false;
+    timer->startTicks = 0;
+    timer->pausedTicks = 0;
+}
+
+void pause_timer(Timer_t* timer)
+{
+    if (timer->started && !timer->paused)
+    {
+        timer->paused = true;
+        timer->pausedTicks = SDL_GetTicks() - timer->startTicks;
+        timer->startTicks = 0;
+    }
+}
+
+void unpause_timer(Timer_t* timer)
+{
+    if (timer->started && timer->paused)
+    {
+        timer->paused = false;
+        timer->startTicks = SDL_GetTicks() - timer->pausedTicks;
+        timer->pausedTicks = 0;
+    }
+}
+

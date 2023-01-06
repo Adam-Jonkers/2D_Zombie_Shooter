@@ -2,6 +2,7 @@
 #define CORE_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -38,6 +39,13 @@ typedef struct {
     char* text;
 } Text_t;
 
+typedef struct {
+    u_int32_t startTicks;
+    u_int32_t pausedTicks;
+    bool paused;
+    bool started;
+} Timer_t;
+
 int get_random_number(int min, int max);
 
 vec2_t normalise_vec2(vec2_t v);
@@ -65,5 +73,15 @@ int save_png_to_file (bitmap_t* bitmap, const char* path);
 void load_Text(Text_t* text, SDL_Renderer* renderer);
 
 void load_Font(TTF_Font** font, char* path);
+
+Timer_t create_timer();
+
+void start_timer(Timer_t* timer);
+
+void stop_timer(Timer_t* timer);
+
+void pause_timer(Timer_t* timer);
+
+void unpause_timer(Timer_t* timer);
 
 #endif
