@@ -30,6 +30,13 @@ typedef struct {
     size_t height;
 } bitmap_t;
 
+typedef struct {
+    TTF_Font* font;
+    SDL_Texture* texture;
+    SDL_Rect textBox;
+    char* text;
+} Text_t;
+
 int get_random_number(int min, int max);
 
 vec2_t normalise_vec2(vec2_t v);
