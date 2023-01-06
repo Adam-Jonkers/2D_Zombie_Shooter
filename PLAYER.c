@@ -31,23 +31,23 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
     player.center.x = 30;
     player.center.y = 30;
     player.rotation = 0.0;
-    player.maxspeed = 5.0;
+    player.maxspeed = 100.0;
     player.position.x = 0;
     player.position.y = 0;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
-    player.acceleration = 0.5;
+    player.acceleration = 20.0;
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep) 
 {
-    player->maxspeed = 5.0f;
-    player->acceleration = 0.5f;
+    player->maxspeed = 100.0f;
+    player->acceleration = 20.0f;
     player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 20.0f));
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
-        player->maxspeed = 10.0f;
-        player->acceleration = 1.0f;
+        player->maxspeed = 200.0f;
+        player->acceleration = 50.0f;
     }
     if (keyboard_state[SDL_SCANCODE_W]) {
         player->velocity.x += player->acceleration * cos(player->rotation);
@@ -73,12 +73,12 @@ void Move_player(const Uint8* keyboard_state, Player_t* player)
         player->velocity = multiply_vec2(player->velocity, player->maxspeed);
     }
 
-    player->position.x += player->velocity.x;
-    player->position.y += player->velocity.y;
+    player->position.x += (player->velocity.x) * timestep / 1000.0f;
+    player->position.y += (player->velocity.y) * timestep / 1000.0f;
 
     player->rotation = mouse_angle(player->sprite);
 
-    if (length_vec2(player->velocity) > 1.0f) {
+    if (length_vec2(player->velocity) > 10.0f) {
         player->action = PLAYER_MOVING;
     } else {
         player->action = PLAYER_IDLE;

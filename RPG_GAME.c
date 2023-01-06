@@ -76,6 +76,10 @@ int main(void)
     Timer_t fpsTimer = create_timer();
     start_timer(&fpsTimer);
 
+    Timer_t stepTimer = create_timer();
+    start_timer(&stepTimer);
+    float timeStep = 0.0f;
+
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
     SDL_Texture* map_texture = Load_Map_Texture(renderer);
@@ -97,7 +101,7 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player);
+        Move_player(keyboard_state, &player, timeStep);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -109,6 +113,9 @@ int main(void)
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
 
         SDL_RenderPresent(renderer);
+
+        timeStep = get_time_ms(&stepTimer);
+        start_timer(&stepTimer);
     }
     TTF_CloseFont(font);
     IMG_Quit();
