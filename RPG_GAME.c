@@ -13,8 +13,8 @@
 #include "CORE.h"
 #include "PLAYER.h"
 
-#define MAP_WIDTH 10000
-#define MAP_HEIGHT 10000
+#define MAP_WIDTH 5000
+#define MAP_HEIGHT 5000
 
 int main(void)
 {
@@ -104,8 +104,6 @@ int main(void)
 
         Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, dm.w, dm.h);
 
-        //Draw_Map(max_x, max_y, map, renderer, player.position.x, player.position.y, dm.w, dm.h);
-
         Draw_Player(renderer, &player);
 
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
@@ -121,6 +119,10 @@ int main(void)
     free(noisemap);
     free(randarray);
     free(map);
+
+    if (remove("map.png")) {
+        printf("Error deleting map file");
+    }
     
     printf("\nQuit Successfully\n");
 }
