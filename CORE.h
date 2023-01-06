@@ -62,7 +62,7 @@ void load_animation(Animation_t *animation, char* path, SDL_Renderer* renderer);
 
 int save_png_to_file (bitmap_t* bitmap, const char* path);
 
-void load_Text(TTF_Font* font, char* text, SDL_Color textColor, SDL_Texture** textTexture, SDL_Renderer* renderer);
+void load_Text(Text_t* text, SDL_Renderer* renderer);
 
 void load_Font(TTF_Font** font, char* path);
 

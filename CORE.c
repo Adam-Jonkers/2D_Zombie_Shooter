@@ -159,29 +159,36 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
         return status;
 }
 
-void load_Text(TTF_Font* font, char* text, SDL_Color textColor, SDL_Texture** textTexture, SDL_Renderer* renderer)
+void load_Text(Text_t* text, SDL_Renderer* renderer)
 {
-    if (font == NULL)
+    SDL_Surface* textSurface = NULL;
+    if (text->font == NULL)
     {
-        printf("this was the error\n");
+        printf("Font not setup\n");
+    } else {
+        textSurface = TTF_RenderText_Solid(text->font, text->text, text->textColor);
     }
-    
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, textColor);
     if (textSurface == NULL)
     {
         printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
     } else {
-        *textTexture = SDL_CreateTextureFromSurface( renderer, textSurface );
+        text->texture = SDL_CreateTextureFromSurface( renderer, textSurface );
+        if (text->texture == NULL)
+        {
+            printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+        } else {
+            text->textBox.w = textSurface->w;
+            text->textBox.h = textSurface->h;
+        }
     }
     SDL_FreeSurface(textSurface);
 }
 
 void load_Font(TTF_Font** font, char* path)
 {
-    *font = TTF_OpenFont(path, 28);
+    *font = TTF_OpenFont(path, 15);
     if (*font == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     } 
-    printf("font address: %p\n", *font);
 }
