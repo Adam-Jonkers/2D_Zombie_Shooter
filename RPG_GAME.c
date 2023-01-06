@@ -7,6 +7,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "MAP.h"
 #include "CORE.h"
@@ -22,6 +23,7 @@ int main(void)
     SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
 
     SDL_Surface *icon = IMG_Load("Assets/Icon/Icon.png");
     SDL_SetWindowIcon(window, icon);
@@ -49,6 +51,22 @@ int main(void)
     bmap.height = max_y;
     bmap.width = max_x;
     bmap.pixels = calloc((max_x * max_y), sizeof(pixel_t));
+
+    TTF_Font* font = NULL;
+
+    load_Font(&font, "Assets/Font/Font.ttf");
+
+    Text_t fps;
+    fps.font = font;
+    fps.textColor = (SDL_Color){255, 0, 0, 255};
+    fps.texture = NULL;
+    fps.textBox.x = 5;
+    fps.textBox.y = 0;
+    fps.textBox.w = 50;
+    fps.textBox.h = 30;
+    fps.text = "FPS: 100";
+
+    load_Text(&fps, renderer);
 
     Setup_Noise_Map(max_x, max_y, noisemap, randarray);
     Setup_Map(max_x, max_y, map, noisemap);
@@ -82,10 +100,13 @@ int main(void)
 
         Draw_Player(renderer, &player);
 
+        SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
+
         SDL_RenderPresent(renderer);
     }
-    
+    TTF_CloseFont(font);
     IMG_Quit();
+    TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
