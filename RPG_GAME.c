@@ -13,8 +13,8 @@
 #include "CORE.h"
 #include "PLAYER.h"
 
-#define MAP_WIDTH 5000
-#define MAP_HEIGHT 5000
+#define MAP_WIDTH 10000
+#define MAP_HEIGHT 10000
 
 int main(void)
 {
@@ -79,6 +79,8 @@ int main(void)
 
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
+    SDL_Texture* map_texture = Load_Map_Texture(renderer);
+
     while (running)
     {
         SDL_Event event;
@@ -101,7 +103,9 @@ int main(void)
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map(max_x, max_y, map, renderer, player.position.x, player.position.y, dm.w, dm.h);
+        Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, dm.w, dm.h);
+
+        //Draw_Map(max_x, max_y, map, renderer, player.position.x, player.position.y, dm.w, dm.h);
 
         Draw_Player(renderer, &player);
 

@@ -1,6 +1,8 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <SDL2/SDL.h>
+
 #include "CORE.h"
 
 typedef struct {
@@ -31,5 +33,9 @@ void Setup_Map(int max_x, int max_y ,char* map, float* noisemap);
 void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y);
 
 void Setup_Map_Png(bitmap_t map, float* noisemap);
+
+SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer);
+
+void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, int display_x, int display_y, int displaysize_x, int displaysize_y);
 
 #endif

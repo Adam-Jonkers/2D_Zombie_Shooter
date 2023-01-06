@@ -140,6 +140,18 @@ void Setup_Map_Png(bitmap_t map, float* noisemap)
     }
 }
 
+SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer) 
+{
+    return (load_texture("map.png", renderer));
+}
+
+void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, int display_x, int display_y, int displaysize_x, int displaysize_y)
+{
+    SDL_Rect src = {display_x, display_y, displaysize_x, displaysize_y};
+    SDL_Rect dst = {0, 0, displaysize_x, displaysize_y};
+    SDL_RenderCopy(renderer, map_texture, &src, &dst);
+}
+
 void Draw_Map(int max_x, int max_y, char* map, SDL_Renderer* renderer, int display_x, int display_y, int displaysize_x, int displaysize_y)
 {
     char c;
