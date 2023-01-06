@@ -32,6 +32,7 @@ typedef struct {
 
 typedef struct {
     TTF_Font* font;
+    SDL_Color textColor;
     SDL_Texture* texture;
     SDL_Rect textBox;
     char* text;
