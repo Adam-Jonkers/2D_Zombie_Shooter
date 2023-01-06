@@ -64,7 +64,7 @@ int main(void)
     fps.textBox.y = 0;
     fps.textBox.w = 50;
     fps.textBox.h = 30;
-    fps.text = "FPS: 100";
+    strcpy(fps.text, "FPS: ERROR");
 
     load_Text(&fps, renderer);
 
@@ -73,6 +73,9 @@ int main(void)
     Setup_Map_Png(bmap, noisemap);
     
     bool running = true;
+
+    Timer_t fpsTimer = create_timer();
+    start_timer(&fpsTimer);
 
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
@@ -90,6 +93,8 @@ int main(void)
         {
             running = false;
         }
+
+        get_fps(&fpsTimer, &fps, renderer);
 
         Move_player(keyboard_state, &player);
 

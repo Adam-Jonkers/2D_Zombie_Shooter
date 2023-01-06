@@ -36,7 +36,7 @@ typedef struct {
     SDL_Color textColor;
     SDL_Texture* texture;
     SDL_Rect textBox;
-    char* text;
+    char text[100];
 } Text_t;
 
 typedef struct {
@@ -74,7 +74,7 @@ void load_Text(Text_t* text, SDL_Renderer* renderer);
 
 void load_Font(TTF_Font** font, char* path);
 
-Timer_t create_timer();
+Timer_t create_timer(void);
 
 void start_timer(Timer_t* timer);
 
@@ -83,5 +83,9 @@ void stop_timer(Timer_t* timer);
 void pause_timer(Timer_t* timer);
 
 void unpause_timer(Timer_t* timer);
+
+u_int32_t get_time_ms(Timer_t* timer);
+
+float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer);
 
 #endif

@@ -240,3 +240,37 @@ void unpause_timer(Timer_t* timer)
     }
 }
 
+u_int32_t get_time_ms(Timer_t* timer)
+{
+    u_int32_t time = 0;
+    if (timer->started)
+    {
+        if (timer->paused)
+        {
+            time = timer->pausedTicks;
+        } else {
+            time = SDL_GetTicks() - timer->startTicks;
+        }
+    }
+    return time;
+}
+
+float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
+{
+    static int frameCount = 0;
+    static float fps = 0;
+    char str[200];
+    if (get_time_ms(timer) >= 1000)
+    {
+        fps = frameCount / (get_time_ms(timer) / 1000.f);
+        frameCount = 0;
+        start_timer(timer);
+        //printf("FPS: %f\n", fps);
+        sprintf(str, "FPS: %.2f", fps);
+        strcpy(fps_text->text, str);
+        load_Text(fps_text, renderer);
+    }
+    frameCount++;
+    return fps;
+}
+
