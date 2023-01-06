@@ -17,7 +17,7 @@ double mouse_angle(SDL_FRect sprite)
     return angle;
 }
 
-Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
+Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
 {
     Player_t player;
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
@@ -26,8 +26,8 @@ Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer)
     load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
     player.sprite.w = 60;
     player.sprite.h = 60;
-    player.sprite.x = dm.w / 2 - player.sprite.w / 2;
-    player.sprite.y = dm.h / 2 - player.sprite.h / 2;
+    player.sprite.x = window_x / 2 - player.sprite.w / 2;
+    player.sprite.y = window_y / 2 - player.sprite.h / 2;
     player.center.x = 30;
     player.center.y = 30;
     player.rotation = 0.0;

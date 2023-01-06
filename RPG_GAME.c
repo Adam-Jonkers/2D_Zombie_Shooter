@@ -29,8 +29,11 @@ int main(void)
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
-    SDL_DisplayMode dm;
-    SDL_GetCurrentDisplayMode(0, &dm);
+    int window_x, window_y;
+
+    SDL_GetWindowSize(window, &window_x, &window_y);
+
+    printf("Display: y: %d, x: %d\n", window_y, window_x);
 
     int max_x = MAP_WIDTH;
     int max_y = MAP_HEIGHT;
@@ -40,7 +43,7 @@ int main(void)
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(loadingScreen);
 
-    Player_t player = Setup_player(dm, renderer);
+    Player_t player = Setup_player(window_x, window_y, renderer);
 
     srand(time(NULL));
 
@@ -106,7 +109,7 @@ int main(void)
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, dm.w, dm.h);
+        Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, window_x, window_y);
 
         Draw_Player(renderer, &player);
 

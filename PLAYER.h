@@ -25,7 +25,7 @@ typedef struct {
 
 double mouse_angle(SDL_FRect sprite);
 
-Player_t Setup_player(SDL_DisplayMode dm, SDL_Renderer* renderer);
+Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer);
 
 void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep);
 
