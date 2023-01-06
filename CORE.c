@@ -3,6 +3,7 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <png.h>
 
 #include "CORE.h"
@@ -156,4 +157,31 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
 
     fopen_failed:
         return status;
+}
+
+void load_Text(TTF_Font* font, char* text, SDL_Color textColor, SDL_Texture** textTexture, SDL_Renderer* renderer)
+{
+    if (font == NULL)
+    {
+        printf("this was the error\n");
+    }
+    
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, textColor);
+    if (textSurface == NULL)
+    {
+        printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+    } else {
+        *textTexture = SDL_CreateTextureFromSurface( renderer, textSurface );
+    }
+    SDL_FreeSurface(textSurface);
+}
+
+void load_Font(TTF_Font** font, char* path)
+{
+    *font = TTF_OpenFont(path, 28);
+    if (*font == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    } 
+    printf("font address: %p\n", *font);
 }
