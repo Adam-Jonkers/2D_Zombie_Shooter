@@ -27,12 +27,12 @@ MAP.o: MAP.c MAP.h CORE.h
 PLAYER.o: PLAYER.c PLAYER.h CORE.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
-ENEMY.o: ENEMY.c ENEMY.h CORE.h
+ENEMYS.o: ENEMYS.c ENEMYS.h CORE.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: RPG_GAME.o CORE.o MAP.o PLAYER.o ENEMY.o
+game.out: RPG_GAME.o CORE.o MAP.o PLAYER.o ENEMYS.o
 	$(CC) $(CFLAGS) $^ $(LINKS) -o $@
 
 
