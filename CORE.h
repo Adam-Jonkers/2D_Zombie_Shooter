@@ -17,6 +17,7 @@ typedef struct {
 typedef struct {
     int length;
     SDL_Texture* animation[MAXANIMATION];
+    int speed;
 } Animation_t;
 
 typedef struct {

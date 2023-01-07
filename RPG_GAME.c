@@ -111,7 +111,7 @@ int main(void)
 
         Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, window_x, window_y);
 
-        Draw_Player(renderer, &player);
+        Draw_Player(renderer, &player, timeStep);
 
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
 

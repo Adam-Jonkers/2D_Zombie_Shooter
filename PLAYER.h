@@ -11,11 +11,11 @@ typedef struct {
     int damage;
     int ammo;
     int weapon;
+    Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
     SDL_FRect sprite;
     SDL_FPoint center;
-    int action;
     double rotation;
     float maxspeed;
     vec2_t position;
@@ -29,6 +29,6 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer);
 
 void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep);
 
-void Draw_Player(SDL_Renderer* renderer, Player_t* player);
+void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep);
 
 #endif
