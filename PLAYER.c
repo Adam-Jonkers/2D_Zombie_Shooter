@@ -107,3 +107,32 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep)
         frame = 0;
     }
 }
+
+Bullet_t* Create_Bullet(SDL_Renderer* renderer, Player_t* player)
+{
+    Bullet_t* bullet = malloc(sizeof(Bullet_t));
+    bullet->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
+    bullet->position = player->position;
+    bullet->velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
+    return bullet;
+}
+
+void Draw_Bullets(SDL_Renderer* renderer, Bullet_t** bullets, int bullet_count, float timestep)
+{
+    for (int i = 0; i < bullet_count; i++) {
+        Draw_Bullet(renderer, bullets[i], timestep);
+    }
+}
+
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep) 
+{
+    bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, timestep / 1000.0f));
+    SDL_FRect bullet_rect = {bullet->position.x, bullet->position.y, 10, 10};
+    SDL_RenderCopyF(renderer, bullet->texture, NULL, &bullet_rect);
+}
+
+void Destroy_Bullet(Bullet_t* bullet) 
+{
+    SDL_DestroyTexture(bullet->texture);
+    free(bullet);
+}
