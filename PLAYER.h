@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <stdint.h>
 
 #include "CORE.h"
 
@@ -27,6 +28,9 @@ typedef struct {
     SDL_Texture* texture;
     vec2_t position;
     vec2_t velocity;
+    int index;
+    uint32_t lifetime;
+    uint32_t max_lifetime;
 } Bullet_t;
 
 typedef struct {
@@ -42,10 +46,18 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep);
 
-Bullet_t* Create_Bullet(SDL_Renderer* renderer, Player_t* player);
+void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, float timestep) 
+void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
+
+void Draw_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, float timestep);
 
 void Destroy_Bullet(Bullet_t* bullet);
+
+void Destroy_Bullets(Bullets_t* bullets);
+
+void Remove_Bullet(Bullets_t* bullets, int index);
+
+void Update_Bullets(Bullets_t* bullets, float timestep);
 
 #endif

@@ -108,19 +108,26 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep)
     }
 }
 
-Bullet_t* Create_Bullet(SDL_Renderer* renderer, Player_t* player)
+void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
 {
-    Bullet_t* bullet = malloc(sizeof(Bullet_t));
-    bullet->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullet->position = player->position;
-    bullet->velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
-    return bullet;
+    bullets->bullet = realloc(bullets->bullet,(bullets->num_bullets + 1) * sizeof(Bullet_t));
+    if (bullets->bullet == NULL) {
+        printf("Error: Failed to allocate memory for bullet\n");
+    }
+    bullets->bullet[bullets->num_bullets].texture = load_texture("Assets/Bullet/Bullet.png", renderer);
+    bullets->bullet[bullets->num_bullets].position = player->position;
+    bullets->bullet[bullets->num_bullets].velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
+    bullets->bullet[bullets->num_bullets].index = bullets->num_bullets;
+    bullets->bullet[bullets->num_bullets].lifetime = 0;
+    bullets->bullet[bullets->num_bullets].max_lifetime = 2000;
+
+    bullets->num_bullets++;
 }
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, int bullet_count, float timestep)
+void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
 {
-    for (int i = 0; i < bullet_count; i++) {
-        Draw_Bullet(renderer, bullets, timestep);
+    for (int i = 0; i < bullets->num_bullets - 1; i++) {
+        Draw_Bullet(renderer, &bullets->bullet[i], timestep);
     }
 }
 
@@ -133,6 +140,52 @@ void Draw_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
 
 void Destroy_Bullet(Bullet_t* bullet) 
 {
+    if (bullet == NULL) {
+        return;
+    }
+
     SDL_DestroyTexture(bullet->texture);
     free(bullet);
+    bullet = NULL;
+}
+
+void Destroy_Bullets(Bullets_t* bullets)
+{
+  for (int i = 0; i < bullets->num_bullets; i++) {
+    Destroy_Bullet(&bullets->bullet[i]);
+  }
+  free(bullets->bullet);
+  bullets->bullet = NULL;
+  bullets->num_bullets = 0;
+}
+
+void Remove_Bullet(Bullets_t* bullets, int index)
+{
+    if (index < 0 || index >= bullets->num_bullets) {
+        return;
+    }
+
+    Destroy_Bullet(&bullets->bullet[index]);
+
+    for (int i = index; i < bullets->num_bullets - 1; i++) {
+        bullets->bullet[i] = bullets->bullet[i + 1];
+        bullets->bullet[i].index--;
+    }
+
+    bullets->num_bullets--;
+
+    bullets->bullet = realloc(bullets->bullet, bullets->num_bullets * sizeof(Bullet_t));
+    if (bullets->bullet == NULL) {
+        printf("Error: Failed to allocate memory for removing bullet\n");
+    }
+}
+
+void Update_Bullets(Bullets_t* bullets, float timestep)
+{
+    for (int i = 0; i < bullets->num_bullets; i++) {
+        bullets->bullet[i].lifetime += timestep;
+        if (bullets->bullet[i].lifetime > bullets->bullet[i].max_lifetime) {
+            Remove_Bullet(bullets, i);
+        }
+    }
 }
