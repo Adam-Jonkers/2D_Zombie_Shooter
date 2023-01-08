@@ -41,11 +41,13 @@ typedef struct {
 } Text_t;
 
 typedef struct {
-    u_int32_t startTicks;
-    u_int32_t pausedTicks;
+    uint32_t startTicks;
+    uint32_t pausedTicks;
     bool paused;
     bool started;
 } Timer_t;
+
+
 
 int get_random_number(int min, int max);
 

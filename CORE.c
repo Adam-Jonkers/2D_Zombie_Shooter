@@ -242,7 +242,7 @@ void unpause_timer(Timer_t* timer)
 
 u_int32_t get_time_ms(Timer_t* timer)
 {
-    u_int32_t time = 0;
+    uint32_t time = 0;
     if (timer->started)
     {
         if (timer->paused)
@@ -265,7 +265,6 @@ float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
         fps = frameCount / (get_time_ms(timer) / 1000.f);
         frameCount = 0;
         start_timer(timer);
-        //printf("FPS: %f\n", fps);
         sprintf(str, "FPS: %.2f", fps);
         strcpy(fps_text->text, str);
         load_Text(fps_text, renderer);
