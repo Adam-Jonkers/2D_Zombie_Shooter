@@ -45,6 +45,10 @@ int main(void)
 
     Player_t player = Setup_player(window_x, window_y, renderer);
 
+    Bullets_t bullets;
+    bullets.bullet = NULL;
+    bullets.num_bullets = 0;
+
     srand(time(NULL));
 
     float* noisemap = calloc((max_x * max_y), sizeof(float));
@@ -104,12 +108,16 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep);
+        Move_player(keyboard_state, &player, timeStep, renderer, &bullets);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, window_x, window_y);
+
+        Update_Bullets(&bullets, timeStep);
+
+        Draw_Bullets(renderer, &bullets, timeStep);
 
         Draw_Player(renderer, &player, timeStep);
 

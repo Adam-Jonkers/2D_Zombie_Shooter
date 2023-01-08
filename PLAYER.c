@@ -43,7 +43,7 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets) 
 {
     player->maxspeed = 100.0f;
     player->acceleration = 20.0f;
@@ -77,6 +77,9 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep)
     }
     if (keyboard_state[SDL_SCANCODE_LCTRL]) {
         player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 4.0f));
+    }
+    if (keyboard_state[SDL_SCANCODE_SPACE]) {
+        Create_Bullet(renderer, player, bullets);
     }
     if (length_vec2(player->velocity) > player->maxspeed) {
         player->velocity = normalise_vec2(player->velocity);
@@ -115,7 +118,7 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
         printf("Error: Failed to allocate memory for bullet\n");
     }
     bullets->bullet[bullets->num_bullets].texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullets->bullet[bullets->num_bullets].position = player->position;
+    bullets->bullet[bullets->num_bullets].position = (vec2_t) {player->sprite.x, player->sprite.y};
     bullets->bullet[bullets->num_bullets].velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
     bullets->bullet[bullets->num_bullets].index = bullets->num_bullets;
     bullets->bullet[bullets->num_bullets].lifetime = 0;
@@ -131,11 +134,11 @@ void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
     }
 }
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, float timestep) 
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep) 
 {
-    bullets->bullet->position = add_vec2(bullets->bullet->position, multiply_vec2(bullets->bullet->velocity, timestep / 1000.0f));
-    SDL_FRect bullet_rect = {bullets->bullet->position.x, bullets->bullet->position.y, 10, 10};
-    SDL_RenderCopyF(renderer, bullets->bullet->texture, NULL, &bullet_rect);
+    bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, timestep / 1000.0f));
+    SDL_FRect bullet_rect = {bullet->position.x, bullet->position.y, 10, 10};
+    SDL_RenderCopyF(renderer, bullet->texture, NULL, &bullet_rect);
 }
 
 void Destroy_Bullet(Bullet_t* bullet) 

@@ -42,15 +42,15 @@ double mouse_angle(SDL_FRect sprite);
 
 Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer);
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep);
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep);
 
 void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
+void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep);
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, float timestep);
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep);
 
 void Destroy_Bullet(Bullet_t* bullet);
 
