@@ -51,6 +51,11 @@ play: game.out
 debug: game.out
 	gdb ./game.out
 
+# Target: debug memory game.
+.PHONY: mem
+mem: game.out
+	valgrind ./game.out
+
 
 
 
