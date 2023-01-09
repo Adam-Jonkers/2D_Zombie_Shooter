@@ -34,7 +34,7 @@ typedef struct {
 } Bullet_t;
 
 typedef struct {
-    Bullet_t* bullet;
+    Bullet_t** bullet;
     int num_bullets;
 } Bullets_t;
 

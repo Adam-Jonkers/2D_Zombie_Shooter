@@ -113,24 +113,29 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep)
 
 void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
 {
-    bullets->bullet = realloc(bullets->bullet,(bullets->num_bullets + 1) * sizeof(Bullet_t));
-    if (bullets->bullet == NULL) {
+    void* ptr = realloc(bullets->bullet, (bullets->num_bullets + 1) * sizeof(Bullet_t*));
+    if (ptr == NULL) {
         printf("Error: Failed to allocate memory for bullet\n");
+    } else {
+        bullets->bullet = ptr;
     }
-    bullets->bullet[bullets->num_bullets].texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullets->bullet[bullets->num_bullets].position = (vec2_t) {player->sprite.x, player->sprite.y};
-    bullets->bullet[bullets->num_bullets].velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
-    bullets->bullet[bullets->num_bullets].index = bullets->num_bullets;
-    bullets->bullet[bullets->num_bullets].lifetime = 0;
-    bullets->bullet[bullets->num_bullets].max_lifetime = 2000;
+
+    bullets->bullet[bullets->num_bullets] = calloc(1, sizeof(Bullet_t));
+
+    bullets->bullet[bullets->num_bullets]->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
+    bullets->bullet[bullets->num_bullets]->position = (vec2_t) {player->sprite.x + (3 * player->sprite.w / 4), player->sprite.y + (2.6 * player->sprite.h / 4)};
+    bullets->bullet[bullets->num_bullets]->velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
+    bullets->bullet[bullets->num_bullets]->index = bullets->num_bullets;
+    bullets->bullet[bullets->num_bullets]->lifetime = 0;
+    bullets->bullet[bullets->num_bullets]->max_lifetime = 2000;
 
     bullets->num_bullets++;
 }
 
 void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
 {
-    for (int i = 0; i < bullets->num_bullets - 1; i++) {
-        Draw_Bullet(renderer, &bullets->bullet[i], timestep);
+    for (int i = 0; i < bullets->num_bullets; i++) {
+        Draw_Bullet(renderer, bullets->bullet[i], timestep);
     }
 }
 
@@ -144,6 +149,7 @@ void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep)
 void Destroy_Bullet(Bullet_t* bullet) 
 {
     if (bullet == NULL) {
+        printf("Error: Bullet is NULL\n");
         return;
     }
 
@@ -155,7 +161,7 @@ void Destroy_Bullet(Bullet_t* bullet)
 void Destroy_Bullets(Bullets_t* bullets)
 {
   for (int i = 0; i < bullets->num_bullets; i++) {
-    Destroy_Bullet(&bullets->bullet[i]);
+    Destroy_Bullet(bullets->bullet[i]);
   }
   free(bullets->bullet);
   bullets->bullet = NULL;
@@ -168,26 +174,34 @@ void Remove_Bullet(Bullets_t* bullets, int index)
         return;
     }
 
-    Destroy_Bullet(&bullets->bullet[index]);
+    Destroy_Bullet(bullets->bullet[index]);
 
     for (int i = index; i < bullets->num_bullets - 1; i++) {
         bullets->bullet[i] = bullets->bullet[i + 1];
-        bullets->bullet[i].index--;
+        bullets->bullet[i]->index--;
     }
 
     bullets->num_bullets--;
 
-    bullets->bullet = realloc(bullets->bullet, bullets->num_bullets * sizeof(Bullet_t));
-    if (bullets->bullet == NULL) {
-        printf("Error: Failed to allocate memory for removing bullet\n");
+    if (bullets->num_bullets == 0) {
+        free(bullets->bullet);
+        bullets->bullet = NULL;
+        return;
+    } else {
+        void* ptr = realloc(bullets->bullet, bullets->num_bullets * sizeof(Bullet_t*));
+        if (ptr == NULL) {
+            printf("Error: Failed to allocate memory for removing bullet\n");
+        } else {
+            bullets->bullet = ptr;
+        }
     }
 }
 
 void Update_Bullets(Bullets_t* bullets, float timestep)
 {
     for (int i = 0; i < bullets->num_bullets; i++) {
-        bullets->bullet[i].lifetime += timestep;
-        if (bullets->bullet[i].lifetime > bullets->bullet[i].max_lifetime) {
+        bullets->bullet[i]->lifetime += timestep;
+        if (bullets->bullet[i]->lifetime > bullets->bullet[i]->max_lifetime) {
             Remove_Bullet(bullets, i);
         }
     }
