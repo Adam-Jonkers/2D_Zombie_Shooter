@@ -27,12 +27,16 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
 
     player.currentAnimation = &player.idleAnimation;
 
-    player.sprite.w = 60;
-    player.sprite.h = 60;
+    int w, h;
+
+    SDL_QueryTexture(player.currentAnimation->animation[0], NULL, NULL, &w, &h);
+
+    player.sprite.w = w/3.5;
+    player.sprite.h = h/3.5;
     player.sprite.x = window_x / 2 - player.sprite.w / 2;
     player.sprite.y = window_y / 2 - player.sprite.h / 2;
-    player.center.x = 30;
-    player.center.y = 30;
+    player.center.x = 95/3.5;
+    player.center.y = 120/3.5;
     player.rotation = 0.0;
     player.maxspeed = 100.0;
     player.position.x = 0;
@@ -123,7 +127,8 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->bullet[bullets->num_bullets] = calloc(1, sizeof(Bullet_t));
 
     bullets->bullet[bullets->num_bullets]->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullets->bullet[bullets->num_bullets]->position = (vec2_t) {player->sprite.x + (3 * player->sprite.w / 4), player->sprite.y + (2.6 * player->sprite.h / 4)};
+    bullets->bullet[bullets->num_bullets]->position.x = player->sprite.x + player->center.x + 32/3.5 * cos(player->rotation + 1.5708) + 180/3.5 * cos(player->rotation) - 4;
+    bullets->bullet[bullets->num_bullets]->position.y = player->sprite.y + player->center.y + 32/3.5 * sin(player->rotation + 1.5708) + 180/3.5 * sin(player->rotation) - 5;
     bullets->bullet[bullets->num_bullets]->velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
     bullets->bullet[bullets->num_bullets]->index = bullets->num_bullets;
     bullets->bullet[bullets->num_bullets]->lifetime = 0;
