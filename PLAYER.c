@@ -39,15 +39,17 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
     player.center.y = 120/3.5;
     player.rotation = 0.0;
     player.maxspeed = 100.0;
-    player.position.x = 0;
-    player.position.y = 0;
+    player.position.x = 1000;
+    player.position.y = 1000;
+    player.camera.x = player.position.x - window_x / 2;
+    player.camera.y = player.position.y - window_y / 2;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max) 
 {
     player->maxspeed = 100.0f;
     player->acceleration = 20.0f;
@@ -90,10 +92,57 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
         player->velocity = multiply_vec2(player->velocity, player->maxspeed);
     }
 
-    player->position.x += (player->velocity.x) * timestep / 1000.0f;
-    player->position.y += (player->velocity.y) * timestep / 1000.0f;
+    float move_x = (player->velocity.x) * timestep / 1000.0f;
+    float move_y = (player->velocity.y) * timestep / 1000.0f;
+    
+    if (player->position.x + move_x - windowsize.x / 2 < 0)
+    {
+        move_x = 0;//-player->position.x - windowsize.x / 2;
+    }
+    if (player->position.x + move_x + windowsize.x / 2 > max.x)
+    {
+        move_x = 0;//max.x - player->position.x - windowsize.x / 2;
+    }
+    if (player->position.y + move_y - windowsize.y / 2 < 0)
+    {
+        move_y = 0;//-player->position.x - windowsize.x / 2;
+    }
+    if (player->position.y + move_y + windowsize.y / 2 > max.y)
+    {
+        move_y = 0;//max.x - player->position.x - windowsize.x / 2;
+    }
+    player->position.x += move_x;
+    player->position.y += move_y;
 
     player->rotation = mouse_angle(player->sprite);
+
+    if (player->position.x + move_x + windowsize.x / 2 > max.x && player->position.y + move_y + windowsize.y / 2 > max.y)
+    {
+        player->camera.x = max.x - windowsize.x / 2 ;
+        player->camera.y = max.y - windowsize.y / 2;
+    }
+    else if (player->position.x + move_x + windowsize.x / 2 > max.x && player->position.y + move_y - windowsize.y / 2 < 0)
+    {
+        player->camera.x = max.x - windowsize.x / 2;
+        player->camera.y = 0;
+    }
+    else if (player->position.x + move_x - windowsize.x / 2 < 0 && player->position.y + move_y + windowsize.y / 2 > max.y)
+    {
+        player->camera.x = 0;
+        player->camera.y = max.y - windowsize.y / 2;
+    }
+    else if (player->position.x + move_x - windowsize.x / 2 < 0 && player->position.y + move_y - windowsize.y / 2 < 0)
+    {
+        player->camera.x = 0;
+        player->camera.y = 0;
+    } else
+    {
+        player->camera.x = player->position.x - windowsize.x / 2;
+        player->camera.y = player->position.y - windowsize.y / 2;
+    }
+    
+
+
 }
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep)

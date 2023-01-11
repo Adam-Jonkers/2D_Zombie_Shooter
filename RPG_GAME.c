@@ -29,11 +29,14 @@ int main(void)
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
-    int window_x, window_y;
+    vec2_t windowsize;
+    int window_width, window_height;
 
-    SDL_GetWindowSize(window, &window_x, &window_y);
+    SDL_GetWindowSize(window, &window_width, &window_height);
+    windowsize.x = window_width;
+    windowsize.y = window_height;
 
-    printf("Display: y: %d, x: %d\n", window_y, window_x);
+    printf("Display: y: %d, x: %d\n", window_height, window_width);
 
     vec2_t max = {MAP_WIDTH, MAP_HEIGHT};
 
@@ -42,7 +45,7 @@ int main(void)
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(loadingScreen);
 
-    Player_t player = Setup_player(window_x, window_y, renderer);
+    Player_t player = Setup_player(windowsize.x, windowsize.y, renderer);
 
     Bullets_t bullets;
     bullets.bullet = NULL;
@@ -107,12 +110,12 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &bullets);
+        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map_Texture(renderer, map_texture, player.position.x, player.position.y, window_x, window_y);
+        Draw_Map_Texture(renderer, map_texture, player.camera.x, player.camera.y, windowsize.x, windowsize.y);
 
         Update_Bullets(&bullets, timeStep);
 
