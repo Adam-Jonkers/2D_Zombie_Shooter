@@ -150,18 +150,18 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep, vec2_
 
     time += timestep;
 
-    if (player->position.x - windowsize.x / 2 > 0 && player->position.x + windowsize.x / 2 < max.x && player->position.y - windowsize.y / 2 > 0 && player->position.y + windowsize.y / 2 < max.y)
+    if (player->position.x - windowsize.x / 2 > 0 && player->position.x + windowsize.x < max.x && player->position.y - windowsize.y / 2 > 0 && player->position.y + windowsize.y < max.y)
     {
         player->sprite.x = windowsize.x / 2 - player->sprite.w / 2;
         player->sprite.y = windowsize.y / 2 - player->sprite.h / 2;
     } 
-    if (player->position.x - windowsize.x / 2 < 0 || player->position.x + windowsize.x / 2 > max.x)
+    if (player->position.x - windowsize.x / 2 < 0 || player->position.x + windowsize.x > max.x)
     {
-        player->sprite.x = player->position.x - player->sprite.w / 2;
+        player->sprite.x = player->position.x - player->sprite.w / 2 - player->camera.x;
     } 
-    if (player->position.y - windowsize.y / 2 < 0 || player->position.y + windowsize.y / 2 > max.y)
+    if (player->position.y - windowsize.y / 2 < 0 || player->position.y + windowsize.y > max.y)
     {
-        player->sprite.y = player->position.y - player->sprite.h / 2;
+        player->sprite.y = player->position.y - player->sprite.h / 2 - player->camera.y;
     }
 
     SDL_RenderCopyExF(renderer, player->currentAnimation->animation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
