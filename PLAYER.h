@@ -22,6 +22,7 @@ typedef struct {
     vec2_t position;
     vec2_t velocity;
     float acceleration;
+    vec2_t camera;
 } Player_t;
 
 typedef struct {
