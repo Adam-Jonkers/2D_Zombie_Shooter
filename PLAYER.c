@@ -127,27 +127,27 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->bullet[bullets->num_bullets] = calloc(1, sizeof(Bullet_t));
 
     bullets->bullet[bullets->num_bullets]->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullets->bullet[bullets->num_bullets]->position.x = player->sprite.x + player->center.x + 32/3.5 * cos(player->rotation + 1.5708) + 180/3.5 * cos(player->rotation) - 4;
-    bullets->bullet[bullets->num_bullets]->position.y = player->sprite.y + player->center.y + 32/3.5 * sin(player->rotation + 1.5708) + 180/3.5 * sin(player->rotation) - 5;
-    bullets->bullet[bullets->num_bullets]->velocity = (vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)};
+    bullets->bullet[bullets->num_bullets]->position.x = player->position.x + player->sprite.x + player->center.x + 32/3.5 * cos(player->rotation + 1.5708) + 180/3.5 * cos(player->rotation) - 4;
+    bullets->bullet[bullets->num_bullets]->position.y = player->position.y + player->sprite.y + player->center.y + 32/3.5 * sin(player->rotation + 1.5708) + 180/3.5 * sin(player->rotation) - 5;
+    bullets->bullet[bullets->num_bullets]->velocity =  add_vec2 ((vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)}, player->velocity);
     bullets->bullet[bullets->num_bullets]->index = bullets->num_bullets;
     bullets->bullet[bullets->num_bullets]->lifetime = 0;
-    bullets->bullet[bullets->num_bullets]->max_lifetime = 2000;
+    bullets->bullet[bullets->num_bullets]->max_lifetime = 5000;
 
     bullets->num_bullets++;
 }
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep)
+void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep, Player_t* player)
 {
     for (int i = 0; i < bullets->num_bullets; i++) {
-        Draw_Bullet(renderer, bullets->bullet[i], timestep);
+        Draw_Bullet(renderer, bullets->bullet[i], timestep, player);
     }
 }
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep) 
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep, Player_t* player) 
 {
     bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, timestep / 1000.0f));
-    SDL_FRect bullet_rect = {bullet->position.x, bullet->position.y, 10, 10};
+    SDL_FRect bullet_rect = {bullet->position.x - player->position.x, bullet->position.y - player->position.y, 10, 10};
     SDL_RenderCopyF(renderer, bullet->texture, NULL, &bullet_rect);
 }
 

@@ -48,9 +48,9 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep);
 
 void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep);
+void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep, Player_t* player);
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep);
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep, Player_t* player);
 
 void Destroy_Bullet(Bullet_t* bullet);
 

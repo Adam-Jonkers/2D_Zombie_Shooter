@@ -117,7 +117,7 @@ int main(void)
 
         Update_Bullets(&bullets, timeStep);
 
-        Draw_Bullets(renderer, &bullets, timeStep);
+        Draw_Bullets(renderer, &bullets, timeStep, &player);
 
         Draw_Player(renderer, &player, timeStep);
 
