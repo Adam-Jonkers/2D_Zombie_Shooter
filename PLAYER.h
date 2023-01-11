@@ -45,7 +45,7 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer);
 
 void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max);
 
-void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep);
+void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep, vec2_t windowsize, vec2_t max);
 
 void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
 

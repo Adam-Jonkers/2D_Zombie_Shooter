@@ -121,7 +121,7 @@ int main(void)
 
         Draw_Bullets(renderer, &bullets, timeStep, &player);
 
-        Draw_Player(renderer, &player, timeStep);
+        Draw_Player(renderer, &player, timeStep, windowsize, max);
 
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
 
