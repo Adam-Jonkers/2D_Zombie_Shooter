@@ -8,6 +8,7 @@
 
 #include "MAP.h"
 #include "CORE.h"
+#include "PLAYER.h"
 
 #define FREQUENCY 75
 
@@ -54,21 +55,21 @@ float noise(vec2_t p, float* noisemap, int width) {
     return ((1.0 - fade_t1) * p0p1 + fade_t1 * p2p3);
 }
 
-void Setup_Noise_Map(int max_x, int max_y,float* noisemap, float* randarray)
+void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
 {
     // Setup noise map
-    generate_texture_map(max_x, max_y, randarray);
+    generate_texture_map(max.x, max.y, randarray);
     printf("Made Texture Map\n");
-    for (int y = 0; y < max_y; y++)
+    for (int y = 0; y < (int)max.y; y++)
     {
-        for (int x = 0; x < max_x; x++)
+        for (int x = 0; x < (int)max.x; x++)
         {
             vec2_t i = (vec2_t){x, y};
-            float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, max_x) * 1.0 +
-            noise(divide_vec2(i, FREQUENCY * 4), randarray, max_x) * 0.5 +
-            noise(divide_vec2(i, FREQUENCY * 2), randarray, max_x) * 0.25 +
-            noise(divide_vec2(i, FREQUENCY), randarray, max_x) * 0.125;
-            noisemap[x + (max_x * y)] = n;
+            float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, (int)max.x) * 1.0 +
+            noise(divide_vec2(i, FREQUENCY * 4), randarray, (int)max.x) * 0.5 +
+            noise(divide_vec2(i, FREQUENCY * 2), randarray, (int)max.x) * 0.25 +
+            noise(divide_vec2(i, FREQUENCY), randarray, (int)max.x) * 0.125;
+            noisemap[x + ((int)max.x * y)] = n;
         }
     }
 }
@@ -113,9 +114,9 @@ SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer)
     return (load_texture("map.png", renderer));
 }
 
-void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, int display_x, int display_y, int displaysize_x, int displaysize_y)
+void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, Player_t* player, vec2_t windowsize)
 {
-    SDL_Rect src = {display_x, display_y, displaysize_x, displaysize_y};
-    SDL_Rect dst = {0, 0, displaysize_x, displaysize_y};
+    SDL_Rect src = {player->camera.x, player->camera.y, windowsize.x, windowsize.y};
+    SDL_Rect dst = {0, 0, windowsize.x, windowsize.y};
     SDL_RenderCopy(renderer, map_texture, &src, &dst);
 }

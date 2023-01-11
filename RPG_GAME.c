@@ -45,7 +45,7 @@ int main(void)
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(loadingScreen);
 
-    Player_t player = Setup_player(windowsize.x, windowsize.y, renderer);
+    Player_t player = Setup_player(windowsize, renderer);
 
     Bullets_t bullets;
     bullets.bullet = NULL;
@@ -77,7 +77,7 @@ int main(void)
 
     load_Text(&fps, renderer);
 
-    Setup_Noise_Map(max.x, max.y, noisemap, randarray);
+    Setup_Noise_Map(max, noisemap, randarray);
     Setup_Map_Png(bmap, noisemap);
     
     bool running = true;
@@ -115,7 +115,7 @@ int main(void)
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map_Texture(renderer, map_texture, player.camera.x, player.camera.y, windowsize.x, windowsize.y);
+        Draw_Map_Texture(renderer, map_texture, &player, windowsize);
 
         Update_Bullets(&bullets, timeStep);
 

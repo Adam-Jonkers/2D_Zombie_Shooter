@@ -14,7 +14,7 @@ double mouse_angle(SDL_FRect sprite)
     return angle;
 }
 
-Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
+Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
 {
     Player_t player;
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
@@ -33,16 +33,16 @@ Player_t Setup_player(int window_x, int window_y, SDL_Renderer* renderer)
 
     player.sprite.w = w/3.5;
     player.sprite.h = h/3.5;
-    player.sprite.x = window_x / 2 - player.sprite.w / 2;
-    player.sprite.y = window_y / 2 - player.sprite.h / 2;
+    player.sprite.x = windowsize.x / 2 - player.sprite.w / 2;
+    player.sprite.y = windowsize.y / 2 - player.sprite.h / 2;
     player.center.x = 95/3.5;
     player.center.y = 120/3.5;
     player.rotation = 0.0;
     player.maxspeed = 100.0;
     player.position.x = 1000;
     player.position.y = 1000;
-    player.camera.x = player.position.x - window_x / 2;
-    player.camera.y = player.position.y - window_y / 2;
+    player.camera.x = player.position.x - windowsize.x / 2;
+    player.camera.y = player.position.y - windowsize.y / 2;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
