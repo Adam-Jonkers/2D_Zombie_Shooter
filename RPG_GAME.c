@@ -93,18 +93,14 @@ int main(void)
 
     SDL_Texture* map_texture = Load_Map_Texture(renderer);
 
-    while (running)
-    {
+    while (running) {
         SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
                 running = false;
             }
         }
-        if (keyboard_state[SDL_SCANCODE_ESCAPE])
-        {
+        if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
             running = false;
         }
 

@@ -68,8 +68,7 @@ SDL_Texture* load_texture(char* path, SDL_Renderer* renderer)
 
 void load_animation(Animation_t *animation, char* path, SDL_Renderer* renderer)
 {
-    for (int i = 0; i <= animation->length; i++)
-    {
+    for (int i = 0; i <= animation->length; i++) {
         char fullPath[100];
         strcpy(fullPath, path);
         char index[20];
@@ -164,19 +163,16 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
 void load_Text(Text_t* text, SDL_Renderer* renderer)
 {
     SDL_Surface* textSurface = NULL;
-    if (text->font == NULL)
-    {
+    if (text->font == NULL) {
         printf("Font not setup\n");
     } else {
         textSurface = TTF_RenderText_Solid(text->font, text->text, text->textColor);
     }
-    if (textSurface == NULL)
-    {
+    if (textSurface == NULL) {
         printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
     } else {
         text->texture = SDL_CreateTextureFromSurface( renderer, textSurface );
-        if (text->texture == NULL)
-        {
+        if (text->texture == NULL) {
             printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
         } else {
             text->textBox.w = textSurface->w;
@@ -189,11 +185,9 @@ void load_Text(Text_t* text, SDL_Renderer* renderer)
 void load_Font(TTF_Font** font, char* path)
 {
     *font = TTF_OpenFont(path, 15);
-    if (*font == NULL)
-    {
+    if (*font == NULL) {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-    } else
-    {
+    } else {
         printf("Loaded Font\n");
     }
     
@@ -227,8 +221,7 @@ void stop_timer(Timer_t* timer)
 
 void pause_timer(Timer_t* timer)
 {
-    if (timer->started && !timer->paused)
-    {
+    if (timer->started && !timer->paused) {
         timer->paused = true;
         timer->pausedTicks = SDL_GetTicks() - timer->startTicks;
         timer->startTicks = 0;
@@ -237,8 +230,7 @@ void pause_timer(Timer_t* timer)
 
 void unpause_timer(Timer_t* timer)
 {
-    if (timer->started && timer->paused)
-    {
+    if (timer->started && timer->paused) {
         timer->paused = false;
         timer->startTicks = SDL_GetTicks() - timer->pausedTicks;
         timer->pausedTicks = 0;
@@ -248,10 +240,8 @@ void unpause_timer(Timer_t* timer)
 u_int32_t get_time_ms(Timer_t* timer)
 {
     uint32_t time = 0;
-    if (timer->started)
-    {
-        if (timer->paused)
-        {
+    if (timer->started) {
+        if (timer->paused) {
             time = timer->pausedTicks;
         } else {
             time = SDL_GetTicks() - timer->startTicks;
@@ -265,8 +255,7 @@ float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
     static int frameCount = 0;
     static float fps = 0;
     char str[200];
-    if (get_time_ms(timer) >= 1000)
-    {
+    if (get_time_ms(timer) >= 1000) {
         fps = frameCount / (get_time_ms(timer) / 1000.f);
         frameCount = 0;
         start_timer(timer);

@@ -14,8 +14,7 @@
 
 void generate_texture_map(int max_x, int max_y, float* randarray) {
     for (int y = 0; y < max_y; y++) {
-        for (int x = 0; x < max_x; x++)
-        {
+        for (int x = 0; x < max_x; x++) {
             randarray[x + (max_x * y)] = (float)rand() / RAND_MAX;
         } 
     }
@@ -60,10 +59,8 @@ void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
 {
     // Setup noise map
     generate_texture_map(max.x, max.y, randarray);
-    for (int y = 0; y < (int)max.y; y++)
-    {
-        for (int x = 0; x < (int)max.x; x++)
-        {
+    for (int y = 0; y < (int)max.y; y++) {
+        for (int x = 0; x < (int)max.x; x++) {
             vec2_t i = (vec2_t){x, y};
             float n = noise(divide_vec2(i, FREQUENCY * 8), randarray, (int)max.x) * 1.0 +
             noise(divide_vec2(i, FREQUENCY * 4), randarray, (int)max.x) * 0.5 +
@@ -78,10 +75,8 @@ void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
 void Setup_Map_Png(bitmap_t map, float* noisemap)
 {
     // Setup map
-    for (size_t y = 0; y < map.height; y++)
-    {
-        for (size_t x = 0; x < map.width; x++)
-        {
+    for (size_t y = 0; y < map.height; y++) {
+        for (size_t x = 0; x < map.width; x++) {
             float n = noisemap[x + (map.width * y)];
             if (n < -0.5) {
                 map.pixels[x + (map.width * y)] = (pixel_t){75, 182, 239};
@@ -107,8 +102,7 @@ void Setup_Map_Png(bitmap_t map, float* noisemap)
     }
     if (save_png_to_file(&map, "map.png") != 0) {
         printf("Failed to save map.png");
-    } else
-    {
+    } else {
         printf("Saved map.png\n");
     }
     
