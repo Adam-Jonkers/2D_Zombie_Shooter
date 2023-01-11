@@ -46,6 +46,9 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
+
+    printf("Player setup complete\n");
+
     return player;
 }
 

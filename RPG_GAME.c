@@ -144,5 +144,5 @@ int main(void)
         printf("Error deleting map file");
     }
     
-    printf("\nQuit Successfully\n");
+    printf("Quit Successfully\n");
 }

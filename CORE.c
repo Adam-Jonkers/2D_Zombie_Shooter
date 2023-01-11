@@ -192,7 +192,11 @@ void load_Font(TTF_Font** font, char* path)
     if (*font == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-    } 
+    } else
+    {
+        printf("Loaded Font\n");
+    }
+    
 }
 
 Timer_t create_timer()

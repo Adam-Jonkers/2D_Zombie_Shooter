@@ -19,6 +19,7 @@ void generate_texture_map(int max_x, int max_y, float* randarray) {
             randarray[x + (max_x * y)] = (float)rand() / RAND_MAX;
         } 
     }
+    printf("Generated texture map\n");
 }
 
 float fade(float t) {
@@ -59,7 +60,6 @@ void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
 {
     // Setup noise map
     generate_texture_map(max.x, max.y, randarray);
-    printf("Made Texture Map\n");
     for (int y = 0; y < (int)max.y; y++)
     {
         for (int x = 0; x < (int)max.x; x++)
@@ -72,6 +72,7 @@ void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
             noisemap[x + ((int)max.x * y)] = n;
         }
     }
+    printf("Generated noise map\n");
 }
 
 void Setup_Map_Png(bitmap_t map, float* noisemap)
@@ -106,11 +107,16 @@ void Setup_Map_Png(bitmap_t map, float* noisemap)
     }
     if (save_png_to_file(&map, "map.png") != 0) {
         printf("Failed to save map.png");
+    } else
+    {
+        printf("Saved map.png\n");
     }
+    
 }
 
 SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer) 
 {
+    printf("Loaded map.png\n");
     return (load_texture("map.png", renderer));
 }
 
