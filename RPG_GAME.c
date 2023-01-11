@@ -35,8 +35,7 @@ int main(void)
 
     printf("Display: y: %d, x: %d\n", window_y, window_x);
 
-    int max_x = MAP_WIDTH;
-    int max_y = MAP_HEIGHT;
+    vec2_t max = {MAP_WIDTH, MAP_HEIGHT};
 
     SDL_Texture* loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", renderer);
     SDL_RenderCopy(renderer, loadingScreen, NULL, NULL);
@@ -51,13 +50,13 @@ int main(void)
 
     srand(time(NULL));
 
-    float* noisemap = calloc((max_x * max_y), sizeof(float));
-    float* randarray = calloc((max_x * max_y), sizeof(float));
-    char* map = calloc((max_x * max_y), sizeof(char));
+    float* noisemap = calloc((max.x * max.y), sizeof(float));
+    float* randarray = calloc((max.x * max.y), sizeof(float));
+    char* map = calloc((max.x * max.y), sizeof(char));
     bitmap_t bmap;
-    bmap.height = max_y;
-    bmap.width = max_x;
-    bmap.pixels = calloc((max_x * max_y), sizeof(pixel_t));
+    bmap.height = max.y;
+    bmap.width = max.x;
+    bmap.pixels = calloc((max.x * max.y), sizeof(pixel_t));
 
     TTF_Font* font = NULL;
 
@@ -75,7 +74,7 @@ int main(void)
 
     load_Text(&fps, renderer);
 
-    Setup_Noise_Map(max_x, max_y, noisemap, randarray);
+    Setup_Noise_Map(max.x, max.y, noisemap, randarray);
     Setup_Map_Png(bmap, noisemap);
     
     bool running = true;
