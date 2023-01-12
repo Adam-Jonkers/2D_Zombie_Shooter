@@ -47,6 +47,8 @@ int main(void)
 
     Player_t player = Setup_player(windowsize, renderer);
 
+    mouse_t mouse;
+
     Bullets_t bullets;
     bullets.bullet = NULL;
     bullets.num_bullets = 0;
@@ -104,9 +106,11 @@ int main(void)
             running = false;
         }
 
+        mouse.buttons = SDL_GetMouseState(&mouse.x, &mouse.y);
+
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max);
+        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max, mouse);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);

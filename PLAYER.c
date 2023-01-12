@@ -6,11 +6,9 @@
 #define PLAYER_MOVE_ANIMATION_LENGTH 19
 #define PLAYER_IDLE_ANIMATION_LENGTH 19
 
-double mouse_angle(SDL_FRect sprite)
+double mouse_angle(SDL_FRect sprite, mouse_t mouse)
 {
-    int mouse_x, mouse_y;
-    SDL_GetMouseState(&mouse_x, &mouse_y);
-    double angle = atan2(mouse_y - sprite.y - 30, mouse_x - sprite.x - 30);
+    double angle = atan2(mouse.y - sprite.y - 30, mouse.x - sprite.x - 30);
     return angle;
 }
 
@@ -52,7 +50,7 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse) 
 {
     player->maxspeed = 100.0f;
     player->acceleration = 20.0f;
@@ -113,7 +111,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
     player->position.x += move_x;
     player->position.y += move_y;
 
-    player->rotation = mouse_angle(player->sprite);
+    player->rotation = mouse_angle(player->sprite, mouse);
 
     if (player->position.x + windowsize.x / 2 > max.x) {
         player->camera.x = max.x - windowsize.x;

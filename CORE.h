@@ -47,7 +47,11 @@ typedef struct {
     bool started;
 } Timer_t;
 
-
+typedef struct {
+    int x;
+    int y;
+    Uint32 buttons;
+} mouse_t;
 
 int get_random_number(int min, int max);
 
