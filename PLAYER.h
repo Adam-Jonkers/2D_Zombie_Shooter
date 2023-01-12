@@ -19,9 +19,9 @@ typedef struct {
     SDL_FPoint center;
     double rotation;
     float maxspeed;
+    float acceleration;
     vec2_t position;
     vec2_t velocity;
-    float acceleration;
     vec2_t camera;
 } Player_t;
 
@@ -43,7 +43,9 @@ double mouse_angle(SDL_FRect sprite, mouse_t mouse);
 
 Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer);
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse);
+float Get_speed_multiplyer(Player_t* player, vec2_t max, float* noisemap);
+
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse, float* noisemap);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep, vec2_t windowsize, vec2_t max);
 

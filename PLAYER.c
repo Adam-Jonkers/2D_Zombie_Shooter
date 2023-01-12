@@ -50,13 +50,40 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse) 
+float Get_speed_multiplyer(Player_t* player, vec2_t max, float* noisemap)
+{
+    float speedmultiplier;
+    float n = noisemap[(int)player->position.x + ((int)max.x * (int)player->position.y)];
+    if (n < -0.5) {
+        speedmultiplier = 0.15;
+    } else if (n < 0) {
+        speedmultiplier = 1;
+    } else if (n < 0.1) {
+        speedmultiplier = 0.95;
+    } else if (n < 0.2) {
+        speedmultiplier = 0.9;
+    } else if (n < 0.3) {
+        speedmultiplier = 0.8;
+    } else if (n < 0.4) {
+        speedmultiplier = 0.7;
+    } else if (n < 0.5) {
+        speedmultiplier = 0.5;
+    } else if (n >= 0.5) {
+        speedmultiplier = 0.25;
+    } else {
+        speedmultiplier = 0;
+    }
+    return speedmultiplier;
+}
+
+void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse, float* noisemap) 
 {
     player->maxspeed = 100.0f;
     player->acceleration = 20.0f;
     player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 20.0f));
     player->currentAnimation = &player->idleAnimation;
     player->moveAnimation.speed = 50;
+    float speedmultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
         player->maxspeed = 200.0f;
         player->acceleration = 50.0f;
@@ -88,9 +115,10 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
     if (mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         Create_Bullet(renderer, player, bullets);
     }
-    if (length_vec2(player->velocity) > player->maxspeed) {
+    speedmultiplier = Get_speed_multiplyer(player, max, noisemap);
+    if (length_vec2(player->velocity) > (player->maxspeed * speedmultiplier)) {
         player->velocity = normalise_vec2(player->velocity);
-        player->velocity = multiply_vec2(player->velocity, player->maxspeed);
+        player->velocity = multiply_vec2(player->velocity, player->maxspeed * speedmultiplier);
     }
 
     float move_x = (player->velocity.x) * timestep / 1000.0f;

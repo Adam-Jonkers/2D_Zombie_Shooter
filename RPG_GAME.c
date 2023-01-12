@@ -110,7 +110,7 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max, mouse);
+        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max, mouse, noisemap);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
