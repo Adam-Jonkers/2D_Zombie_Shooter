@@ -101,7 +101,7 @@ void Setup_Map_Png(bitmap_t map, float* noisemap)
         }
     }
     if (save_png_to_file(&map, "map.png") != 0) {
-        printf("Failed to save map.png");
+        printf("Failed to save map.png\n");
     } else {
         printf("Saved map.png\n");
     }

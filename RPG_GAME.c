@@ -141,7 +141,7 @@ int main(void)
     free(map);
 
     if (remove("map.png")) {
-        printf("Error deleting map file");
+        printf("Error deleting map file\n");
     }
     
     printf("Quit Successfully\n");
