@@ -69,6 +69,7 @@ void Setup_Noise_Map(vec2_t max, float* noisemap, float* randarray)
             noisemap[x + ((int)max.x * y)] = n;
         }
     }
+    free(randarray);
     printf("Generated noise map\n");
 }
 

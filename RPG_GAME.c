@@ -133,7 +133,6 @@ int main(void)
     SDL_DestroyWindow(window);
     SDL_Quit();
     free(noisemap);
-    free(randarray);
     free(map);
 
     if (remove("map.png")) {
