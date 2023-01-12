@@ -85,7 +85,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
     if (keyboard_state[SDL_SCANCODE_LCTRL]) {
         player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 4.0f));
     }
-    if (keyboard_state[SDL_SCANCODE_SPACE]) {
+    if (mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         Create_Bullet(renderer, player, bullets);
     }
     if (length_vec2(player->velocity) > player->maxspeed) {
