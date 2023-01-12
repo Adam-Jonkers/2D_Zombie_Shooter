@@ -49,10 +49,6 @@ int main(void)
 
     mouse_t mouse;
 
-    Bullets_t bullets;
-    bullets.bullet = NULL;
-    bullets.num_bullets = 0;
-
     srand(time(NULL));
 
     float* noisemap = calloc((max.x * max.y), sizeof(float));
@@ -110,16 +106,16 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &bullets, windowsize, max, mouse, noisemap);
+        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowsize, max, mouse, noisemap);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         Draw_Map_Texture(renderer, map_texture, &player, windowsize);
 
-        Update_Bullets(&bullets, timeStep);
+        Update_Bullets(&player.bullets, timeStep);
 
-        Draw_Bullets(renderer, &bullets, timeStep, &player);
+        Draw_Bullets(renderer, timeStep, &player);
 
         Draw_Player(renderer, &player, timeStep, windowsize, max);
 

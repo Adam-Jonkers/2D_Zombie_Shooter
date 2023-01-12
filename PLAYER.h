@@ -8,6 +8,20 @@
 #include "CORE.h"
 
 typedef struct {
+    SDL_Texture* texture;
+    vec2_t position;
+    vec2_t velocity;
+    int index;
+    uint32_t lifetime;
+    uint32_t max_lifetime;
+} Bullet_t;
+
+typedef struct {
+    Bullet_t** bullet;
+    int num_bullets;
+} Bullets_t;
+
+typedef struct {
     int health;
     int damage;
     int ammo;
@@ -23,21 +37,8 @@ typedef struct {
     vec2_t position;
     vec2_t velocity;
     vec2_t camera;
+    Bullets_t bullets;
 } Player_t;
-
-typedef struct {
-    SDL_Texture* texture;
-    vec2_t position;
-    vec2_t velocity;
-    int index;
-    uint32_t lifetime;
-    uint32_t max_lifetime;
-} Bullet_t;
-
-typedef struct {
-    Bullet_t** bullet;
-    int num_bullets;
-} Bullets_t;
 
 double mouse_angle(SDL_FRect sprite, mouse_t mouse);
 
@@ -51,7 +52,7 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep, vec2_
 
 void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep, Player_t* player);
+void Draw_Bullets(SDL_Renderer* renderer, float timestep, Player_t* player);
 
 void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep, Player_t* player);
 

@@ -44,6 +44,9 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
+    
+    player.bullets.bullet = NULL;
+    player.bullets.num_bullets = 0;
 
     printf("Player setup complete\n");
 
@@ -209,10 +212,10 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->num_bullets++;
 }
 
-void Draw_Bullets(SDL_Renderer* renderer, Bullets_t* bullets, float timestep, Player_t* player)
+void Draw_Bullets(SDL_Renderer* renderer, float timestep, Player_t* player)
 {
-    for (int i = 0; i < bullets->num_bullets; i++) {
-        Draw_Bullet(renderer, bullets->bullet[i], timestep, player);
+    for (int i = 0; i < player->bullets.num_bullets; i++) {
+        Draw_Bullet(renderer, player->bullets.bullet[i], timestep, player);
     }
 }
 
