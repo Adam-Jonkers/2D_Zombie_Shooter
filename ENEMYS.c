@@ -92,11 +92,8 @@ void Remove_Enemy(Enemys_t* enemys, int index)
 void Remove_Enemys(Enemys_t* enemys)
 {
     for (int i = 0; i < enemys->num_enemys; i++) {
-        Destroy_Enemy(enemys->enemy[i]);
+        Remove_Enemy(enemys, i);
     }
-    free(enemys->enemy);
-    enemys->enemy = NULL;
-    enemys->num_enemys = 0;
 }
 
 void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt)
