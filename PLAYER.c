@@ -136,7 +136,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
     player->position.x += move_x;
     player->position.y += move_y;
 
-    player->rotation = get_angle((vec2_t) {player->sprite.x - player->center.x, player->sprite.y - player->center.y}, (vec2_t) {mouse.x, mouse.y});  //mouse_angle(player->sprite, mouse);
+    player->rotation = get_angle((vec2_t) {player->sprite.x + 30, player->sprite.y + 30}, (vec2_t) {mouse.x, mouse.y});
 
     if (player->position.x + windowsize.x / 2 > max.x) {
         player->camera.x = max.x - windowsize.x;
