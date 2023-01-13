@@ -267,3 +267,10 @@ float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
     return fps;
 }
 
+// 
+double get_angle(vec2_t p1, vec2_t p2)
+{
+    double angle = atan2(p2.y - p1.y, p2.x - p1.x);
+    return angle;
+}
+

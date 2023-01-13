@@ -40,8 +40,6 @@ typedef struct {
     Bullets_t bullets;
 } Player_t;
 
-double mouse_angle(SDL_FRect sprite, mouse_t mouse);
-
 Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer);
 
 float Get_speed_multiplyer(Player_t* player, vec2_t max, float* noisemap);
