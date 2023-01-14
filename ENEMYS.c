@@ -2,7 +2,7 @@
 #include "PLAYER.h"
 #include "CORE.h"
 
-Enemy_t* Setup_enemy(vec2_t windowsize, SDL_Renderer* renderer)
+Enemy_t* Setup_enemy(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Enemy_t* enemy;
 
@@ -19,12 +19,12 @@ Enemy_t* Setup_enemy(vec2_t windowsize, SDL_Renderer* renderer)
 
     enemy->sprite.w = w/3.5;
     enemy->sprite.h = h/3.5;
-    enemy->sprite.x = windowsize.x / 2 - enemy->sprite.w / 2;
-    enemy->sprite.y = windowsize.y / 2 - enemy->sprite.h / 2;
+    enemy->sprite.x = windowSize.x / 2 - enemy->sprite.w / 2;
+    enemy->sprite.y = windowSize.y / 2 - enemy->sprite.h / 2;
     enemy->center.x = 95/3.5;
     enemy->center.y = 120/3.5;
     enemy->rotation = 0.0;
-    enemy->maxspeed = 100.0;
+    enemy->maxSpeed = 100.0;
     enemy->position.x = 1200;
     enemy->position.y = 1200;
     enemy->velocity.x = 0.0;
@@ -36,21 +36,21 @@ Enemy_t* Setup_enemy(vec2_t windowsize, SDL_Renderer* renderer)
     return enemy;
 }
 
-void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowsize, Player_t* player)
+void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Player_t* player)
 {
     enemy->sprite.x = enemy->position.x - enemy->sprite.w / 2;
     enemy->sprite.y = enemy->position.y - enemy->sprite.h / 2;
 
-    if (enemy->position.x > player->camera.x - 100 && enemy->position.x < player->camera.x + windowsize.x + 100 && enemy->position.y > player->camera.y - 100 && enemy->position.y < player->camera.y + windowsize.y + 100) {
+    if (enemy->position.x > player->camera.x - 100 && enemy->position.x < player->camera.x + windowSize.x + 100 && enemy->position.y > player->camera.y - 100 && enemy->position.y < player->camera.y + windowSize.y + 100) {
 
     }
     SDL_RenderCopyExF(renderer, enemy->texture, NULL, &enemy->sprite, enemy->rotation, &enemy->center, SDL_FLIP_NONE);
 }
 
-void Draw_Enemys(SDL_Renderer* renderer, Enemy_t** enemy, int num_enemys, vec2_t windowsize, Player_t* player)
+void Draw_Enemys(SDL_Renderer* renderer, Enemy_t** enemy, int num_enemys, vec2_t windowSize, Player_t* player)
 {
     for (int i = 0; i < num_enemys; i++) {
-        Draw_Enemy(renderer, enemy[i], windowsize, player);
+        Draw_Enemy(renderer, enemy[i], windowSize, player);
     }
 }
 
@@ -102,7 +102,7 @@ void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt)
 //     vec2_t normalized = vec2_normalize(direction);
 //     vec2_t force = vec2_mul(normalized, enemy->acceleration);
 //     enemy->velocity = vec2_add(enemy->velocity, force);
-//     enemy->velocity = vec2_limit(enemy->velocity, enemy->maxspeed);
+//     enemy->velocity = vec2_limit(enemy->velocity, enemy->maxSpeed);
 //     enemy->position = vec2_add(enemy->position, vec2_mul(enemy->velocity, dt));
 //     enemy->rotation = vec2_angle(enemy->velocity) * 180 / M_PI;
 }

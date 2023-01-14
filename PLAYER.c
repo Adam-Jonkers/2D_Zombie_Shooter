@@ -6,7 +6,7 @@
 #define PLAYER_MOVE_ANIMATION_LENGTH 19
 #define PLAYER_IDLE_ANIMATION_LENGTH 19
 
-Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
+Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Player_t player;
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
@@ -25,16 +25,16 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
 
     player.sprite.w = w/3.5;
     player.sprite.h = h/3.5;
-    player.sprite.x = windowsize.x / 2 - player.sprite.w / 2;
-    player.sprite.y = windowsize.y / 2 - player.sprite.h / 2;
+    player.sprite.x = windowSize.x / 2 - player.sprite.w / 2;
+    player.sprite.y = windowSize.y / 2 - player.sprite.h / 2;
     player.center.x = 95/3.5;
     player.center.y = 120/3.5;
     player.rotation = 0.0;
-    player.maxspeed = 100.0;
+    player.maxSpeed = 100.0;
     player.position.x = 1000;
     player.position.y = 1000;
-    player.camera.x = player.position.x - windowsize.x / 2;
-    player.camera.y = player.position.y - windowsize.y / 2;
+    player.camera.x = player.position.x - windowSize.x / 2;
+    player.camera.y = player.position.y - windowSize.y / 2;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
@@ -47,42 +47,42 @@ Player_t Setup_player(vec2_t windowsize, SDL_Renderer* renderer)
     return player;
 }
 
-float Get_speed_multiplyer(Player_t* player, vec2_t max, float* noisemap)
+float Get_speed_multiplier(Player_t* player, vec2_t max, float* noiseMap)
 {
-    float speedmultiplier;
-    float n = noisemap[(int)player->position.x + ((int)max.x * (int)player->position.y)];
+    float speedMultiplier;
+    float n = noiseMap[(int)player->position.x + ((int)max.x * (int)player->position.y)];
     if (n < -0.5) {
-        speedmultiplier = 0.15;
+        speedMultiplier = 0.15;
     } else if (n < 0) {
-        speedmultiplier = 1;
+        speedMultiplier = 1;
     } else if (n < 0.1) {
-        speedmultiplier = 0.95;
+        speedMultiplier = 0.95;
     } else if (n < 0.2) {
-        speedmultiplier = 0.9;
+        speedMultiplier = 0.9;
     } else if (n < 0.3) {
-        speedmultiplier = 0.8;
+        speedMultiplier = 0.8;
     } else if (n < 0.4) {
-        speedmultiplier = 0.7;
+        speedMultiplier = 0.7;
     } else if (n < 0.5) {
-        speedmultiplier = 0.5;
+        speedMultiplier = 0.5;
     } else if (n >= 0.5) {
-        speedmultiplier = 0.25;
+        speedMultiplier = 0.25;
     } else {
-        speedmultiplier = 0;
+        speedMultiplier = 0;
     }
-    return speedmultiplier;
+    return speedMultiplier;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowsize, vec2_t max, mouse_t mouse, float* noisemap) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
 {
-    player->maxspeed = 100.0f;
+    player->maxSpeed = 100.0f;
     player->acceleration = 20.0f;
     player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 20.0f));
     player->currentAnimation = &player->idleAnimation;
     player->moveAnimation.speed = 50;
-    float speedmultiplier;
+    float speedMultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
-        player->maxspeed = 200.0f;
+        player->maxSpeed = 200.0f;
         player->acceleration = 50.0f;
         player->moveAnimation.speed = 30;
     }
@@ -112,14 +112,14 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
     if (mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         Create_Bullet(renderer, player, bullets);
     }
-    speedmultiplier = Get_speed_multiplyer(player, max, noisemap);
-    if (length_vec2(player->velocity) > (player->maxspeed * speedmultiplier)) {
-        player->velocity = normalise_vec2(player->velocity);
-        player->velocity = multiply_vec2(player->velocity, player->maxspeed * speedmultiplier);
+    speedMultiplier = Get_speed_multiplier(player, max, noiseMap);
+    if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
+        player->velocity = normalize_vec2(player->velocity);
+        player->velocity = multiply_vec2(player->velocity, player->maxSpeed * speedMultiplier);
     }
 
-    float move_x = (player->velocity.x) * timestep / 1000.0f;
-    float move_y = (player->velocity.y) * timestep / 1000.0f;
+    float move_x = (player->velocity.x) * dt / 1000.0f;
+    float move_y = (player->velocity.y) * dt / 1000.0f;
     
     if (player->position.x + move_x < 0) {
         move_x = 0;
@@ -138,38 +138,38 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float timestep, 
 
     player->rotation = get_angle((vec2_t) {player->sprite.x + 30, player->sprite.y + 30}, (vec2_t) {mouse.x, mouse.y});
 
-    if (player->position.x + windowsize.x / 2 > max.x) {
-        player->camera.x = max.x - windowsize.x;
-    } else if (player->position.x - windowsize.x / 2 < 0) {
+    if (player->position.x + windowSize.x / 2 > max.x) {
+        player->camera.x = max.x - windowSize.x;
+    } else if (player->position.x - windowSize.x / 2 < 0) {
         player->camera.x = 0;
     } else {
-        player->camera.x = player->position.x - windowsize.x / 2;
+        player->camera.x = player->position.x - windowSize.x / 2;
     }
     
-    if (player->position.y - windowsize.y / 2 < 0) {
+    if (player->position.y - windowSize.y / 2 < 0) {
         player->camera.y = 0;
-    } else if (player->position.y + windowsize.y / 2 > max.y) {
-        player->camera.y = max.y - windowsize.y;
+    } else if (player->position.y + windowSize.y / 2 > max.y) {
+        player->camera.y = max.y - windowSize.y;
     } else {
-        player->camera.y = player->position.y - windowsize.y / 2;
+        player->camera.y = player->position.y - windowSize.y / 2;
     }
 }
 
-void Draw_Player(SDL_Renderer* renderer, Player_t* player, float timestep, vec2_t windowsize, vec2_t max)
+void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t windowSize, vec2_t max)
 {
     static int frame = 0;
     static float time = 0;
 
-    time += timestep;
+    time += dt;
 
-    if (player->position.x - windowsize.x / 2 > 0 && player->position.x + windowsize.x < max.x && player->position.y - windowsize.y / 2 > 0 && player->position.y + windowsize.y < max.y) {
-        player->sprite.x = windowsize.x / 2 - player->sprite.w / 2;
-        player->sprite.y = windowsize.y / 2 - player->sprite.h / 2;
+    if (player->position.x - windowSize.x / 2 > 0 && player->position.x + windowSize.x < max.x && player->position.y - windowSize.y / 2 > 0 && player->position.y + windowSize.y < max.y) {
+        player->sprite.x = windowSize.x / 2 - player->sprite.w / 2;
+        player->sprite.y = windowSize.y / 2 - player->sprite.h / 2;
     } 
-    if (player->position.x - windowsize.x / 2 < 0 || player->position.x + windowsize.x > max.x) {
+    if (player->position.x - windowSize.x / 2 < 0 || player->position.x + windowSize.x > max.x) {
         player->sprite.x = player->position.x - player->sprite.w / 2 - player->camera.x;
     } 
-    if (player->position.y - windowsize.y / 2 < 0 || player->position.y + windowsize.y > max.y) {
+    if (player->position.y - windowSize.y / 2 < 0 || player->position.y + windowSize.y > max.y) {
         player->sprite.y = player->position.y - player->sprite.h / 2 - player->camera.y;
     }
 
@@ -206,16 +206,16 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->num_bullets++;
 }
 
-void Draw_Bullets(SDL_Renderer* renderer, float timestep, Player_t* player)
+void Draw_Bullets(SDL_Renderer* renderer, float dt, Player_t* player)
 {
     for (int i = 0; i < player->bullets.num_bullets; i++) {
-        Draw_Bullet(renderer, player->bullets.bullet[i], timestep, player);
+        Draw_Bullet(renderer, player->bullets.bullet[i], dt, player);
     }
 }
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float timestep, Player_t* player) 
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float dt, Player_t* player) 
 {
-    bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, timestep / 1000.0f));
+    bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, dt / 1000.0f));
     SDL_FRect bullet_rect = {bullet->position.x - player->position.x, bullet->position.y - player->position.y, 10, 10};
     SDL_RenderCopyF(renderer, bullet->texture, NULL, &bullet_rect);
 }
@@ -271,10 +271,10 @@ void Remove_Bullet(Bullets_t* bullets, int index)
     }
 }
 
-void Update_Bullets(Bullets_t* bullets, float timestep)
+void Update_Bullets(Bullets_t* bullets, float dt)
 {
     for (int i = 0; i < bullets->num_bullets; i++) {
-        bullets->bullet[i]->lifetime += timestep;
+        bullets->bullet[i]->lifetime += dt;
         if (bullets->bullet[i]->lifetime > bullets->bullet[i]->max_lifetime) {
             Remove_Bullet(bullets, i);
         }

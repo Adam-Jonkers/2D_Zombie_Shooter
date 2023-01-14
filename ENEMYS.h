@@ -14,7 +14,7 @@ typedef struct {
     SDL_FRect sprite;
     SDL_FPoint center;
     double rotation;
-    float maxspeed;
+    float maxSpeed;
     vec2_t position;
     vec2_t velocity;
     float acceleration;
@@ -26,11 +26,11 @@ typedef struct {
     int num_enemys;
 } Enemys_t;
 
-Enemy_t* Setup_enemy(vec2_t windowsize, SDL_Renderer* renderer);
+Enemy_t* Setup_enemy(vec2_t windowSize, SDL_Renderer* renderer);
 
-void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowsize, Player_t* player);
+void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Player_t* player);
 
-void Draw_Enemys(SDL_Renderer* renderer, Enemy_t** enemy, int num_enemys, vec2_t windowsize, Player_t* player);
+void Draw_Enemys(SDL_Renderer* renderer, Enemy_t** enemy, int num_enemys, vec2_t windowSize, Player_t* player);
 
 void Destroy_Enemy(Enemy_t* enemy);
 

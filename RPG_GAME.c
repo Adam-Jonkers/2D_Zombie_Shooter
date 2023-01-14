@@ -18,7 +18,7 @@
 
 int main(void)
 {
-    // initilize SDL
+    // initialize SDL
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -29,12 +29,12 @@ int main(void)
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
-    vec2_t windowsize;
+    vec2_t windowSize;
     int window_width, window_height;
 
     SDL_GetWindowSize(window, &window_width, &window_height);
-    windowsize.x = window_width;
-    windowsize.y = window_height;
+    windowSize.x = window_width;
+    windowSize.y = window_height;
 
     printf("Display: y: %d, x: %d\n", window_height, window_width);
 
@@ -45,14 +45,14 @@ int main(void)
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(loadingScreen);
 
-    Player_t player = Setup_player(windowsize, renderer);
+    Player_t player = Setup_player(windowSize, renderer);
 
     mouse_t mouse;
 
     srand(time(NULL));
 
-    float* noisemap = calloc((max.x * max.y), sizeof(float));
-    float* randarray = calloc((max.x * max.y), sizeof(float));
+    float* noiseMap = calloc((max.x * max.y), sizeof(float));
+    float* randArray = calloc((max.x * max.y), sizeof(float));
     char* map = calloc((max.x * max.y), sizeof(char));
     bitmap_t bmap;
     bmap.height = max.y;
@@ -75,8 +75,8 @@ int main(void)
 
     load_Text(&fps, renderer);
 
-    Setup_Noise_Map(max, noisemap, randarray);
-    Setup_Map_Png(bmap, noisemap);
+    Setup_Noise_Map(max, noiseMap, randArray);
+    Setup_Map_Png(bmap, noiseMap);
     
     bool running = true;
 
@@ -106,18 +106,18 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowsize, max, mouse, noisemap);
+        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        Draw_Map_Texture(renderer, map_texture, &player, windowsize);
+        Draw_Map_Texture(renderer, map_texture, &player, windowSize);
 
         Update_Bullets(&player.bullets, timeStep);
 
         Draw_Bullets(renderer, timeStep, &player);
 
-        Draw_Player(renderer, &player, timeStep, windowsize, max);
+        Draw_Player(renderer, &player, timeStep, windowSize, max);
 
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
 
@@ -132,7 +132,7 @@ int main(void)
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    free(noisemap);
+    free(noiseMap);
     free(map);
 
     if (remove("map.png")) {

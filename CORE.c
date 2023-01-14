@@ -267,7 +267,7 @@ float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
     return fps;
 }
 
-// 
+// returns angle in radians of pointing from p1 to p2 where horizontally to the right is 0
 double get_angle(vec2_t p1, vec2_t p2)
 {
     double angle = atan2(p2.y - p1.y, p2.x - p1.x);

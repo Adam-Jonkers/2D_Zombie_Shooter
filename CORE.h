@@ -55,7 +55,7 @@ typedef struct {
 
 int get_random_number(int min, int max);
 
-vec2_t normalise_vec2(vec2_t v);
+vec2_t normalize_vec2(vec2_t v);
 
 vec2_t floor_vec2(vec2_t v);
 
