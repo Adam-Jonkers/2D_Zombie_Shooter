@@ -86,7 +86,7 @@ void Destroy_Enemy(Enemy_t* enemy)
 
 void Remove_Enemy(Enemys_t* enemys, int index)
 {
-    if (index < 0 || index >= enemys->num_enemys) {
+    if (index < 0 || index > enemys->num_enemys) {
         return;
     }
 
@@ -99,14 +99,13 @@ void Remove_Enemy(Enemys_t* enemys, int index)
 
     enemys->num_enemys--;
 
-    if (enemys->num_enemys == 0) {
+    if (enemys->num_enemys == -1) {
         free(enemys->enemy);
         enemys->enemy = NULL;
         return;
     } else {
         void* ptr = realloc(enemys->enemy, enemys->num_enemys * sizeof(Enemy_t*));
         if (ptr == NULL) {
-            printf("Error: Failed to allocate memory for removing enemy\n");
         } else {
             enemys->enemy = ptr;
         }
@@ -120,32 +119,36 @@ void Remove_Enemys(Enemys_t* enemys)
     }
 }
 
-void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt, vec2_t max, float* noiseMap)
+void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index)
 {
-    enemy->rotation = get_angle(enemy->position, player->position) - 1.5708;
+    enemys->enemy[index]->rotation = get_angle(enemys->enemy[index]->position, player->position) - 1.5708;
     
-    enemy->velocity.x += enemy->acceleration * cos(enemy->rotation + 1.5708);
-    enemy->velocity.y += enemy->acceleration * sin(enemy->rotation + 1.5708);
+    enemys->enemy[index]->velocity.x += enemys->enemy[index]->acceleration * cos(enemys->enemy[index]->rotation + 1.5708);
+    enemys->enemy[index]->velocity.y += enemys->enemy[index]->acceleration * sin(enemys->enemy[index]->rotation + 1.5708);
 
-    float speedMultiplier = Get_speed_multiplier(enemy->position, max, noiseMap);
-    if (length_vec2(enemy->velocity) > (enemy->maxSpeed * speedMultiplier)) {
-        enemy->velocity = normalize_vec2(enemy->velocity);
-        enemy->velocity = multiply_vec2(enemy->velocity, enemy->maxSpeed * speedMultiplier);
+    float speedMultiplier = Get_speed_multiplier(enemys->enemy[index]->position, max, noiseMap);
+    if (length_vec2(enemys->enemy[index]->velocity) > (enemys->enemy[index]->maxSpeed * speedMultiplier)) {
+        enemys->enemy[index]->velocity = normalize_vec2(enemys->enemy[index]->velocity);
+        enemys->enemy[index]->velocity = multiply_vec2(enemys->enemy[index]->velocity, enemys->enemy[index]->maxSpeed * speedMultiplier);
     }
 
-    vec2_t tempPosition = add_vec2(enemy->position, divide_vec2(multiply_vec2(enemy->velocity, dt), 1000.0f));
+    vec2_t tempPosition = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
     if (tempPosition.x < 0 || tempPosition.x > max.x) {
-        enemy->velocity.x = 0;
+        enemys->enemy[index]->velocity.x = 0;
     }
     if (tempPosition.y < 0 || tempPosition.y > max.y) {
-        enemy->velocity.y = 0;
+        enemys->enemy[index]->velocity.y = 0;
     }
-    enemy->position = add_vec2(enemy->position, divide_vec2(multiply_vec2(enemy->velocity, dt), 1000.0f));
+    enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
+    printf("Enemy Health: %d\n", enemys->enemy[index]->health);
+    if (enemys->enemy[index]->health <= 0) {
+        Remove_Enemy(enemys, index);
+    }
 }
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap)
 {
     for (int i = 0; i < enemys->num_enemys; i++) {
-        Update_Enemy(enemys->enemy[i], player, dt, max, noiseMap);
+        Update_Enemy(enemys, player, dt, max, noiseMap, i);
     }
 }

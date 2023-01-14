@@ -21,7 +21,7 @@ void Remove_Enemy(Enemys_t* enemys, int index);
 
 void Remove_Enemys(Enemys_t* enemys);
 
-void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt, vec2_t max, float* noiseMap);
+void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index);
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap);
 

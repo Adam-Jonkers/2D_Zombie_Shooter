@@ -258,6 +258,7 @@ void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* pl
             for (int j = 0; j <= enemys->num_enemys; j++) {
                 if (check_collision(subtract_vec2(bullets->bullet[i]->position, player->position), bullets->bullet[i]->hitBox, subtract_vec2(enemys->enemy[j]->position, player->camera), enemys->enemy[j]->hitBox, renderer)) {
                     Remove_Bullet(bullets, i);
+                    enemys->enemy[j]->health -= 1;
                 }
             }
         }
