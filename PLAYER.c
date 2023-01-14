@@ -47,32 +47,6 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     return player;
 }
 
-float Get_speed_multiplier(Player_t* player, vec2_t max, float* noiseMap)
-{
-    float speedMultiplier;
-    float n = noiseMap[(int)player->position.x + ((int)max.x * (int)player->position.y)];
-    if (n < -0.5) {
-        speedMultiplier = 0.15;
-    } else if (n < 0) {
-        speedMultiplier = 1;
-    } else if (n < 0.1) {
-        speedMultiplier = 0.95;
-    } else if (n < 0.2) {
-        speedMultiplier = 0.9;
-    } else if (n < 0.3) {
-        speedMultiplier = 0.8;
-    } else if (n < 0.4) {
-        speedMultiplier = 0.7;
-    } else if (n < 0.5) {
-        speedMultiplier = 0.5;
-    } else if (n >= 0.5) {
-        speedMultiplier = 0.25;
-    } else {
-        speedMultiplier = 0;
-    }
-    return speedMultiplier;
-}
-
 void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
 {
     player->maxSpeed = 100.0f;

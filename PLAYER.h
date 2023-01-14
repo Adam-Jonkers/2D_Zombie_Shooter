@@ -42,8 +42,6 @@ typedef struct {
 
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);
 
-float Get_speed_multiplier(Player_t* player, vec2_t max, float* noiseMap);
-
 void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t windowSize, vec2_t max);

@@ -121,3 +121,29 @@ void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, Player_t
     SDL_Rect dst = {0, 0, windowSize.x, windowSize.y};
     SDL_RenderCopy(renderer, map_texture, &src, &dst);
 }
+
+float Get_speed_multiplier(vec2_t position, vec2_t max, float* noiseMap)
+{
+    float speedMultiplier;
+    float n = noiseMap[(int)position.x + ((int)max.x * (int)position.y)];
+    if (n < -0.5) {
+        speedMultiplier = 0.15;
+    } else if (n < 0) {
+        speedMultiplier = 1;
+    } else if (n < 0.1) {
+        speedMultiplier = 0.95;
+    } else if (n < 0.2) {
+        speedMultiplier = 0.9;
+    } else if (n < 0.3) {
+        speedMultiplier = 0.8;
+    } else if (n < 0.4) {
+        speedMultiplier = 0.7;
+    } else if (n < 0.5) {
+        speedMultiplier = 0.5;
+    } else if (n >= 0.5) {
+        speedMultiplier = 0.25;
+    } else {
+        speedMultiplier = 0;
+    }
+    return speedMultiplier;
+}

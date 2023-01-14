@@ -35,4 +35,6 @@ SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer);
 
 void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, Player_t* player, vec2_t windowSize);
 
+float Get_speed_multiplier(vec2_t position, vec2_t max, float* noiseMap);
+
 #endif
