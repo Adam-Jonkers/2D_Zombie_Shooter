@@ -1,5 +1,6 @@
 #include "ENEMYS.h"
 #include "PLAYER.h"
+#include "MAP.h"
 #include "CORE.h"
 
 void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
@@ -31,7 +32,7 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
     enemys->enemy[enemys->num_enemys]->center.x = 95/3.5;
     enemys->enemy[enemys->num_enemys]->center.y = 120/3.5;
     enemys->enemy[enemys->num_enemys]->rotation = 0.0;
-    enemys->enemy[enemys->num_enemys]->maxSpeed = 100.0;
+    enemys->enemy[enemys->num_enemys]->maxSpeed = 150.0;
     enemys->enemy[enemys->num_enemys]->position.x = 100;
     enemys->enemy[enemys->num_enemys]->position.y = 100;
     enemys->enemy[enemys->num_enemys]->velocity.x = 0.0;
@@ -64,8 +65,6 @@ void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Playe
     if (enemy->position.x > player->camera.x - 100 && enemy->position.x < player->camera.x + windowSize.x + 100 && enemy->position.y > player->camera.y - 100 && enemy->position.y < player->camera.y + windowSize.y + 100) {
         if (SDL_RenderCopyExF(renderer, enemy->texture, NULL, &enemy->sprite, enemy->rotation * (180 / M_PI), NULL, SDL_FLIP_NONE) == -1) {
             printf("Error: %s Failed to draw enemy\n", SDL_GetError());
-        } else {
-            printf("Drawn enemy rotation = %f x:%f y:%f player x:%f y:%f\n",enemy->rotation ,enemy->position.x, enemy->position.y, player->position.x, player->position.y);
         }
     }
 }
@@ -119,21 +118,32 @@ void Remove_Enemys(Enemys_t* enemys)
     }
 }
 
-void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt)
+void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt, vec2_t max, float* noiseMap)
 {
-//     vec2_t direction = vec2_sub(player->position, enemy->position);
-//     vec2_t normalized = vec2_normalize(direction);
-//     vec2_t force = vec2_mul(normalized, enemy->acceleration);
-//     enemy->velocity = vec2_add(enemy->velocity, force);
-//     enemy->velocity = vec2_limit(enemy->velocity, enemy->maxSpeed);
-//     enemy->position = vec2_add(enemy->position, vec2_mul(enemy->velocity, dt));
-    enemy->rotation = get_angle(enemy->position, player->position) - 1.5708;// + (dt * 0);
-    printf("enemy rotation = %f\n", enemy->rotation);
+    enemy->rotation = get_angle(enemy->position, player->position) - 1.5708;
+    
+    enemy->velocity.x += enemy->acceleration * cos(enemy->rotation + 1.5708);
+    enemy->velocity.y += enemy->acceleration * sin(enemy->rotation + 1.5708);
+
+    float speedMultiplier = Get_speed_multiplier(enemy->position, max, noiseMap);
+    if (length_vec2(enemy->velocity) > (enemy->maxSpeed * speedMultiplier)) {
+        enemy->velocity = normalize_vec2(enemy->velocity);
+        enemy->velocity = multiply_vec2(enemy->velocity, enemy->maxSpeed * speedMultiplier);
+    }
+
+    vec2_t tempPosition = add_vec2(enemy->position, divide_vec2(multiply_vec2(enemy->velocity, dt), 1000.0f));
+    if (tempPosition.x < 0 || tempPosition.x > max.x) {
+        enemy->velocity.x = 0;
+    }
+    if (tempPosition.y < 0 || tempPosition.y > max.y) {
+        enemy->velocity.y = 0;
+    }
+    enemy->position = add_vec2(enemy->position, divide_vec2(multiply_vec2(enemy->velocity, dt), 1000.0f));
 }
 
-void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt)
+void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap)
 {
     for (int i = 0; i < enemys->num_enemys; i++) {
-        Update_Enemy(enemys->enemy[i], player, dt);
+        Update_Enemy(enemys->enemy[i], player, dt, max, noiseMap);
     }
 }
