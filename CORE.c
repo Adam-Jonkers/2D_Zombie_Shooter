@@ -277,12 +277,18 @@ double get_angle(vec2_t p1, vec2_t p2)
     return angle;
 }
 
-bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBox_t hitBox2)
+bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBox_t hitBox2, SDL_Renderer* renderer)
 {
     float x1 = position1.x - hitBox1.w / 2;
     float y1 = position1.y - hitBox1.h / 2;
     float x2 = position2.x - hitBox2.w / 2;
     float y2 = position2.y - hitBox2.h / 2;
+
+    SDL_Rect rect1 = {x1, y1, hitBox1.w, hitBox1.h};
+    SDL_Rect rect2 = {x2, y2, hitBox2.w, hitBox2.h};
+
+    SDL_RenderDrawRect(renderer, &rect1);
+    SDL_RenderDrawRect(renderer, &rect2);
     if ((x1) < (x2 + hitBox2.w) && (x1 + hitBox1.w) && (y1 < y2 + hitBox2.h) && (y1 + hitBox1.h > y2)) {
         return true;
     }

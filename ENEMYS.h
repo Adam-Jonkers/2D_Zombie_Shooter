@@ -7,25 +7,6 @@
 #include "CORE.h"
 #include "PLAYER.h"
 
-typedef struct {
-    int health;
-    int damage;
-    SDL_Texture* texture;
-    SDL_FRect sprite;
-    SDL_FPoint center;
-    double rotation;
-    float maxSpeed;
-    vec2_t position;
-    vec2_t velocity;
-    float acceleration;
-    int index;
-} Enemy_t;
-
-typedef struct {
-    Enemy_t** enemy;
-    int num_enemys;
-} Enemys_t;
-
 void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer);
 
 void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer);

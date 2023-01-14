@@ -121,9 +121,9 @@ int main(void)
 
         Draw_Map_Texture(renderer, map_texture, &player, windowSize);
 
-        Update_Bullets(&player.bullets, timeStep);
+        Update_Bullets(&player.bullets, timeStep, &enemys, &player, renderer);
 
-        Draw_Bullets(renderer, timeStep, &player);
+        Draw_Bullets(renderer, &player);
 
         Update_Enemy(enemys.enemy[0], &player, timeStep, max, noiseMap);
 

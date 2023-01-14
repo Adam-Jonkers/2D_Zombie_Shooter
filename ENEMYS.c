@@ -38,6 +38,8 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
     enemys->enemy[enemys->num_enemys]->velocity.x = 0.0;
     enemys->enemy[enemys->num_enemys]->velocity.y = 0.0;
     enemys->enemy[enemys->num_enemys]->acceleration = 20.0;
+    enemys->enemy[enemys->num_enemys]->hitBox.h = enemys->enemy[enemys->num_enemys]->sprite.h * 0.8;
+    enemys->enemy[enemys->num_enemys]->hitBox.w = enemys->enemy[enemys->num_enemys]->sprite.w * 0.8;
 
     printf("enemy setup complete\n");
 }

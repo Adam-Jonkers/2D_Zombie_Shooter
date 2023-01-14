@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "PLAYER.h"
+#include "ENEMYS.h"
 #include "MAP.h"
 #include "CORE.h"
 
@@ -177,20 +178,20 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->bullet[bullets->num_bullets]->index = bullets->num_bullets;
     bullets->bullet[bullets->num_bullets]->lifetime = 0;
     bullets->bullet[bullets->num_bullets]->max_lifetime = 5000;
+    bullets->bullet[bullets->num_bullets]->hitBox = (HitBox_t) {15, 15};
 
     bullets->num_bullets++;
 }
 
-void Draw_Bullets(SDL_Renderer* renderer, float dt, Player_t* player)
+void Draw_Bullets(SDL_Renderer* renderer, Player_t* player)
 {
     for (int i = 0; i < player->bullets.num_bullets; i++) {
-        Draw_Bullet(renderer, player->bullets.bullet[i], dt, player);
+        Draw_Bullet(renderer, player->bullets.bullet[i], player);
     }
 }
 
-void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, float dt, Player_t* player) 
+void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, Player_t* player) 
 {
-    bullet->position = add_vec2(bullet->position, multiply_vec2(bullet->velocity, dt / 1000.0f));
     SDL_FRect bullet_rect = {bullet->position.x - player->position.x, bullet->position.y - player->position.y, 10, 10};
     SDL_RenderCopyF(renderer, bullet->texture, NULL, &bullet_rect);
 }
@@ -246,12 +247,19 @@ void Remove_Bullet(Bullets_t* bullets, int index)
     }
 }
 
-void Update_Bullets(Bullets_t* bullets, float dt)
+void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* player, SDL_Renderer* renderer)
 {
     for (int i = 0; i < bullets->num_bullets; i++) {
+        bullets->bullet[i]->position = add_vec2(bullets->bullet[i]->position, multiply_vec2(bullets->bullet[i]->velocity, dt / 1000.0f));
         bullets->bullet[i]->lifetime += dt;
         if (bullets->bullet[i]->lifetime > bullets->bullet[i]->max_lifetime) {
             Remove_Bullet(bullets, i);
+        } else {
+            for (int j = 0; j <= enemys->num_enemys; j++) {
+                if (check_collision(subtract_vec2(bullets->bullet[i]->position, player->position), bullets->bullet[i]->hitBox, subtract_vec2(enemys->enemy[j]->position, player->camera), enemys->enemy[j]->hitBox, renderer)) {
+                    Remove_Bullet(bullets, i);
+                }
+            }
         }
     }
 }
