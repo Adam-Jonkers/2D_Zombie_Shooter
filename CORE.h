@@ -54,11 +54,9 @@ typedef struct {
 } mouse_t;
 
 typedef struct {
-    int x;
-    int y;
     int w;
     int h;
-} rect_t;
+} HitBox_t;
 
 int get_random_number(int min, int max);
 
@@ -103,5 +101,7 @@ u_int32_t get_time_ms(Timer_t* timer);
 float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer);
 
 double get_angle(vec2_t p1, vec2_t p2);
+
+bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBox_t hitBox2);
 
 #endif
