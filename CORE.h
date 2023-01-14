@@ -53,6 +53,13 @@ typedef struct {
     Uint32 buttons;
 } mouse_t;
 
+typedef struct {
+    int x;
+    int y;
+    int w;
+    int h;
+} rect_t;
+
 int get_random_number(int min, int max);
 
 vec2_t normalize_vec2(vec2_t v);
