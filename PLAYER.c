@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "PLAYER.h"
+#include "MAP.h"
 #include "CORE.h"
 
 #define PLAYER_MOVE_ANIMATION_LENGTH 19
@@ -86,7 +87,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
     if (mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         Create_Bullet(renderer, player, bullets);
     }
-    speedMultiplier = Get_speed_multiplier(player, max, noiseMap);
+    speedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
     if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
         player->velocity = normalize_vec2(player->velocity);
         player->velocity = multiply_vec2(player->velocity, player->maxSpeed * speedMultiplier);
