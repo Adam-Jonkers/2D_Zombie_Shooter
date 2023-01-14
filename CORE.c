@@ -13,8 +13,8 @@ int get_random_number(int min, int max)
 {
     return (rand() % (max - min + 1) + min);
 }
-
-vec2_t normalise_vec2(vec2_t v) 
+       
+vec2_t normalize_vec2(vec2_t v) 
 {
     float length = length_vec2(v); 
     return (vec2_t){v.x / length, v.y / length};
@@ -62,6 +62,9 @@ SDL_Texture* load_texture(char* path, SDL_Renderer* renderer)
         printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
     }
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (texture == NULL) {
+        printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
+    }
     SDL_FreeSurface(surface);
     return texture;
 }
