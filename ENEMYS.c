@@ -73,7 +73,7 @@ void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Playe
 
 void Draw_Enemys(SDL_Renderer* renderer, Enemys_t* enemys, vec2_t windowSize, Player_t* player)
 {
-    for (int i = 0; i < enemys->num_enemys; i++) {
+    for (int i = 0; i <= enemys->num_enemys; i++) {
         Draw_Enemy(renderer, enemys->enemy[i], windowSize, player);
     }
 }
@@ -140,7 +140,6 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
         enemys->enemy[index]->velocity.y = 0;
     }
     enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
-    printf("Enemy Health: %d\n", enemys->enemy[index]->health);
     if (enemys->enemy[index]->health <= 0) {
         Remove_Enemy(enemys, index);
     }
@@ -148,7 +147,7 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap)
 {
-    for (int i = 0; i < enemys->num_enemys; i++) {
+    for (int i = 0; i <= enemys->num_enemys; i++) {
         Update_Enemy(enemys, player, dt, max, noiseMap, i);
     }
 }

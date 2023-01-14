@@ -125,9 +125,9 @@ int main(void)
 
         Draw_Bullets(renderer, &player);
 
-        Update_Enemy(&enemys, &player, timeStep, max, noiseMap, 0);
+        Update_Enemys(&enemys, &player, timeStep, max, noiseMap);
 
-        Draw_Enemy(renderer, enemys.enemy[0], windowSize, &player);
+        Draw_Enemys(renderer, &enemys, windowSize, &player);
 
         Draw_Player(renderer, &player, timeStep, windowSize, max);
 
