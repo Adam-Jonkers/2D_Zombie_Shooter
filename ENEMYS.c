@@ -62,10 +62,10 @@ void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Playe
     enemy->sprite.y = enemy->position.y - enemy->sprite.h / 2 - player->camera.y;
 
     if (enemy->position.x > player->camera.x - 100 && enemy->position.x < player->camera.x + windowSize.x + 100 && enemy->position.y > player->camera.y - 100 && enemy->position.y < player->camera.y + windowSize.y + 100) {
-        if (SDL_RenderCopyExF(renderer, enemy->texture, NULL, &enemy->sprite, enemy->rotation, &enemy->center, SDL_FLIP_NONE) == -1) {
+        if (SDL_RenderCopyExF(renderer, enemy->texture, NULL, &enemy->sprite, enemy->rotation * (180 / M_PI), NULL, SDL_FLIP_NONE) == -1) {
             printf("Error: %s Failed to draw enemy\n", SDL_GetError());
         } else {
-            printf("Drawn enemy x:%f y:%f player x:%f y:%f\n", enemy->position.x, enemy->position.y, player->position.x, player->position.y);
+            printf("Drawn enemy rotation = %f x:%f y:%f player x:%f y:%f\n",enemy->rotation ,enemy->position.x, enemy->position.y, player->position.x, player->position.y);
         }
     }
 }
@@ -127,7 +127,8 @@ void Update_Enemy(Enemy_t* enemy, Player_t* player, float dt)
 //     enemy->velocity = vec2_add(enemy->velocity, force);
 //     enemy->velocity = vec2_limit(enemy->velocity, enemy->maxSpeed);
 //     enemy->position = vec2_add(enemy->position, vec2_mul(enemy->velocity, dt));
-    enemy->rotation = get_angle(enemy->position, player->position) + dt * 0;
+    enemy->rotation = get_angle(enemy->position, player->position) - 1.5708;// + (dt * 0);
+    printf("enemy rotation = %f\n", enemy->rotation);
 }
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt)
