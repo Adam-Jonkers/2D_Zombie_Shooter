@@ -12,6 +12,8 @@
 #include "MAP.h"
 #include "CORE.h"
 #include "PLAYER.h"
+#include "ENEMYS.h"
+
 
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
@@ -46,6 +48,12 @@ int main(void)
     SDL_DestroyTexture(loadingScreen);
 
     Player_t player = Setup_player(windowSize, renderer);
+
+    Enemys_t enemys;
+    enemys.enemy = NULL;
+    enemys.num_enemys = 0;
+
+    Create_enemy(&enemys, windowSize, renderer);
 
     mouse_t mouse;
 
@@ -117,6 +125,10 @@ int main(void)
 
         Draw_Bullets(renderer, timeStep, &player);
 
+        Update_Enemys(&enemys, &player, timeStep);
+
+        Draw_Enemy(renderer, enemys.enemy[0], windowSize, &player);
+
         Draw_Player(renderer, &player, timeStep, windowSize, max);
 
         SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
@@ -126,6 +138,7 @@ int main(void)
         timeStep = get_time_ms(&stepTimer);
         start_timer(&stepTimer);
     }
+
     TTF_CloseFont(font);
     IMG_Quit();
     TTF_Quit();
