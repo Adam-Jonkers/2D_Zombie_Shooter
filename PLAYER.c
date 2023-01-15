@@ -40,6 +40,7 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
     player.acceleration = 20.0;
+    player.health = 100;
     
     player.bullets.bullet = NULL;
     player.bullets.num_bullets = 0;

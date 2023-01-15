@@ -24,9 +24,6 @@ typedef struct {
 
 typedef struct {
     int health;
-    int damage;
-    int ammo;
-    int weapon;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
