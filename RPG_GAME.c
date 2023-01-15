@@ -74,12 +74,23 @@ int main(void)
     fps.textColor = (SDL_Color){255, 0, 0, 255};
     fps.texture = NULL;
     fps.textBox.x = 5;
-    fps.textBox.y = 0;
+    fps.textBox.y = 30;
     fps.textBox.w = 50;
     fps.textBox.h = 30;
     strcpy(fps.text, "FPS: ERROR");
 
+    Text_t playerHealth;
+    playerHealth.font = font;
+    playerHealth.textColor = (SDL_Color){255, 0, 0, 255};
+    playerHealth.texture = NULL;
+    playerHealth.textBox.x = 5;
+    playerHealth.textBox.y = 0;
+    playerHealth.textBox.w = 50;
+    playerHealth.textBox.h = 30;
+    strcpy(playerHealth.text, "HP: 100");
+
     load_Text(&fps, renderer);
+    load_Text(&playerHealth, renderer);
 
     Setup_Noise_Map(max, noiseMap, randArray);
     Setup_Map_Png(bmap, noiseMap);
@@ -115,6 +126,9 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
+        sprintf(playerHealth.text, "HP: %d", player.health);
+        load_Text(&playerHealth, renderer);
+
         Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer);
 
         Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap);
@@ -134,7 +148,9 @@ int main(void)
 
         Draw_Player(renderer, &player, timeStep, windowSize, max);
 
-        SDL_RenderCopy(renderer, fps.texture, NULL, &fps.textBox);
+        Draw_Text(&playerHealth, renderer);
+
+        Draw_Text(&fps, renderer);
 
         SDL_RenderPresent(renderer);
 
