@@ -133,7 +133,7 @@ int main(void)
 
         Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer);
 
-        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap);
+        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap, &running);
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);

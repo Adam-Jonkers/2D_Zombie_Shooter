@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdbool.h>
 
 #include "PLAYER.h"
 #include "ENEMYS.h"
@@ -50,7 +51,7 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap, bool* running) 
 {
     player->maxSpeed = 100.0f;
     player->acceleration = 20.0f;
@@ -129,6 +130,10 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
         player->camera.y = max.y - windowSize.y;
     } else {
         player->camera.y = player->position.y - windowSize.y / 2;
+    }
+
+    if (player->health <= 0) {
+        *running = false;
     }
 }
 
