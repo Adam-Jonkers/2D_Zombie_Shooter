@@ -270,6 +270,11 @@ float get_fps(Timer_t* timer, Text_t* fps_text, SDL_Renderer* renderer)
     return fps;
 }
 
+void Draw_Text(Text_t* text, SDL_Renderer* renderer)
+{
+    SDL_RenderCopy(renderer, text->texture, NULL, &text->textBox);
+}
+
 // returns angle in radians of pointing from p1 to p2 where horizontally to the right is 0
 double get_angle(vec2_t p1, vec2_t p2)
 {
