@@ -38,12 +38,12 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
     enemys->enemy[enemys->num_enemys]->center.x = 95/3.5;
     enemys->enemy[enemys->num_enemys]->center.y = 120/3.5;
     enemys->enemy[enemys->num_enemys]->rotation = 0.0;
-    enemys->enemy[enemys->num_enemys]->maxSpeed = 150.0;
+    enemys->enemy[enemys->num_enemys]->maxSpeed = (float)get_random_number(110, 190);
     enemys->enemy[enemys->num_enemys]->position.x = get_random_number(0 + 10, max.x - 10);
     enemys->enemy[enemys->num_enemys]->position.y = get_random_number(0 + 10, max.y - 10);
     enemys->enemy[enemys->num_enemys]->velocity.x = 0.0;
     enemys->enemy[enemys->num_enemys]->velocity.y = 0.0;
-    enemys->enemy[enemys->num_enemys]->acceleration = 20.0;
+    enemys->enemy[enemys->num_enemys]->acceleration = (float)get_random_number(15, 25);
     enemys->enemy[enemys->num_enemys]->hitBox.h = enemys->enemy[enemys->num_enemys]->sprite.h * 0.8;
     enemys->enemy[enemys->num_enemys]->hitBox.w = enemys->enemy[enemys->num_enemys]->sprite.w * 0.8;
 
