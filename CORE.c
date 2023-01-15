@@ -285,6 +285,15 @@ bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBo
     float x2 = position2.x - hitBox2.w / 2;
     float y2 = position2.y - hitBox2.h / 2;
 
+    float x1Max = x1 + hitBox1.w;
+    float x1Min = x1;
+    float y1Max = y1 + hitBox1.h;
+    float y1Min = y1;
+    float x2Max = x2 + hitBox2.w;
+    float x2Min = x2;
+    float y2Max = y2 + hitBox2.h;
+    float y2Min = y2;
+
     // SDL_Rect rect1 = {x1, y1, hitBox1.w, hitBox1.h};
     // SDL_Rect rect2 = {x2, y2, hitBox2.w, hitBox2.h};
 
@@ -294,7 +303,8 @@ bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBo
     // if (SDL_RenderDrawRect(renderer, &rect2) != 0) {
     //     printf("SDL_RenderDrawRect2 Error: %s\n", SDL_GetError());
     // }
-    if ((x1) < (x2 + hitBox2.w) && (x1 + hitBox1.w) && (y1 < y2 + hitBox2.h) && (y1 + hitBox1.h > y2)) {
+    
+    if (((x1Max >= x2Min) && (x2Max >= x1Min)) && ((y1Max >= y2Min) && (y2Max >= y1Min))) {
         return true;
     }
     return false;
