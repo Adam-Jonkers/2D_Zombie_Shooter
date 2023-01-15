@@ -147,6 +147,9 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
     if (tempPosition.y < 0 || tempPosition.y > max.y) {
         enemys->enemy[index]->velocity.y = 0;
     }
+    if (abs((int)Get_Distance(tempPosition, player->position) < 75)) {
+        enemys->enemy[index]->velocity = (vec2_t){0, 0};
+    }
     enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
     if (enemys->enemy[index]->health <= 0) {
         Remove_Enemy(enemys, index);
