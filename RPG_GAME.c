@@ -53,7 +53,7 @@ int main(void)
     Enemys_t enemys;
     enemys.enemy = NULL;
     enemys.num_enemys = 0;
-    enemys.max_enemys = 20;
+    enemys.max_enemys = 500;
 
     mouse_t mouse;
 
@@ -160,19 +160,22 @@ int main(void)
         start_timer(&stepTimer);
     }
 
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
+    SDL_RenderFillRect(renderer, NULL);
+
     SDL_Texture* GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", renderer);
     SDL_RenderCopy(renderer, GameOverScreen, NULL, NULL);
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(GameOverScreen);
 
-    SDL_Event event1;
     bool wait = true;
+    SDL_Event event1;
     while(wait) {
-        while(SDL_PollEvent(&event1)) {
-            if(event1.type == SDL_KEYDOWN) {
+        while (SDL_PollEvent(&event1)){
+            if(keyboard_state[SDL_SCANCODE_RETURN]) {
                 wait = false;
-                break;
-            }
+            break;
+        }
         }
     }
 
