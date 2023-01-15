@@ -46,6 +46,7 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
     enemys->enemy[enemys->num_enemys]->acceleration = (float)get_random_number(15, 25);
     enemys->enemy[enemys->num_enemys]->hitBox.h = enemys->enemy[enemys->num_enemys]->sprite.h * 0.8;
     enemys->enemy[enemys->num_enemys]->hitBox.w = enemys->enemy[enemys->num_enemys]->sprite.w * 0.8;
+    enemys->enemy[enemys->num_enemys]->attackTimer = create_timer();
 
     enemys->enemy[enemys->num_enemys]->index = enemys->num_enemys;
 

@@ -53,6 +53,7 @@ typedef struct {
     float acceleration;
     int index;
     HitBox_t hitBox;
+    Timer_t attackTimer;
 } Enemy_t;
 
 typedef struct {
