@@ -44,6 +44,8 @@ typedef struct {
 typedef struct {
     int health;
     int damage;
+    int attackRate;
+    int attackRange;
     SDL_Texture* texture;
     SDL_FRect sprite;
     SDL_FPoint center;
