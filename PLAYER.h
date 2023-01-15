@@ -59,6 +59,7 @@ typedef struct {
 typedef struct {
     Enemy_t** enemy;
     int num_enemys;
+    int max_enemys;
 } Enemys_t;
 
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);

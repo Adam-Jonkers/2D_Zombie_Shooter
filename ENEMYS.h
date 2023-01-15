@@ -7,9 +7,9 @@
 #include "CORE.h"
 #include "PLAYER.h"
 
-void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer);
+void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max);
 
-void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer);
+void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max);
 
 void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Player_t* player);
 
@@ -24,5 +24,7 @@ void Remove_Enemys(Enemys_t* enemys);
 void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index);
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap);
+
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer);
 
 #endif

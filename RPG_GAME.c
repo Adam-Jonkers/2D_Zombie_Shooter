@@ -14,7 +14,6 @@
 #include "PLAYER.h"
 #include "ENEMYS.h"
 
-
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
 
@@ -52,8 +51,7 @@ int main(void)
     Enemys_t enemys;
     enemys.enemy = NULL;
     enemys.num_enemys = 0;
-
-    Create_enemy(&enemys, windowSize, renderer);
+    enemys.max_enemys = 20;
 
     mouse_t mouse;
 
@@ -95,6 +93,9 @@ int main(void)
     start_timer(&stepTimer);
     float timeStep = 0.0f;
 
+    Timer_t spawnTimer = create_timer();
+    start_timer(&spawnTimer);
+
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
     SDL_Texture* map_texture = Load_Map_Texture(renderer);
@@ -113,6 +114,8 @@ int main(void)
         mouse.buttons = SDL_GetMouseState(&mouse.x, &mouse.y);
 
         get_fps(&fpsTimer, &fps, renderer);
+
+        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer);
 
         Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap);
 

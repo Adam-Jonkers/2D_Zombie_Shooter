@@ -3,16 +3,22 @@
 #include "MAP.h"
 #include "CORE.h"
 
-void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
+// ms per spawn
+#define SPAWN_RATE 5000 
+
+void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
 {
     void* ptr = realloc(enemys->enemy, (enemys->num_enemys + 1) * sizeof(Enemy_t*));
     if (ptr == NULL) {
-        printf("Error: Failed to allocate memory for bullet\n");
+        printf("Error: Failed to allocate memory for enemy pointer\n");
     } else {
         enemys->enemy = ptr;
     }
 
     enemys->enemy[enemys->num_enemys] = calloc(1, sizeof(Enemy_t));
+    if (enemys->enemy[enemys->num_enemys] == NULL) {
+        printf("Error: Failed to allocate memory for enemy\n");
+    }
 
     enemys->enemy[enemys->num_enemys]->texture = load_texture("Assets/Zombie/Zombie.png", renderer);
 
@@ -33,30 +39,32 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
     enemys->enemy[enemys->num_enemys]->center.y = 120/3.5;
     enemys->enemy[enemys->num_enemys]->rotation = 0.0;
     enemys->enemy[enemys->num_enemys]->maxSpeed = 150.0;
-    enemys->enemy[enemys->num_enemys]->position.x = 100;
-    enemys->enemy[enemys->num_enemys]->position.y = 100;
+    enemys->enemy[enemys->num_enemys]->position.x = get_random_number(0 + 10, max.x - 10);
+    enemys->enemy[enemys->num_enemys]->position.y = get_random_number(0 + 10, max.y - 10);
     enemys->enemy[enemys->num_enemys]->velocity.x = 0.0;
     enemys->enemy[enemys->num_enemys]->velocity.y = 0.0;
     enemys->enemy[enemys->num_enemys]->acceleration = 20.0;
     enemys->enemy[enemys->num_enemys]->hitBox.h = enemys->enemy[enemys->num_enemys]->sprite.h * 0.8;
     enemys->enemy[enemys->num_enemys]->hitBox.w = enemys->enemy[enemys->num_enemys]->sprite.w * 0.8;
 
-    printf("enemy setup complete\n");
+    enemys->enemy[enemys->num_enemys]->index = enemys->num_enemys;
+
+    enemys->num_enemys++;
 }
 
-void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer)
+void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
 {
     printf("Creating enemy\n");
     void* ptr = realloc(enemys->enemy, (enemys->num_enemys + 1) * sizeof(Enemy_t*));
     if (ptr == NULL) {
-        printf("Error: Failed to allocate memory for bullet\n");
+        printf("Error: Failed to allocate memory for enemy\n");
     } else {
         enemys->enemy = ptr;
     }
 
     enemys->enemy[enemys->num_enemys] = calloc(1, sizeof(Enemy_t));
 
-    Setup_enemy(enemys, windowSize, renderer);
+    Setup_enemy(enemys, windowSize, renderer, max);
 }
 
 void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Player_t* player)
@@ -73,7 +81,7 @@ void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Playe
 
 void Draw_Enemys(SDL_Renderer* renderer, Enemys_t* enemys, vec2_t windowSize, Player_t* player)
 {
-    for (int i = 0; i <= enemys->num_enemys; i++) {
+    for (int i = 0; i < enemys->num_enemys; i++) {
         Draw_Enemy(renderer, enemys->enemy[i], windowSize, player);
     }
 }
@@ -99,7 +107,7 @@ void Remove_Enemy(Enemys_t* enemys, int index)
 
     enemys->num_enemys--;
 
-    if (enemys->num_enemys == -1) {
+    if (enemys->num_enemys == 0) {
         free(enemys->enemy);
         enemys->enemy = NULL;
         return;
@@ -147,7 +155,18 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
 
 void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap)
 {
-    for (int i = 0; i <= enemys->num_enemys; i++) {
+    if (enemys->num_enemys == -1) {
+        return;
+    }
+    for (int i = 0; i < enemys->num_enemys; i++) {
         Update_Enemy(enemys, player, dt, max, noiseMap, i);
+    }
+}
+
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer)
+{
+    if (get_time_ms(timer) > SPAWN_RATE && enemys->num_enemys < enemys->max_enemys) {
+        Setup_enemy(enemys, windowSize, renderer, max);
+        start_timer(timer);
     }
 }

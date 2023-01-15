@@ -220,7 +220,7 @@ void Destroy_Bullets(Bullets_t* bullets)
 
 void Remove_Bullet(Bullets_t* bullets, int index)
 {
-    if (index < 0 || index >= bullets->num_bullets) {
+    if (index < 0 || index > bullets->num_bullets) {
         return;
     }
 
@@ -241,6 +241,7 @@ void Remove_Bullet(Bullets_t* bullets, int index)
         void* ptr = realloc(bullets->bullet, bullets->num_bullets * sizeof(Bullet_t*));
         if (ptr == NULL) {
             printf("Error: Failed to allocate memory for removing bullet\n");
+            printf("Num bullets: %d\n", bullets->num_bullets);
         } else {
             bullets->bullet = ptr;
         }
@@ -249,18 +250,23 @@ void Remove_Bullet(Bullets_t* bullets, int index)
 
 void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* player, SDL_Renderer* renderer)
 {
+    bool remove = false;
     for (int i = 0; i < bullets->num_bullets; i++) {
+        remove = false;
         bullets->bullet[i]->position = add_vec2(bullets->bullet[i]->position, multiply_vec2(bullets->bullet[i]->velocity, dt / 1000.0f));
         bullets->bullet[i]->lifetime += dt;
         if (bullets->bullet[i]->lifetime > bullets->bullet[i]->max_lifetime) {
-            Remove_Bullet(bullets, i);
+            remove = true;
         } else {
-            for (int j = 0; j <= enemys->num_enemys; j++) {
+            for (int j = 0; j < enemys->num_enemys; j++) {
                 if (check_collision(subtract_vec2(bullets->bullet[i]->position, player->position), bullets->bullet[i]->hitBox, subtract_vec2(enemys->enemy[j]->position, player->camera), enemys->enemy[j]->hitBox, renderer)) {
-                    Remove_Bullet(bullets, i);
+                    remove = true;
                     enemys->enemy[j]->health -= 1;
                 }
             }
+        }
+        if (remove) {
+            Remove_Bullet(bullets, i);
         }
     }
 }
