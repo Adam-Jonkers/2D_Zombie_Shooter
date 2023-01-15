@@ -4,7 +4,7 @@
 #include "CORE.h"
 
 // ms per spawn
-#define SPAWN_RATE 5000 
+#define SPAWN_RATE 2000 
 
 void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
 {
