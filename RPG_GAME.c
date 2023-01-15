@@ -158,6 +158,22 @@ int main(void)
         start_timer(&stepTimer);
     }
 
+    SDL_Texture* GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", renderer);
+    SDL_RenderCopy(renderer, GameOverScreen, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(GameOverScreen);
+
+    SDL_Event event1;
+    bool wait = true;
+    while(wait) {
+        while(SDL_PollEvent(&event1)) {
+            if(event1.type == SDL_KEYDOWN) {
+                wait = false;
+                break;
+            }
+        }
+    }
+
     TTF_CloseFont(font);
     IMG_Quit();
     TTF_Quit();
