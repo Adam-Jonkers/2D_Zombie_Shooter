@@ -26,6 +26,8 @@ int main(void)
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
 
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
     SDL_Surface *icon = IMG_Load("Assets/Icon/Icon.png");
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
@@ -142,7 +144,7 @@ int main(void)
 
         Draw_Bullets(renderer, &player);
 
-        Update_Enemys(&enemys, &player, timeStep, max, noiseMap);
+        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer);
 
         Draw_Enemys(renderer, &enemys, windowSize, &player);
 
