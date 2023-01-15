@@ -30,6 +30,8 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
 
     enemys->enemy[enemys->num_enemys]->health = 100;
     enemys->enemy[enemys->num_enemys]->damage = 10;
+    enemys->enemy[enemys->num_enemys]->attackRate = 1000;
+    enemys->enemy[enemys->num_enemys]->attackRange =  100;
 
     enemys->enemy[enemys->num_enemys]->sprite.w = w/3.5;
     enemys->enemy[enemys->num_enemys]->sprite.h = h/3.5;
@@ -47,6 +49,7 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
     enemys->enemy[enemys->num_enemys]->hitBox.h = enemys->enemy[enemys->num_enemys]->sprite.h * 0.8;
     enemys->enemy[enemys->num_enemys]->hitBox.w = enemys->enemy[enemys->num_enemys]->sprite.w * 0.8;
     enemys->enemy[enemys->num_enemys]->attackTimer = create_timer();
+    start_timer(&enemys->enemy[enemys->num_enemys]->attackTimer);
 
     enemys->enemy[enemys->num_enemys]->index = enemys->num_enemys;
 
@@ -154,6 +157,10 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
     enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
     if (enemys->enemy[index]->health <= 0) {
         Remove_Enemy(enemys, index);
+    }
+    if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
+        player->health -= 1;
+        start_timer(&enemys->enemy[index]->attackTimer);
     }
 }
 
