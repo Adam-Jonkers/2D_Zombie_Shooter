@@ -9,6 +9,12 @@
 #define PLAYER_MOVE_ANIMATION_LENGTH 19
 #define PLAYER_IDLE_ANIMATION_LENGTH 19
 
+#define PLAYER_DAMAGE 2
+#define PLAYER_HEALTH 100
+#define PLAYER_ACCELERATION 20.0
+#define PLAYER_MAX_SPEED 100.0
+#define PLAYER_SPEED_MULTIPLIER 2.0
+
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Player_t player;
@@ -33,15 +39,18 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.center.x = 95/3.5;
     player.center.y = 120/3.5;
     player.rotation = 0.0;
-    player.maxSpeed = 100.0;
+    player.maxSpeed = PLAYER_MAX_SPEED;
     player.position.x = 1000;
     player.position.y = 1000;
     player.camera.x = player.position.x - windowSize.x / 2;
     player.camera.y = player.position.y - windowSize.y / 2;
     player.velocity.x = 0.0;
     player.velocity.y = 0.0;
-    player.acceleration = 20.0;
-    player.health = 100;
+    player.acceleration = PLAYER_ACCELERATION;
+    player.health = PLAYER_HEALTH;
+    player.damage = PLAYER_DAMAGE;
+    player.sprinting = false;
+    player.sprintMultiplier = PLAYER_SPEED_MULTIPLIER;
     
     player.bullets.bullet = NULL;
     player.bullets.num_bullets = 0;
@@ -60,9 +69,12 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
     player->moveAnimation.speed = 50;
     float speedMultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
-        player->maxSpeed = 200.0f;
-        player->acceleration = 50.0f;
-        player->moveAnimation.speed = 30;
+        player->sprinting = true;
+        // player->maxSpeed = 200.0f;
+        // player->acceleration = 50.0f;
+        // player->moveAnimation.speed = 30;
+    } else {
+        player->sprinting = false;
     }
     if (keyboard_state[SDL_SCANCODE_W]) {
         player->velocity.x += player->acceleration * cos(player->rotation);
@@ -98,6 +110,11 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
 
     float move_x = (player->velocity.x) * dt / 1000.0f;
     float move_y = (player->velocity.y) * dt / 1000.0f;
+
+    if (player->sprinting) {
+        move_x *= player->sprintMultiplier;
+        move_y *= player->sprintMultiplier;
+    }
     
     if (player->position.x + move_x < 0) {
         move_x = 0;
@@ -185,6 +202,7 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->bullet[bullets->num_bullets]->lifetime = 0;
     bullets->bullet[bullets->num_bullets]->max_lifetime = 5000;
     bullets->bullet[bullets->num_bullets]->hitBox = (HitBox_t) {15, 15};
+    bullets->bullet[bullets->num_bullets]->damage = player->damage;
 
     bullets->num_bullets++;
 }
@@ -254,6 +272,18 @@ void Remove_Bullet(Bullets_t* bullets, int index)
     }
 }
 
+void Remove_Bullets(Bullets_t* bullets)
+{
+    for (int i = 0; i <= bullets->num_bullets; i++) {
+        Remove_Enemy(bullets, 0);
+    }
+    if (bullets->bullet == NULL) {
+        printf("bullets destroyed\n");
+    } else {
+        printf("Error: Failed to destroy bullets %d remaining\n", bullets->num_bullets);
+    }
+}
+
 void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* player, SDL_Renderer* renderer)
 {
     bool remove = false;
@@ -267,7 +297,7 @@ void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* pl
             for (int j = 0; j < enemys->num_enemys; j++) {
                 if (check_collision(subtract_vec2(bullets->bullet[i]->position, player->position), bullets->bullet[i]->hitBox, subtract_vec2(enemys->enemy[j]->position, player->camera), enemys->enemy[j]->hitBox, renderer)) {
                     remove = true;
-                    enemys->enemy[j]->health -= 1;
+                    enemys->enemy[j]->health -= bullets->bullet[i]->damage;
                 }
             }
         }

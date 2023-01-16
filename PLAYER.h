@@ -12,6 +12,7 @@ typedef struct {
     SDL_Texture* texture;
     vec2_t position;
     vec2_t velocity;
+    int damage;
     int index;
     uint32_t lifetime;
     uint32_t max_lifetime;
@@ -25,6 +26,7 @@ typedef struct {
 
 typedef struct {
     int health;
+    int damage;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
@@ -37,6 +39,8 @@ typedef struct {
     vec2_t velocity;
     vec2_t camera;
     Bullets_t bullets;
+    bool sprinting;
+    float sprintMultiplier;
 } Player_t;
 
 typedef struct {
@@ -80,6 +84,8 @@ void Destroy_Bullet(Bullet_t* bullet);
 void Destroy_Bullets(Bullets_t* bullets);
 
 void Remove_Bullet(Bullets_t* bullets, int index);
+
+void Remove_Bullets(Bullets_t* bullets);
 
 void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* player, SDL_Renderer* renderer);
 

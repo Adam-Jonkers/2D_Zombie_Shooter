@@ -17,6 +17,8 @@
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
 
+#define MAX_ENEMYS 500
+
 int main(void)
 {
     // initialize SDL
@@ -53,7 +55,7 @@ int main(void)
     Enemys_t enemys;
     enemys.enemy = NULL;
     enemys.num_enemys = 0;
-    enemys.max_enemys = 500;
+    enemys.max_enemys = MAX_ENEMYS;
 
     mouse_t mouse;
 
@@ -167,6 +169,8 @@ int main(void)
     SDL_RenderCopy(renderer, GameOverScreen, NULL, NULL);
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(GameOverScreen);
+
+    Remove_Enemys(&enemys);
 
     bool wait = true;
     SDL_Event event1;

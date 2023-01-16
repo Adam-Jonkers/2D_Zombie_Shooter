@@ -6,6 +6,12 @@
 // ms per spawn
 #define SPAWN_RATE 2000 
 
+#define ENEMY_SPEED 100
+#define ENEMY_DAMAGE 10
+#define ENEMY_HEALTH 100
+#define ENEMY_ATTACK_RATE 1000
+#define ENEMY_ATTACK_RANGE 100
+
 void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
 {
     void* ptr = realloc(enemys->enemy, (enemys->num_enemys + 1) * sizeof(Enemy_t*));
@@ -28,10 +34,10 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
         printf("Error: %s Failed to query texture\n", SDL_GetError());
     }
 
-    enemys->enemy[enemys->num_enemys]->health = 100;
-    enemys->enemy[enemys->num_enemys]->damage = 10;
-    enemys->enemy[enemys->num_enemys]->attackRate = 1000;
-    enemys->enemy[enemys->num_enemys]->attackRange =  100;
+    enemys->enemy[enemys->num_enemys]->health = ENEMY_HEALTH;
+    enemys->enemy[enemys->num_enemys]->damage = ENEMY_DAMAGE;
+    enemys->enemy[enemys->num_enemys]->attackRate = ENEMY_ATTACK_RATE;
+    enemys->enemy[enemys->num_enemys]->attackRange =  ENEMY_ATTACK_RANGE;
 
     enemys->enemy[enemys->num_enemys]->sprite.w = w/3.5;
     enemys->enemy[enemys->num_enemys]->sprite.h = h/3.5;
@@ -126,8 +132,13 @@ void Remove_Enemy(Enemys_t* enemys, int index)
 
 void Remove_Enemys(Enemys_t* enemys)
 {
-    for (int i = 0; i < enemys->num_enemys; i++) {
-        Remove_Enemy(enemys, i);
+    for (int i = 0; i <= enemys->num_enemys; i++) {
+        Remove_Enemy(enemys, 0);
+    }
+    if (enemys->enemy == NULL) {
+        printf("Enemys destroyed\n");
+    } else {
+        printf("Error: Failed to destroy enemys %d remaining\n", enemys->num_enemys);
     }
 }
 
