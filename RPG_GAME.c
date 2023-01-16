@@ -122,7 +122,18 @@ int main(void)
     score.maxScoreText.textBox.h = 30;
     score.maxScoreText.textBox.x = windowSize.x - score.maxScoreText.textBox.w;
     score.maxScoreText.textBox.y = 0;
-    strcpy(score.maxScoreText.text, "Max Score: 0");
+
+    FILE* file = fopen("Highscore.txt", "r");
+    if (file == NULL) {
+        printf("No highscore file found\n");
+        score.maxScore = 0;
+        
+    } else {
+        fscanf(file, "%d", &score.maxScore);
+        fclose(file);
+    }
+
+    sprintf(score.maxScoreText.text, "Highscore: %d", score.maxScore);
     load_Text(&score.maxScoreText, renderer);
     score.maxScoreText.textBox.x = windowSize.x - score.maxScoreText.textBox.w;
 
@@ -218,6 +229,9 @@ int main(void)
     Remove_Enemys(&enemys);
 
     Remove_Bullets(&player.bullets);
+
+    file = fopen("Highscore.txt", "w");
+    fprintf(file,"%d",score.maxScore);
 
     bool wait = true;
     SDL_Event event1;
