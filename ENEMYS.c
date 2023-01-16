@@ -132,7 +132,8 @@ void Remove_Enemy(Enemys_t* enemys, int index)
 
 void Remove_Enemys(Enemys_t* enemys)
 {
-    for (int i = 0; i <= enemys->num_enemys; i++) {
+    int all_enemys = enemys->num_enemys;
+    for (int i = 0; i < all_enemys; i++) {
         Remove_Enemy(enemys, 0);
     }
     if (enemys->enemy == NULL) {

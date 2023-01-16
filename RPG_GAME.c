@@ -172,6 +172,8 @@ int main(void)
 
     Remove_Enemys(&enemys);
 
+    Remove_Bullets(&player.bullets);
+
     bool wait = true;
     SDL_Event event1;
     while(wait) {

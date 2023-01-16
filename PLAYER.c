@@ -274,8 +274,9 @@ void Remove_Bullet(Bullets_t* bullets, int index)
 
 void Remove_Bullets(Bullets_t* bullets)
 {
-    for (int i = 0; i <= bullets->num_bullets; i++) {
-        Remove_Enemy(bullets, 0);
+    int all_bullets = bullets->num_bullets;
+    for (int i = 0; i < all_bullets; i++) {
+        Remove_Bullet(bullets, 0);
     }
     if (bullets->bullet == NULL) {
         printf("bullets destroyed\n");
