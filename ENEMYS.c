@@ -3,9 +3,6 @@
 #include "MAP.h"
 #include "CORE.h"
 
-// ms per spawn
-#define SPAWN_RATE 2000 
-
 #define ENEMY_SPEED 100
 #define ENEMY_DAMAGE 10
 #define ENEMY_HEALTH 100
@@ -188,9 +185,9 @@ void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, flo
     }
 }
 
-void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer)
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate)
 {
-    if (get_time_ms(timer) > SPAWN_RATE && enemys->num_enemys < enemys->max_enemys) {
+    if (get_time_ms(timer) > spawnRate && enemys->num_enemys < enemys->max_enemys) {
         Setup_enemy(enemys, windowSize, renderer, max);
         start_timer(timer);
     }

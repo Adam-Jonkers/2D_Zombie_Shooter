@@ -19,6 +19,10 @@
 
 #define MAX_ENEMYS 500
 
+// ms per spawn
+#define SPAWN_RATE 5000 
+#define DIFFICULTY_INCREASE_RATE 1000
+
 int main(void)
 {
     // initialize SDL
@@ -111,6 +115,11 @@ int main(void)
     Timer_t spawnTimer = create_timer();
     start_timer(&spawnTimer);
 
+    Timer_t difficultyTimer = create_timer();
+    start_timer(&difficultyTimer);
+    u_int32_t difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
+    u_int32_t spawnRate = SPAWN_RATE;
+
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
     SDL_Texture* map_texture = Load_Map_Texture(renderer);
@@ -133,7 +142,13 @@ int main(void)
         sprintf(playerHealth.text, "HP: %d", player.health);
         load_Text(&playerHealth, renderer);
 
-        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer);
+        if (spawnRate > 200 && get_time_ms(&difficultyTimer) > difficultyIncreaseRate) {
+            spawnRate -= 60;
+            printf("Spawn Rate: %d\n", spawnRate);
+            start_timer(&difficultyTimer);
+        }
+
+        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer, spawnRate);
 
         Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap, &running);
 
