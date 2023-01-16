@@ -165,6 +165,7 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
 
 void load_Text(Text_t* text, SDL_Renderer* renderer)
 {
+    int w, h;
     SDL_Surface* textSurface = NULL;
     if (text->font == NULL) {
         printf("Font not setup\n");
@@ -178,8 +179,9 @@ void load_Text(Text_t* text, SDL_Renderer* renderer)
         if (text->texture == NULL) {
             printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
         } else {
-            text->textBox.w = textSurface->w;
-            text->textBox.h = textSurface->h;
+            SDL_QueryTexture(text->texture, NULL, NULL, &w, &h);
+            text->textBox.w = w;
+            text->textBox.h = h;
         }
     }
     SDL_FreeSurface(textSurface);

@@ -140,7 +140,7 @@ void Remove_Enemys(Enemys_t* enemys)
     }
 }
 
-void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index, SDL_Renderer* renderer)
+void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize)
 {
     enemys->enemy[index]->rotation = get_angle(enemys->enemy[index]->position, player->position) - 1.5708;
     
@@ -166,6 +166,16 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
     enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
     if (enemys->enemy[index]->health <= 0) {
         Remove_Enemy(enemys, index);
+        score->score += 1;
+        sprintf(score->scoreText.text, "Score: %d", score->score);
+        load_Text(&score->scoreText, renderer);
+        score->scoreText.textBox.x = windowSize.x - score->scoreText.textBox.w;
+        if (score->score > score->maxScore) {
+            score->maxScore = score->score;
+            sprintf(score->maxScoreText.text, "High Score: %d", score->maxScore);
+            load_Text(&score->maxScoreText, renderer);
+            score->maxScoreText.textBox.x = windowSize.x - score->maxScoreText.textBox.w;
+        }
     }
     if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
         player->health -= 1;
@@ -175,13 +185,13 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
     }
 }
 
-void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer)
+void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize)
 {
     if (enemys->num_enemys == -1) {
         return;
     }
     for (int i = 0; i < enemys->num_enemys; i++) {
-        Update_Enemy(enemys, player, dt, max, noiseMap, i, renderer);
+        Update_Enemy(enemys, player, dt, max, noiseMap, i, renderer, score, windowSize);
     }
 }
 

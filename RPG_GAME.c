@@ -86,6 +86,7 @@ int main(void)
     fps.textBox.w = 50;
     fps.textBox.h = 30;
     strcpy(fps.text, "FPS: ERROR");
+    load_Text(&fps, renderer);
 
     Text_t playerHealth;
     playerHealth.font = font;
@@ -96,9 +97,34 @@ int main(void)
     playerHealth.textBox.w = 50;
     playerHealth.textBox.h = 30;
     strcpy(playerHealth.text, "HP: 100");
-
-    load_Text(&fps, renderer);
     load_Text(&playerHealth, renderer);
+
+    Score_t score;
+
+    score.score = 0;
+    score.maxScore = 0;
+
+    score.scoreText.font = font;
+    score.scoreText.textColor = (SDL_Color){255, 0, 0, 255};
+    score.scoreText.texture = NULL;
+    score.scoreText.textBox.w = 50;
+    score.scoreText.textBox.h = 30;
+    score.scoreText.textBox.x = windowSize.x - score.scoreText.textBox.w;
+    score.scoreText.textBox.y = 30;
+    strcpy(score.scoreText.text, "Score: 0");
+    load_Text(&score.scoreText, renderer);
+    score.scoreText.textBox.x = windowSize.x - score.scoreText.textBox.w;
+
+    score.maxScoreText.font = font;
+    score.maxScoreText.textColor = (SDL_Color){255, 0, 0, 255};
+    score.maxScoreText.texture = NULL;
+    score.maxScoreText.textBox.w = 80;
+    score.maxScoreText.textBox.h = 30;
+    score.maxScoreText.textBox.x = windowSize.x - score.maxScoreText.textBox.w;
+    score.maxScoreText.textBox.y = 0;
+    strcpy(score.maxScoreText.text, "Max Score: 0");
+    load_Text(&score.maxScoreText, renderer);
+    score.maxScoreText.textBox.x = windowSize.x - score.maxScoreText.textBox.w;
 
     Setup_Noise_Map(max, noiseMap, randArray);
     Setup_Map_Png(bmap, noiseMap);
@@ -161,7 +187,7 @@ int main(void)
 
         Draw_Bullets(renderer, &player);
 
-        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer);
+        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer, &score, windowSize);
 
         Draw_Enemys(renderer, &enemys, windowSize, &player);
 
@@ -170,6 +196,10 @@ int main(void)
         Draw_Text(&playerHealth, renderer);
 
         Draw_Text(&fps, renderer);
+
+        Draw_Text(&score.scoreText, renderer);
+
+        Draw_Text(&score.maxScoreText, renderer);
 
         SDL_RenderPresent(renderer);
 

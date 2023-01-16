@@ -58,6 +58,13 @@ typedef struct {
     int h;
 } HitBox_t;
 
+typedef struct {
+    int score;
+    int maxScore;
+    Text_t scoreText;
+    Text_t maxScoreText;
+} Score_t;
+
 int get_random_number(int min, int max);
 
 vec2_t normalize_vec2(vec2_t v);
