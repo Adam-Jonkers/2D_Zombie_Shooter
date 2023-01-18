@@ -140,7 +140,7 @@ void Remove_Enemys(Enemys_t* enemys)
     }
 }
 
-void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize)
+void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth)
 {
     enemys->enemy[index]->rotation = get_angle(enemys->enemy[index]->position, player->position) - 1.5708;
     
@@ -178,20 +178,26 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
         }
     }
     if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
-        player->health -= 1;
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
-        SDL_RenderFillRect(renderer, NULL);
-        start_timer(&enemys->enemy[index]->attackTimer);
+        if (player->health > 0) {
+            player->health -= 1;
+            sprintf(playerHealth->text, "HP: %d", player->health);
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
+            SDL_RenderFillRect(renderer, NULL);
+            start_timer(&enemys->enemy[index]->attackTimer);
+        } else {
+            sprintf(playerHealth->text, "HP: 0");
+        }
+        load_Text(playerHealth, renderer);
     }
 }
 
-void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize)
+void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth)
 {
     if (enemys->num_enemys == -1) {
         return;
     }
     for (int i = 0; i < enemys->num_enemys; i++) {
-        Update_Enemy(enemys, player, dt, max, noiseMap, i, renderer, score, windowSize);
+        Update_Enemy(enemys, player, dt, max, noiseMap, i, renderer, score, windowSize, playerHealth);
     }
 }
 

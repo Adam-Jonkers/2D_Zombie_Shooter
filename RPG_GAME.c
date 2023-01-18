@@ -176,12 +176,8 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        sprintf(playerHealth.text, "HP: %d", player.health);
-        load_Text(&playerHealth, renderer);
-
         if (spawnRate > 200 && get_time_ms(&difficultyTimer) > difficultyIncreaseRate) {
             spawnRate -= 60;
-            printf("Spawn Rate: %d\n", spawnRate);
             start_timer(&difficultyTimer);
         }
 
@@ -198,7 +194,7 @@ int main(void)
 
         Draw_Bullets(renderer, &player);
 
-        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer, &score, windowSize);
+        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer, &score, windowSize, &playerHealth);
 
         Draw_Enemys(renderer, &enemys, windowSize, &player);
 
