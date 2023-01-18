@@ -166,6 +166,11 @@ int save_png_to_file (bitmap_t* bitmap, const char* path)
 void load_Text(Text_t* text, SDL_Renderer* renderer)
 {
     int w, h;
+    if (text->texture != NULL) {
+        SDL_DestroyTexture(text->texture);
+        text->texture = NULL;
+    }
+
     SDL_Surface* textSurface = NULL;
     if (text->font == NULL) {
         printf("Font not setup\n");
