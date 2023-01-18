@@ -15,7 +15,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-RPG_GAME.o: RPG_GAME.c MAP.h CORE.h PLAYER.h ENEMYS.h
+RPG_GAME.o: RPG_GAME.c RPG_GAME.h MAP.h CORE.h PLAYER.h ENEMYS.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
 CORE.o: CORE.c CORE.h
