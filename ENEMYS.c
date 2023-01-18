@@ -9,7 +9,7 @@
 #define ENEMY_ATTACK_RATE 1000
 #define ENEMY_ATTACK_RANGE 100
 
-void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
+void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, vec2_t camera)
 {
     void* ptr = realloc(enemys->enemy, (enemys->num_enemys + 1) * sizeof(Enemy_t*));
     if (ptr == NULL) {
@@ -44,8 +44,25 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
     enemys->enemy[enemys->num_enemys]->center.y = 120/3.5;
     enemys->enemy[enemys->num_enemys]->rotation = 0.0;
     enemys->enemy[enemys->num_enemys]->maxSpeed = (float)get_random_number(110, 190);
-    enemys->enemy[enemys->num_enemys]->position.x = get_random_number(0 + 10, max.x - 10);
-    enemys->enemy[enemys->num_enemys]->position.y = get_random_number(0 + 10, max.y - 10);
+
+    int spawnTry = 0;
+    bool xSpawn = false;
+    bool ySpawn = false;
+    do
+    {
+        enemys->enemy[enemys->num_enemys]->position.x = get_random_number(0, max.x);
+        xSpawn = enemys->enemy[enemys->num_enemys]->position.x < (camera.x - 100) || enemys->enemy[enemys->num_enemys]->position.x > (camera.x + windowSize.x + 100);
+        enemys->enemy[enemys->num_enemys]->position.y = get_random_number(0, max.y);
+        ySpawn = enemys->enemy[enemys->num_enemys]->position.y < (camera.y - 100) || enemys->enemy[enemys->num_enemys]->position.y > (camera.y + windowSize.y + 100);
+        spawnTry++;
+        if (spawnTry >= 10) {
+            printf("Error: Failed to spawn enemy\n");
+        }
+        if (spawnTry > 5) {
+            printf("Warning: Issue spawning enemy\n");
+        }
+    } while (spawnTry < 10 && !xSpawn && !ySpawn);
+
     enemys->enemy[enemys->num_enemys]->velocity.x = 0.0;
     enemys->enemy[enemys->num_enemys]->velocity.y = 0.0;
     enemys->enemy[enemys->num_enemys]->acceleration = (float)get_random_number(15, 25);
@@ -59,7 +76,7 @@ void Setup_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, ve
     enemys->num_enemys++;
 }
 
-void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max)
+void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, vec2_t camera)
 {
     printf("Creating enemy\n");
     void* ptr = realloc(enemys->enemy, (enemys->num_enemys + 1) * sizeof(Enemy_t*));
@@ -71,7 +88,7 @@ void Create_enemy(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, v
 
     enemys->enemy[enemys->num_enemys] = calloc(1, sizeof(Enemy_t));
 
-    Setup_enemy(enemys, windowSize, renderer, max);
+    Setup_enemy(enemys, windowSize, renderer, max, camera);
 }
 
 void Draw_Enemy(SDL_Renderer* renderer, Enemy_t* enemy, vec2_t windowSize, Player_t* player)
@@ -201,10 +218,10 @@ void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, flo
     }
 }
 
-void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate)
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate, vec2_t camera)
 {
     if (get_time_ms(timer) > spawnRate && enemys->num_enemys < enemys->max_enemys) {
-        Setup_enemy(enemys, windowSize, renderer, max);
+        Setup_enemy(enemys, windowSize, renderer, max, camera);
         start_timer(timer);
     }
 }

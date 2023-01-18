@@ -181,7 +181,7 @@ int main(void)
             start_timer(&difficultyTimer);
         }
 
-        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer, spawnRate);
+        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer, spawnRate, player.camera);
 
         Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap, &running);
 
