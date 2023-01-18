@@ -9,6 +9,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "RPG_GAME.h"
 #include "MAP.h"
 #include "CORE.h"
 #include "PLAYER.h"
@@ -23,10 +24,10 @@
 #define SPAWN_RATE 5000 
 #define DIFFICULTY_INCREASE_RATE 1000
 
-int main(void)
+Global_t Setup_Global()
 {
     bool running = true;
-    
+
     // initialize SDL
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -49,6 +50,39 @@ int main(void)
 
     printf("Display: y: %d, x: %d\n", window_height, window_width);
 
+    mouse_t mouse;
+
+    srand(time(NULL));
+
+    TTF_Font* font = NULL;
+
+    load_Font(&font, "Assets/Font/Font.ttf");
+
+    Text_t fps = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 30, 50, 30}, "FPS: ERROR");
+    load_Text(&fps, renderer);
+
+    Timer_t fpsTimer = create_timer();
+    start_timer(&fpsTimer);
+
+    Timer_t stepTimer = create_timer();
+    start_timer(&stepTimer);
+    float timeStep = 0.0f;
+
+    const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
+}
+
+void Cleanup_Global(Global_t* global)
+{
+    TTF_CloseFont(font);
+    IMG_Quit();
+    TTF_Quit();
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+Game_t Setup_Game()
+{
     vec2_t max = {MAP_WIDTH, MAP_HEIGHT};
 
     SDL_Texture* loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", renderer);
@@ -63,10 +97,6 @@ int main(void)
     enemys.num_enemys = 0;
     enemys.max_enemys = MAX_ENEMYS;
 
-    mouse_t mouse;
-
-    srand(time(NULL));
-
     float* noiseMap = calloc((max.x * max.y), sizeof(float));
     float* randArray = calloc((max.x * max.y), sizeof(float));
     char* map = calloc((max.x * max.y), sizeof(char));
@@ -74,13 +104,6 @@ int main(void)
     bmap.height = max.y;
     bmap.width = max.x;
     bmap.pixels = calloc((max.x * max.y), sizeof(pixel_t));
-
-    TTF_Font* font = NULL;
-
-    load_Font(&font, "Assets/Font/Font.ttf");
-
-    Text_t fps = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 30, 50, 30}, "FPS: ERROR");
-    load_Text(&fps, renderer);
 
     Text_t playerHealth = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
     load_Text(&playerHealth, renderer);
@@ -113,12 +136,7 @@ int main(void)
     Setup_Noise_Map(max, noiseMap, randArray);
     Setup_Map_Png(bmap, noiseMap);
 
-    Timer_t fpsTimer = create_timer();
-    start_timer(&fpsTimer);
-
-    Timer_t stepTimer = create_timer();
-    start_timer(&stepTimer);
-    float timeStep = 0.0f;
+    SDL_Texture* map_texture = Load_Map_Texture(renderer);
 
     Timer_t spawnTimer = create_timer();
     start_timer(&spawnTimer);
@@ -127,10 +145,87 @@ int main(void)
     start_timer(&difficultyTimer);
     u_int32_t difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
     u_int32_t spawnRate = SPAWN_RATE;
+}
 
-    const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
+void Run_Game(Game_t* game)
+{
+    if (spawnRate > 200 && get_time_ms(&difficultyTimer) > difficultyIncreaseRate) {
+        spawnRate -= 60;
+        start_timer(&difficultyTimer);
+    }
 
-    SDL_Texture* map_texture = Load_Map_Texture(renderer);
+    Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer, spawnRate, player.camera);
+
+    Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap, &running);
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    Draw_Map_Texture(renderer, map_texture, &player, windowSize);
+
+    Update_Bullets(&player.bullets, timeStep, &enemys, &player, renderer);
+
+    Draw_Bullets(renderer, &player);
+
+    Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer, &score, windowSize, &playerHealth);
+
+    Draw_Enemys(renderer, &enemys, windowSize, &player);
+
+    Draw_Player(renderer, &player, timeStep, windowSize, max);
+
+    Draw_Text(&playerHealth, renderer);
+
+    Draw_Text(&fps, renderer);
+
+    Draw_Text(&score.scoreText, renderer);
+
+    Draw_Text(&score.maxScoreText, renderer);
+
+    SDL_RenderPresent(renderer);
+}
+
+void close_Game(Game_t* game)
+{
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
+    SDL_RenderFillRect(renderer, NULL);
+
+    SDL_Texture* GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", renderer);
+    SDL_RenderCopy(renderer, GameOverScreen, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(GameOverScreen);
+
+    Remove_Enemys(&enemys);
+
+    Remove_Bullets(&player.bullets);
+
+    file = fopen("Highscore.txt", "w");
+    fprintf(file,"%d",score.maxScore);
+    fclose(file);
+
+    bool wait = true;
+    SDL_Event event1;
+    while(wait) {
+        while (SDL_PollEvent(&event1)){
+            if(keyboard_state[SDL_SCANCODE_RETURN]) {
+                wait = false;
+            break;
+        }
+        }
+    }
+
+    free(noiseMap);
+    free(map);
+
+    if (remove("map.png")) {
+        printf("Error deleting map file\n");
+    }
+}
+
+int main(void)
+{
+    Setup_Global();
+
+    Setup_Game();
 
     while (running) {
         SDL_Event event;
@@ -147,82 +242,14 @@ int main(void)
 
         get_fps(&fpsTimer, &fps, renderer);
 
-        if (spawnRate > 200 && get_time_ms(&difficultyTimer) > difficultyIncreaseRate) {
-            spawnRate -= 60;
-            start_timer(&difficultyTimer);
-        }
-
-        Spawn_Enemys(&enemys, windowSize, renderer, max, &spawnTimer, spawnRate, player.camera);
-
-        Move_player(keyboard_state, &player, timeStep, renderer, &player.bullets, windowSize, max, mouse, noiseMap, &running);
-
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        Draw_Map_Texture(renderer, map_texture, &player, windowSize);
-
-        Update_Bullets(&player.bullets, timeStep, &enemys, &player, renderer);
-
-        Draw_Bullets(renderer, &player);
-
-        Update_Enemys(&enemys, &player, timeStep, max, noiseMap, renderer, &score, windowSize, &playerHealth);
-
-        Draw_Enemys(renderer, &enemys, windowSize, &player);
-
-        Draw_Player(renderer, &player, timeStep, windowSize, max);
-
-        Draw_Text(&playerHealth, renderer);
-
-        Draw_Text(&fps, renderer);
-
-        Draw_Text(&score.scoreText, renderer);
-
-        Draw_Text(&score.maxScoreText, renderer);
-
-        SDL_RenderPresent(renderer);
+        Run_Game();
 
         timeStep = get_time_ms(&stepTimer);
         start_timer(&stepTimer);
     }
+    close_Game();
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
-    SDL_RenderFillRect(renderer, NULL);
+    Cleanup_Global();
 
-    SDL_Texture* GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", renderer);
-    SDL_RenderCopy(renderer, GameOverScreen, NULL, NULL);
-    SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(GameOverScreen);
-
-    Remove_Enemys(&enemys);
-
-    Remove_Bullets(&player.bullets);
-
-    file = fopen("Highscore.txt", "w");
-    fprintf(file,"%d",score.maxScore);
-
-    bool wait = true;
-    SDL_Event event1;
-    while(wait) {
-        while (SDL_PollEvent(&event1)){
-            if(keyboard_state[SDL_SCANCODE_RETURN]) {
-                wait = false;
-            break;
-        }
-        }
-    }
-
-    TTF_CloseFont(font);
-    IMG_Quit();
-    TTF_Quit();
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    free(noiseMap);
-    free(map);
-
-    if (remove("map.png")) {
-        printf("Error deleting map file\n");
-    }
-    
     printf("Quit Successfully\n");
 }
