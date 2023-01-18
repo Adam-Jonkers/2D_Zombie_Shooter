@@ -40,6 +40,7 @@ typedef struct {
     Score_t score;
     FILE* highscoreFile;
     SDL_Texture* mapTexture;
+    SDL_Texture* GameOverScreen;
     Timer_t enemySpawnTimer;
     Timer_t difficultyTimer;
     u_int32_t difficultyIncreaseRate;

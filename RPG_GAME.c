@@ -189,10 +189,10 @@ void close_Game(Game_t* game, Global_t* global)
     SDL_SetRenderDrawColor(global->renderer, 255, 0, 0, 75);
     SDL_RenderFillRect(global->renderer, NULL);
 
-    SDL_Texture* GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", global->renderer);
-    SDL_RenderCopy(global->renderer, GameOverScreen, NULL, NULL);
+    game->GameOverScreen = load_texture("Assets/Game_Over_Screen/Game_Over.png", global->renderer);
+    SDL_RenderCopy(global->renderer, game->GameOverScreen, NULL, NULL);
     SDL_RenderPresent(global->renderer);
-    SDL_DestroyTexture(GameOverScreen);
+    SDL_DestroyTexture(game->GameOverScreen);
 
     Remove_Enemys(&game->enemys);
 
