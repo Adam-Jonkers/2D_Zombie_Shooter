@@ -5,10 +5,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <stdbool.h>
+
 #include "CORE.h"
 #include "PLAYER.h"
 
 typedef struct {
+    bool running;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* icon;
@@ -47,10 +50,10 @@ Global_t Setup_Global(void);
 
 void Cleanup_Global(Global_t* global);
 
-Game_t Setup_Game(void);
+Game_t Setup_Game(Global_t* global);
 
-void Run_Game(Game_t* game);
+void Run_Game(Game_t* game, Global_t* global);
 
-void close_Game(Game_t* game);
+void close_Game(Game_t* game, Global_t* global);
 
 #endif
