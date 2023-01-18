@@ -115,4 +115,6 @@ bool check_collision(vec2_t position1, HitBox_t hitBox1, vec2_t position2, HitBo
 
 float Get_Distance(vec2_t p1, vec2_t p2);
 
+Text_t Setup_Text(TTF_Font* font, SDL_Color textColor, SDL_Texture* texture, SDL_Rect textBox, char text[100]);
+
 #endif

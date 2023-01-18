@@ -25,6 +25,8 @@
 
 int main(void)
 {
+    bool running = true;
+    
     // initialize SDL
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -77,26 +79,10 @@ int main(void)
 
     load_Font(&font, "Assets/Font/Font.ttf");
 
-    Text_t fps;
-    fps.font = font;
-    fps.textColor = (SDL_Color){255, 0, 0, 255};
-    fps.texture = NULL;
-    fps.textBox.x = 5;
-    fps.textBox.y = 30;
-    fps.textBox.w = 50;
-    fps.textBox.h = 30;
-    strcpy(fps.text, "FPS: ERROR");
+    Text_t fps = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 30, 50, 30}, "FPS: ERROR");
     load_Text(&fps, renderer);
 
-    Text_t playerHealth;
-    playerHealth.font = font;
-    playerHealth.textColor = (SDL_Color){255, 0, 0, 255};
-    playerHealth.texture = NULL;
-    playerHealth.textBox.x = 5;
-    playerHealth.textBox.y = 0;
-    playerHealth.textBox.w = 50;
-    playerHealth.textBox.h = 30;
-    strcpy(playerHealth.text, "HP: 100");
+    Text_t playerHealth = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
     load_Text(&playerHealth, renderer);
 
     Score_t score;
@@ -104,24 +90,11 @@ int main(void)
     score.score = 0;
     score.maxScore = 0;
 
-    score.scoreText.font = font;
-    score.scoreText.textColor = (SDL_Color){255, 0, 0, 255};
-    score.scoreText.texture = NULL;
-    score.scoreText.textBox.w = 50;
-    score.scoreText.textBox.h = 30;
-    score.scoreText.textBox.x = windowSize.x - score.scoreText.textBox.w;
-    score.scoreText.textBox.y = 30;
-    strcpy(score.scoreText.text, "Score: 0");
+    score.scoreText = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){windowSize.x - 50, 30, 50, 30}, "Score: 0");
     load_Text(&score.scoreText, renderer);
     score.scoreText.textBox.x = windowSize.x - score.scoreText.textBox.w;
 
-    score.maxScoreText.font = font;
-    score.maxScoreText.textColor = (SDL_Color){255, 0, 0, 255};
-    score.maxScoreText.texture = NULL;
-    score.maxScoreText.textBox.w = 80;
-    score.maxScoreText.textBox.h = 30;
-    score.maxScoreText.textBox.x = windowSize.x - score.maxScoreText.textBox.w;
-    score.maxScoreText.textBox.y = 0;
+    score.maxScoreText = Setup_Text(font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){windowSize.x - 80, 0, 80, 30}, "Highscore: ERROR");
 
     FILE* file = fopen("Highscore.txt", "r");
     if (file == NULL) {
@@ -139,8 +112,6 @@ int main(void)
 
     Setup_Noise_Map(max, noiseMap, randArray);
     Setup_Map_Png(bmap, noiseMap);
-    
-    bool running = true;
 
     Timer_t fpsTimer = create_timer();
     start_timer(&fpsTimer);

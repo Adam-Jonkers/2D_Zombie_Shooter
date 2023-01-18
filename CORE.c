@@ -329,3 +329,14 @@ float Get_Distance(vec2_t p1, vec2_t p2)
     float y = p2.y - p1.y;
     return sqrt(x * x + y * y);
 }
+
+Text_t Setup_Text(TTF_Font* font, SDL_Color textColor, SDL_Texture* texture, SDL_Rect textBox, char text[100])
+{
+    Text_t text_t;
+    text_t.font = font;
+    text_t.textColor = textColor;
+    text_t.texture = texture;
+    text_t.textBox = textBox;
+    strcpy(text_t.text, text);
+    return text_t;
+}
