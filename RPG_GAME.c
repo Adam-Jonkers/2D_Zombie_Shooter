@@ -289,7 +289,7 @@ int main(void)
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                global.running = false;
+                global.gameState = false;
             }
         }
         if (global.keyboard_state[SDL_SCANCODE_ESCAPE]) {
