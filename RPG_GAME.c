@@ -98,8 +98,8 @@ MainMenu_t Setup_Main_Menu(Global_t* global)
     mainMenu.quitButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){50, 0, 50, 30}, "Quit");
     load_Text(&mainMenu.quitButtonText, global->renderer);
 
-    mainMenu.playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 50, 200, 100};
-    mainMenu.quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 50, 200, 100};
+    mainMenu.playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 100, 200, 100};
+    mainMenu.quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 100, 200, 100};
 
     return mainMenu;
 }
@@ -108,13 +108,21 @@ void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
 {
     SDL_RenderClear(global->renderer);
     SDL_RenderCopy(global->renderer, mainMenu->backgroundTexture, NULL, NULL);
+
+    SDL_SetRenderDrawColor(global->renderer, 0, 255, 0, 255);
+    SDL_RenderFillRect(global->renderer, &mainMenu->playButtonRect);
     SDL_RenderCopy(global->renderer, mainMenu->playButtonText.texture, NULL, &mainMenu->playButtonRect);
+
+    SDL_SetRenderDrawColor(global->renderer, 0, 0, 255, 255);
+    SDL_RenderFillRect(global->renderer, &mainMenu->quitButtonRect);
     SDL_RenderCopy(global->renderer, mainMenu->quitButtonText.texture, NULL, &mainMenu->quitButtonRect);
+
     SDL_RenderPresent(global->renderer);
 
-    if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+    if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->playButtonRect)) {
         global->gameState = GAME;
-        printf("THIS HAPPENED");
+    } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->quitButtonRect)) {
+        global->gameState = QUIT;
     }
 }
 
@@ -292,6 +300,10 @@ int main(void)
         
         case GAME:
             Run_Game(&game, &global);
+            break;
+
+        case QUIT:
+            global.running = false;
             break;
         default:
             break;
