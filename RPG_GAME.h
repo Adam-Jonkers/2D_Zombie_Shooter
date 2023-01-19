@@ -28,6 +28,13 @@ typedef struct {
 } Global_t;
 
 typedef struct {
+    SDL_Texture* background;
+    SDL_Texture* button;
+    SDL_Rect buttonRect;
+    SDL_Rect buttonHoverRect;
+} MainMenu_t;
+
+typedef struct {
     vec2_t max;
     SDL_Texture* loadingScreen;
     Player_t player;
