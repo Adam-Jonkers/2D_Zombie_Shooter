@@ -340,3 +340,11 @@ Text_t Setup_Text(TTF_Font* font, SDL_Color textColor, SDL_Texture* texture, SDL
     strcpy(text_t.text, text);
     return text_t;
 }
+
+bool Mouse_Over(mouse_t* mouse, SDL_Rect rect)
+{
+    if ((mouse->x >= rect.x) && (mouse->x <= rect.x + rect.w) && (mouse->y >= rect.y) && (mouse->y <= rect.y + rect.h)) {
+        return true;
+    }
+    return false;
+}

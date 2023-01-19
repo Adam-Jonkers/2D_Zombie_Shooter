@@ -117,4 +117,6 @@ float Get_Distance(vec2_t p1, vec2_t p2);
 
 Text_t Setup_Text(TTF_Font* font, SDL_Color textColor, SDL_Texture* texture, SDL_Rect textBox, char text[100]);
 
+bool Mouse_Over(mouse_t* mouse, SDL_Rect rect);
+
 #endif
