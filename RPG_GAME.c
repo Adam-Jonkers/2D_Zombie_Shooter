@@ -289,14 +289,15 @@ int main(void)
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                global.gameState = false;
+                global.gameState = QUIT;
             }
         }
         if (global.keyboard_state[SDL_SCANCODE_ESCAPE]) {
-            global.running = false;
+            global.gameState = QUIT;
         }
-        switch (global.gameState)
-        {
+
+
+        switch (global.gameState) {
         case MAIN_MENU:
             Display_Main_Menu(&mainMenu, &global);
             break;
@@ -306,12 +307,13 @@ int main(void)
             break;
 
         case QUIT:
-            close_Game(&game, &global);
             Cleanup_Global(&global);
             global.running = false;
             printf("Quit Successfully\n");
             break;
+
         default:
+            printf("Error: No game state\n");
             break;
         }
 
