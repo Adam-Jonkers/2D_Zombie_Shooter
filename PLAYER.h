@@ -26,6 +26,7 @@ typedef struct {
 
 typedef struct {
     int health;
+    bool alive;
     int damage;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
@@ -69,7 +70,7 @@ typedef struct {
 
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap, bool* running);
+void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t windowSize, vec2_t max);
 

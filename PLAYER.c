@@ -15,9 +15,16 @@
 #define PLAYER_MAX_SPEED 100.0
 #define PLAYER_SPEED_MULTIPLIER 2.0
 
+#define MAIN_MENU 0
+#define GAME 1
+#define QUIT 2
+
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Player_t player;
+
+    player.alive = true;
+
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
     load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
     player.moveAnimation.speed = 50;
@@ -60,7 +67,7 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap, bool* running) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
 {
     player->maxSpeed = 100.0f;
     player->acceleration = 20.0f;
@@ -70,9 +77,6 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
     float speedMultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
         player->sprinting = true;
-        // player->maxSpeed = 200.0f;
-        // player->acceleration = 50.0f;
-        // player->moveAnimation.speed = 30;
     } else {
         player->sprinting = false;
     }
@@ -150,7 +154,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
     }
 
     if (player->health <= 0) {
-        *running = false;
+        player->alive = false;
     }
 }
 

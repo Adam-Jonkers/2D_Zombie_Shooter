@@ -26,16 +26,19 @@
 
 #define MAIN_MENU 0
 #define GAME 1
-#define GAME_OVER 2
-#define QUIT 3
+#define QUIT 2
 
-Global_t Setup_Global()
+Global_t Setup_Global(Game_t* game, MainMenu_t* mainMenu)
 {
     Global_t global;
 
     global.gameState = MAIN_MENU;
 
     global.running = true;
+
+    global.game = game;
+
+    global.mainMenu = mainMenu;
 
     // initialize SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -87,21 +90,17 @@ void Cleanup_Global(Global_t* global)
     SDL_Quit();
 }
 
-MainMenu_t Setup_Main_Menu(Global_t* global)
+void Setup_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
 {
-    MainMenu_t mainMenu;
+    mainMenu->backgroundTexture = load_texture("Assets/Main_Menu/Background.png", global->renderer);
+    mainMenu->playButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "Play");
+    load_Text(&mainMenu->playButtonText, global->renderer);
 
-    mainMenu.backgroundTexture = load_texture("Assets/Main_Menu/Background.png", global->renderer);
-    mainMenu.playButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "Play");
-    load_Text(&mainMenu.playButtonText, global->renderer);
+    mainMenu->quitButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){50, 0, 50, 30}, "Quit");
+    load_Text(&mainMenu->quitButtonText, global->renderer);
 
-    mainMenu.quitButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){50, 0, 50, 30}, "Quit");
-    load_Text(&mainMenu.quitButtonText, global->renderer);
-
-    mainMenu.playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 100, 200, 100};
-    mainMenu.quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 100, 200, 100};
-
-    return mainMenu;
+    mainMenu->playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 100, 200, 100};
+    mainMenu->quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 100, 200, 100};
 }
 
 void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
@@ -120,6 +119,7 @@ void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
     SDL_RenderPresent(global->renderer);
 
     if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->playButtonRect)) {
+        Setup_Game(global->game, global);
         global->gameState = GAME;
     } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->quitButtonRect)) {
         global->gameState = QUIT;
@@ -133,71 +133,67 @@ void Cleanup_Main_Menu(MainMenu_t* mainMenu)
     SDL_DestroyTexture(mainMenu->quitButtonText.texture);
 }
 
-Game_t Setup_Game(Global_t* global)
+void Setup_Game(Game_t* game, Global_t* global)
 {
-    Game_t game;
+    game->max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
 
-    game.max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
-
-    game.loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
-    SDL_RenderCopy(global->renderer, game.loadingScreen, NULL, NULL);
+    game->loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
+    SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
     SDL_RenderPresent(global->renderer);
-    SDL_DestroyTexture(game.loadingScreen);
+    SDL_DestroyTexture(game->loadingScreen);
 
-    game.player = Setup_player(global->windowSize, global->renderer);
+    game->player = Setup_player(global->windowSize, global->renderer);
 
-    game.enemys.enemy = NULL;
-    game.enemys.num_enemys = 0;
-    game.enemys.max_enemys = MAX_ENEMYS;
+    game->enemys.enemy = NULL;
+    game->enemys.num_enemys = 0;
+    game->enemys.max_enemys = MAX_ENEMYS;
 
-    game.noiseMap = calloc((game.max.x * game.max.y), sizeof(float));
-    game.randArray = calloc((game.max.x * game.max.y), sizeof(float));
-    game.map = calloc((game.max.x * game.max.y), sizeof(char));
+    game->noiseMap = calloc((game->max.x * game->max.y), sizeof(float));
+    game->randArray = calloc((game->max.x * game->max.y), sizeof(float));
+    game->map = calloc((game->max.x * game->max.y), sizeof(char));
 
-    game.mapBitmap.height = game.max.y;
-    game.mapBitmap.width = game.max.x;
-    game.mapBitmap.pixels = calloc((game.max.x * game.max.y), sizeof(pixel_t));
+    game->mapBitmap.height = game->max.y;
+    game->mapBitmap.width = game->max.x;
+    game->mapBitmap.pixels = calloc((game->max.x * game->max.y), sizeof(pixel_t));
 
-    game.playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
-    load_Text(&game.playerHealthText, global->renderer);
+    game->playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
+    load_Text(&game->playerHealthText, global->renderer);
 
-    game.score.score = 0;
-    game.score.maxScore = 0;
+    game->score.score = 0;
+    game->score.maxScore = 0;
 
-    game.score.scoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 50, 30, 50, 30}, "Score: 0");
-    load_Text(&game.score.scoreText, global->renderer);
-    game.score.scoreText.textBox.x = global->windowSize.x - game.score.scoreText.textBox.w;
+    game->score.scoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 50, 30, 50, 30}, "Score: 0");
+    load_Text(&game->score.scoreText, global->renderer);
+    game->score.scoreText.textBox.x = global->windowSize.x - game->score.scoreText.textBox.w;
 
-    game.score.maxScoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 80, 0, 80, 30}, "Highscore: ERROR");
+    game->score.maxScoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 80, 0, 80, 30}, "Highscore: ERROR");
 
-    game.highscoreFile = fopen("Highscore.txt", "r");
-    if (game.highscoreFile == NULL) {
+    game->highscoreFile = fopen("Highscore.txt", "r");
+    if (game->highscoreFile == NULL) {
         printf("No highscore file found\n");
-        game.score.maxScore = 0;
+        game->score.maxScore = 0;
         
     } else {
-        fscanf(game.highscoreFile, "%d", &game.score.maxScore);
-        fclose(game.highscoreFile);
+        fscanf(game->highscoreFile, "%d", &game->score.maxScore);
+        fclose(game->highscoreFile);
     }
 
-    sprintf(game.score.maxScoreText.text, "Highscore: %d", game.score.maxScore);
-    load_Text(&game.score.maxScoreText, global->renderer);
-    game.score.maxScoreText.textBox.x = global->windowSize.x - game.score.maxScoreText.textBox.w;
+    sprintf(game->score.maxScoreText.text, "Highscore: %d", game->score.maxScore);
+    load_Text(&game->score.maxScoreText, global->renderer);
+    game->score.maxScoreText.textBox.x = global->windowSize.x - game->score.maxScoreText.textBox.w;
 
-    Setup_Noise_Map(game.max, game.noiseMap, game.randArray);
-    Setup_Map_Png(game.mapBitmap, game.noiseMap);
+    Setup_Noise_Map(game->max, game->noiseMap, game->randArray);
+    Setup_Map_Png(game->mapBitmap, game->noiseMap);
 
-    game.mapTexture = Load_Map_Texture(global->renderer);
+    game->mapTexture = Load_Map_Texture(global->renderer);
 
-    game.enemySpawnTimer = create_timer();
-    start_timer(&game.enemySpawnTimer);
+    game->enemySpawnTimer = create_timer();
+    start_timer(&game->enemySpawnTimer);
 
-    game.difficultyTimer = create_timer();
-    start_timer(&game.difficultyTimer);
-    game.difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
-    game.spawnRate = SPAWN_RATE;
-
-    return game;
+    game->difficultyTimer = create_timer();
+    start_timer(&game->difficultyTimer);
+    game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
+    game->spawnRate = SPAWN_RATE;
 }
 
 void Run_Game(Game_t* game, Global_t* global)
@@ -209,7 +205,7 @@ void Run_Game(Game_t* game, Global_t* global)
 
     Spawn_Enemys(&game->enemys, global->windowSize, global->renderer, game->max, &game->enemySpawnTimer, game->spawnRate, game->player.camera);
 
-    Move_player(global->keyboard_state, &game->player, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap, &global->running);
+    Move_player(global->keyboard_state, &game->player, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap);
 
     SDL_SetRenderDrawColor(global->renderer, 255, 0, 0, 255);
     SDL_RenderClear(global->renderer);
@@ -235,6 +231,11 @@ void Run_Game(Game_t* game, Global_t* global)
     Draw_Text(&game->score.maxScoreText, global->renderer);
 
     SDL_RenderPresent(global->renderer);
+
+    if (!game->player.alive) {
+        close_Game(game, global);
+        global->gameState = MAIN_MENU;
+    }
 }
 
 void close_Game(Game_t* game, Global_t* global)
@@ -276,11 +277,13 @@ void close_Game(Game_t* game, Global_t* global)
 
 int main(void)
 {
-    Global_t global = Setup_Global();
+    Game_t game;
 
-    Game_t game = Setup_Game(&global);
+    MainMenu_t mainMenu;
 
-    MainMenu_t mainMenu = Setup_Main_Menu(&global);
+    Global_t global = Setup_Global(&game, &mainMenu);
+
+    Setup_Main_Menu(&mainMenu, &global);
 
     while (global.running) {
         SDL_Event event;
@@ -303,7 +306,10 @@ int main(void)
             break;
 
         case QUIT:
+            close_Game(&game, &global);
+            Cleanup_Global(&global);
             global.running = false;
+            printf("Quit Successfully\n");
             break;
         default:
             break;
@@ -316,9 +322,4 @@ int main(void)
         global.dt = get_time_ms(&global.stepTimer);
         start_timer(&global.stepTimer);
     }
-    close_Game(&game, &global);
-
-    Cleanup_Global(&global);
-
-    printf("Quit Successfully\n");
 }

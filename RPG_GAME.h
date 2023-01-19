@@ -11,24 +11,6 @@
 #include "PLAYER.h"
 
 typedef struct {
-    bool running;
-    int gameState;
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    SDL_Surface* icon;
-    vec2_t windowSize;
-    int window_width;
-    int window_height;
-    mouse_t mouse;
-    TTF_Font* font;
-    Text_t fpsText;
-    Timer_t fpsTimer;
-    Timer_t stepTimer;
-    float dt;
-    const Uint8* keyboard_state;
-} Global_t;
-
-typedef struct {
     SDL_Texture* backgroundTexture;
     Text_t playButtonText;
     Text_t quitButtonText;
@@ -56,17 +38,37 @@ typedef struct {
     u_int32_t spawnRate;
 } Game_t;
 
-Global_t Setup_Global(void);
+typedef struct {
+    bool running;
+    int gameState;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    SDL_Surface* icon;
+    vec2_t windowSize;
+    int window_width;
+    int window_height;
+    mouse_t mouse;
+    TTF_Font* font;
+    Text_t fpsText;
+    Timer_t fpsTimer;
+    Timer_t stepTimer;
+    float dt;
+    const Uint8* keyboard_state;
+    MainMenu_t* mainMenu;
+    Game_t* game;
+} Global_t;
+
+Global_t Setup_Global(Game_t* game, MainMenu_t* mainMenu);
 
 void Cleanup_Global(Global_t* global);
 
-MainMenu_t Setup_Main_Menu(Global_t* global);
+void Setup_Main_Menu(MainMenu_t* mainMenu, Global_t* global);
 
 void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global);
 
 void Cleanup_Main_Menu(MainMenu_t* mainMenu);
 
-Game_t Setup_Game(Global_t* global);
+void Setup_Game(Game_t* game, Global_t* global);
 
 void Run_Game(Game_t* game, Global_t* global);
 
