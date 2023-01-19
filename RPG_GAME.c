@@ -24,9 +24,16 @@
 #define SPAWN_RATE 5000 
 #define DIFFICULTY_INCREASE_RATE 1000
 
+#define MAIN_MENU 0
+#define GAME 1
+#define GAME_OVER 2
+#define QUIT 3
+
 Global_t Setup_Global()
 {
     Global_t global;
+
+    global.gameState = MAIN_MENU;
 
     global.running = true;
 
@@ -78,6 +85,44 @@ void Cleanup_Global(Global_t* global)
     SDL_DestroyRenderer(global->renderer);
     SDL_DestroyWindow(global->window);
     SDL_Quit();
+}
+
+MainMenu_t Setup_Main_Menu(Global_t* global)
+{
+    MainMenu_t mainMenu;
+
+    mainMenu.backgroundTexture = load_texture("Assets/Main_Menu/Background.png", global->renderer);
+    mainMenu.playButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "Play");
+    load_Text(&mainMenu.playButtonText, global->renderer);
+
+    mainMenu.quitButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){50, 0, 50, 30}, "Quit");
+    load_Text(&mainMenu.quitButtonText, global->renderer);
+
+    mainMenu.playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 50, 200, 100};
+    mainMenu.quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 50, 200, 100};
+
+    return mainMenu;
+}
+
+void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
+{
+    SDL_RenderClear(global->renderer);
+    SDL_RenderCopy(global->renderer, mainMenu->backgroundTexture, NULL, NULL);
+    SDL_RenderCopy(global->renderer, mainMenu->playButtonText.texture, NULL, &mainMenu->playButtonRect);
+    SDL_RenderCopy(global->renderer, mainMenu->quitButtonText.texture, NULL, &mainMenu->quitButtonRect);
+    SDL_RenderPresent(global->renderer);
+
+    if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+        global->gameState = GAME;
+        printf("THIS HAPPENED");
+    }
+}
+
+void Cleanup_Main_Menu(MainMenu_t* mainMenu)
+{
+    SDL_DestroyTexture(mainMenu->backgroundTexture);
+    SDL_DestroyTexture(mainMenu->playButtonText.texture);
+    SDL_DestroyTexture(mainMenu->quitButtonText.texture);
 }
 
 Game_t Setup_Game(Global_t* global)
@@ -227,6 +272,8 @@ int main(void)
 
     Game_t game = Setup_Game(&global);
 
+    MainMenu_t mainMenu = Setup_Main_Menu(&global);
+
     while (global.running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -237,12 +284,22 @@ int main(void)
         if (global.keyboard_state[SDL_SCANCODE_ESCAPE]) {
             global.running = false;
         }
+        switch (global.gameState)
+        {
+        case MAIN_MENU:
+            Display_Main_Menu(&mainMenu, &global);
+            break;
+        
+        case GAME:
+            Run_Game(&game, &global);
+            break;
+        default:
+            break;
+        }
 
         global.mouse.buttons = SDL_GetMouseState(&global.mouse.x, &global.mouse.y);
 
         get_fps(&global.fpsTimer, &global.fpsText, global.renderer);
-
-        Run_Game(&game, &global);
 
         global.dt = get_time_ms(&global.stepTimer);
         start_timer(&global.stepTimer);

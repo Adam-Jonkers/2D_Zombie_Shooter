@@ -12,6 +12,7 @@
 
 typedef struct {
     bool running;
+    int gameState;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* icon;
@@ -28,10 +29,11 @@ typedef struct {
 } Global_t;
 
 typedef struct {
-    SDL_Texture* background;
-    SDL_Texture* button;
-    SDL_Rect buttonRect;
-    SDL_Rect buttonHoverRect;
+    SDL_Texture* backgroundTexture;
+    Text_t playButtonText;
+    Text_t quitButtonText;
+    SDL_Rect playButtonRect;
+    SDL_Rect quitButtonRect;
 } MainMenu_t;
 
 typedef struct {
@@ -57,6 +59,12 @@ typedef struct {
 Global_t Setup_Global(void);
 
 void Cleanup_Global(Global_t* global);
+
+MainMenu_t Setup_Main_Menu(Global_t* global);
+
+void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global);
+
+void Cleanup_Main_Menu(MainMenu_t* mainMenu);
 
 Game_t Setup_Game(Global_t* global);
 
