@@ -308,8 +308,9 @@ int main(void)
                 global.gameState = QUIT;
             }
         }
-        if (global.keyboard_state[SDL_SCANCODE_ESCAPE]) {
-            global.gameState = QUIT;
+        if (global.keyboard_state[SDL_SCANCODE_ESCAPE] && global.gameState == GAME) {
+            close_Game(&game, &global);
+            global.gameState = MAIN_MENU;
         }
 
 
