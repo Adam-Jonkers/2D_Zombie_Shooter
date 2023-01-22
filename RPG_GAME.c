@@ -217,6 +217,8 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
         game->spawnRate = SPAWN_RATE;
 
+        game->upgradeChosen = false;
+
         //create setup upgrades function
         game->upgrades[0].texture = load_texture("Assets/Upgrades/Damage.png", global->renderer);
         game->upgrades[0].rect = (SDL_Rect){global->windowSize.x / 4 - 100, global->windowSize.y / 2 - 100, 200, 200}; 
