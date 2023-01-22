@@ -15,10 +15,6 @@
 #define PLAYER_MAX_SPEED 100.0
 #define PLAYER_SPEED_MULTIPLIER 2.0
 
-#define MAIN_MENU 0
-#define GAME 1
-#define QUIT 2
-
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Player_t player;
