@@ -251,6 +251,7 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->mapTexture = Load_Map_Texture(global->renderer);
         SDL_DestroyTexture(game->loadingScreen);
         global->gameState = GAME;
+        printf("\nLEVEL: %d\n\n", game->level);
 
         generalComplete = false;
         noiseMapComplete = false;
@@ -270,6 +271,7 @@ void Run_Game(Game_t* game, Global_t* global)
         game->numberOfEnemys = NUM_ENEMYS_EQUATION;
         game->enemysSpawned = 0;
         game->levelComplete = false;
+        printf("\nLEVEL: %d\n\n", game->level);
 
     } else {
 
