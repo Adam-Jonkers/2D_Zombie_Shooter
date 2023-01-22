@@ -181,6 +181,20 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
         enemys->enemy[index]->velocity = (vec2_t){0, 0};
     }
     enemys->enemy[index]->position = add_vec2(enemys->enemy[index]->position, divide_vec2(multiply_vec2(enemys->enemy[index]->velocity, dt), 1000.0f));
+
+    if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
+        if (player->health > 0) {
+            player->health -= 1;
+            sprintf(playerHealth->text, "HP: %d", player->health);
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
+            SDL_RenderFillRect(renderer, NULL);
+            start_timer(&enemys->enemy[index]->attackTimer);
+        } else {
+            sprintf(playerHealth->text, "HP: 0");
+        }
+        load_Text(playerHealth, renderer);
+    }
+
     if (enemys->enemy[index]->health <= 0) {
         Remove_Enemy(enemys, index);
         score->score += 1;
@@ -194,21 +208,9 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
             score->maxScoreText.textBox.x = windowSize.x - score->maxScoreText.textBox.w;
         }
     }
-    if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
-        if (player->health > 0) {
-            player->health -= 1;
-            sprintf(playerHealth->text, "HP: %d", player->health);
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
-            SDL_RenderFillRect(renderer, NULL);
-            start_timer(&enemys->enemy[index]->attackTimer);
-        } else {
-            sprintf(playerHealth->text, "HP: 0");
-        }
-        load_Text(playerHealth, renderer);
-    }
 }
 
-void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth)
+void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth, int levelEnemys, int* enemysSpawned, bool* levelComplete)
 {
     if (enemys->num_enemys == -1) {
         return;
@@ -216,12 +218,18 @@ void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, flo
     for (int i = 0; i < enemys->num_enemys; i++) {
         Update_Enemy(enemys, player, dt, max, noiseMap, i, renderer, score, windowSize, playerHealth);
     }
+    if (enemys->num_enemys == 0 && *enemysSpawned == levelEnemys) {
+        *levelComplete = true;
+    }
 }
 
-void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate, vec2_t camera)
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate, vec2_t camera, int levelEnemys, int* enemysSpawned)
 {
-    if (get_time_ms(timer) > spawnRate && enemys->num_enemys < enemys->max_enemys) {
+    if (get_time_ms(timer) > spawnRate && enemys->num_enemys < enemys->max_enemys && *enemysSpawned < levelEnemys) {
         Setup_enemy(enemys, windowSize, renderer, max, camera);
         start_timer(timer);
+        *enemysSpawned += 1;
+        printf("Enemys spawned: %d\n", *enemysSpawned);
+        printf("Enemys alive: %d\n", enemys->num_enemys);
     }
 }

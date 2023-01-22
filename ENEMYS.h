@@ -23,8 +23,8 @@ void Remove_Enemys(Enemys_t* enemys);
 
 void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, int index, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth);
 
-void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth);
+void Update_Enemys(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, float* noiseMap, SDL_Renderer* renderer, Score_t* score, vec2_t windowSize, Text_t* playerHealth, int levelEnemys, int* enemysSpawned, bool* levelComplete);
 
-void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate, vec2_t camera);
+void Spawn_Enemys(Enemys_t* enemys, vec2_t windowSize, SDL_Renderer* renderer, vec2_t max, Timer_t *timer, u_int32_t spawnRate, vec2_t camera, int levelEnemys, int* enemysSpawned);
 
 #endif

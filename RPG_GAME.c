@@ -18,11 +18,13 @@
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
 
-#define MAX_ENEMYS 500
+#define MAX_ENEMYS 1000
 
 // ms per spawn
-#define SPAWN_RATE 5000 
+#define SPAWN_RATE 200
 #define DIFFICULTY_INCREASE_RATE 1000
+
+#define NUM_ENEMYS_EQUATION floor((-exp(-((((float)game->level - 1381) / 200))) + 1000));
 
 #define MAIN_MENU 0
 #define SETUP_GAME 1
@@ -77,6 +79,8 @@ Global_t Setup_Global(Game_t* game, MainMenu_t* mainMenu)
     global.dt = 0.0f;
 
     global.keyboard_state = SDL_GetKeyboardState(NULL);
+
+    global.mouse.buttons = SDL_GetMouseState(&global.mouse.x, &global.mouse.y);
 
     return global;
 }
@@ -152,6 +156,13 @@ void Setup_Game(Game_t* game, Global_t* global)
         load_Text(&loadingText, global->renderer);
 
         game->max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
+
+        game->enemysSpawned = 0;
+        game->level = 1;
+        game->numberOfEnemys = NUM_ENEMYS_EQUATION;
+        printf("Number of enemys: %d\n", game->numberOfEnemys);
+
+        game->levelComplete = false;
 
         totalProgress = game->max.y * 2;
 
@@ -254,39 +265,44 @@ void Setup_Game(Game_t* game, Global_t* global)
 
 void Run_Game(Game_t* game, Global_t* global)
 {
-    if (game->spawnRate > 200 && get_time_ms(&game->difficultyTimer) > game->difficultyIncreaseRate) {
-        game->spawnRate -= 60;
-        start_timer(&game->difficultyTimer);
+    if (game->levelComplete) {
+        game->level++;
+        game->numberOfEnemys = NUM_ENEMYS_EQUATION;
+        game->enemysSpawned = 0;
+        game->levelComplete = false;
+
+    } else {
+
+        Spawn_Enemys(&game->enemys, global->windowSize, global->renderer, game->max, &game->enemySpawnTimer, game->spawnRate, game->player.camera, game->numberOfEnemys, &game->enemysSpawned);
+
+        Move_player(global->keyboard_state, &game->player, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap);
+
+        SDL_SetRenderDrawColor(global->renderer, 255, 0, 0, 255);
+        SDL_RenderClear(global->renderer);
+
+        Draw_Map_Texture(global->renderer, game->mapTexture, &game->player, global->windowSize);
+
+        Update_Bullets(&game->player.bullets, global->dt, &game->enemys, &game->player, global->renderer);
+
+        Draw_Bullets(global->renderer, &game->player);
+
+        Update_Enemys(&game->enemys, &game->player, global->dt, game->max, game->noiseMap, global->renderer, &game->score, global->windowSize, &game->playerHealthText, game->numberOfEnemys, &game->enemysSpawned, &game->levelComplete);
+
+        Draw_Enemys(global->renderer, &game->enemys, global->windowSize, &game->player);
+
+        Draw_Player(global->renderer, &game->player, global->dt, global->windowSize, game->max);
+
+        Draw_Text(&game->playerHealthText, global->renderer);
+
+        Draw_Text(&global->fpsText, global->renderer);
+
+        Draw_Text(&game->score.scoreText, global->renderer);
+
+        Draw_Text(&game->score.maxScoreText, global->renderer);
+
+        SDL_RenderPresent(global->renderer);
+
     }
-
-    Spawn_Enemys(&game->enemys, global->windowSize, global->renderer, game->max, &game->enemySpawnTimer, game->spawnRate, game->player.camera);
-
-    Move_player(global->keyboard_state, &game->player, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap);
-
-    SDL_SetRenderDrawColor(global->renderer, 255, 0, 0, 255);
-    SDL_RenderClear(global->renderer);
-
-    Draw_Map_Texture(global->renderer, game->mapTexture, &game->player, global->windowSize);
-
-    Update_Bullets(&game->player.bullets, global->dt, &game->enemys, &game->player, global->renderer);
-
-    Draw_Bullets(global->renderer, &game->player);
-
-    Update_Enemys(&game->enemys, &game->player, global->dt, game->max, game->noiseMap, global->renderer, &game->score, global->windowSize, &game->playerHealthText);
-
-    Draw_Enemys(global->renderer, &game->enemys, global->windowSize, &game->player);
-
-    Draw_Player(global->renderer, &game->player, global->dt, global->windowSize, game->max);
-
-    Draw_Text(&game->playerHealthText, global->renderer);
-
-    Draw_Text(&global->fpsText, global->renderer);
-
-    Draw_Text(&game->score.scoreText, global->renderer);
-
-    Draw_Text(&game->score.maxScoreText, global->renderer);
-
-    SDL_RenderPresent(global->renderer);
 
     if (!game->player.alive) {
         close_Game(game, global);

@@ -19,6 +19,10 @@ typedef struct {
 } MainMenu_t;
 
 typedef struct {
+    int level;
+    int numberOfEnemys;
+    int enemysSpawned;
+    bool levelComplete;
     vec2_t max;
     SDL_Texture* loadingScreen;
     Player_t player;
