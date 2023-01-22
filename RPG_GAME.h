@@ -11,6 +11,11 @@
 #include "PLAYER.h"
 
 typedef struct {
+    SDL_Texture* texture;
+    SDL_Rect rect;
+} Upgrade_t;
+
+typedef struct {
     SDL_Texture* backgroundTexture;
     Text_t playButtonText;
     Text_t quitButtonText;
@@ -23,6 +28,10 @@ typedef struct {
     int numberOfEnemys;
     int enemysSpawned;
     bool levelComplete;
+    bool upgradeChosen;
+
+    Upgrade_t upgrades[3];
+
     vec2_t max;
     SDL_Texture* loadingScreen;
     Player_t player;

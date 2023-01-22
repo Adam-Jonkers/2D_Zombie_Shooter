@@ -217,6 +217,16 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
         game->spawnRate = SPAWN_RATE;
 
+        //create setup upgrades function
+        game->upgrades[0].texture = load_texture("Assets/Upgrades/Damage.png", global->renderer);
+        game->upgrades[0].rect = (SDL_Rect){global->windowSize.x / 4 - 100, global->windowSize.y / 2 - 100, 200, 200}; 
+
+        game->upgrades[1].texture = load_texture("Assets/Upgrades/Health.png", global->renderer);
+        game->upgrades[1].rect = (SDL_Rect){global->windowSize.x * 2 / 4 - 100, global->windowSize.y / 2 - 100, 200, 200};
+
+        game->upgrades[2].texture = load_texture("Assets/Upgrades/Speed.png", global->renderer);
+        game->upgrades[2].rect = (SDL_Rect){global->windowSize.x * 3 / 4 - 100, global->windowSize.y / 2 - 100, 200, 200};
+
         SDL_RenderPresent(global->renderer);
 
         generalComplete = true;
@@ -267,12 +277,42 @@ void Setup_Game(Game_t* game, Global_t* global)
 void Run_Game(Game_t* game, Global_t* global)
 {
     if (game->levelComplete) {
-        game->level++;
-        game->numberOfEnemys = NUM_ENEMYS_EQUATION;
-        game->enemysSpawned = 0;
-        game->levelComplete = false;
-        printf("\nLEVEL: %d\n\n", game->level);
+        SDL_RenderClear(global->renderer);
 
+        Draw_Map_Texture(global->renderer, game->mapTexture, &game->player, global->windowSize);
+
+        Draw_Player(global->renderer, &game->player, global->dt, global->windowSize, game->max);
+
+        SDL_RenderCopy(global->renderer, game->upgrades[0].texture, NULL, &game->upgrades[0].rect);
+        SDL_RenderCopy(global->renderer, game->upgrades[1].texture, NULL, &game->upgrades[1].rect);
+        SDL_RenderCopy(global->renderer, game->upgrades[2].texture, NULL, &game->upgrades[2].rect);
+
+        SDL_RenderPresent(global->renderer);
+
+        if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[0].rect)) {
+            game->upgradeChosen = true;
+            game->player.damage += 1;
+            printf("\nDamage Upgraded\n");
+        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[1].rect)) {
+            game->upgradeChosen = true;
+            game->player.health += 10;
+            sprintf(game->playerHealthText.text, "Health: %d", game->player.health);
+            load_Text(&game->playerHealthText, global->renderer);
+            printf("\nHealth Upgraded\n");
+        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[2].rect)) {
+            game->upgradeChosen = true;
+            game->player.maxSpeed += 10;
+            printf("\nSpeed Upgraded\n");
+        }
+
+        if (game->upgradeChosen) {
+            game->level++;
+            game->numberOfEnemys = NUM_ENEMYS_EQUATION;
+            game->enemysSpawned = 0;
+            game->upgradeChosen = false;
+            game->levelComplete = false;
+            printf("\nLEVEL: %d\n\n", game->level);
+        }
     } else {
 
         Spawn_Enemys(&game->enemys, global->windowSize, global->renderer, game->max, &game->enemySpawnTimer, game->spawnRate, game->player.camera, game->numberOfEnemys, &game->enemysSpawned);
@@ -337,7 +377,7 @@ void close_Game(Game_t* game, Global_t* global)
             if(global->keyboard_state[SDL_SCANCODE_RETURN]) {
                 wait = false;
             break;
-        }
+            }
         }
     }
 
