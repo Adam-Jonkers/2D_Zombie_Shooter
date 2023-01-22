@@ -138,13 +138,25 @@ void Setup_Game(Game_t* game, Global_t* global)
     static bool generalComplete = false;
     static bool noiseMapComplete = false;
     static bool mapComplete = false;
+
+    static Text_t loadingText; 
+
+    static int totalProgress = 0;
+    static int progress = 0;
+    static int progressPercent = 0;
+    static int progressPercentUpdate = 0;
+    
+
     if (!generalComplete) {
+        loadingText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "Loading: 0%%");
+        load_Text(&loadingText, global->renderer);
+
         game->max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
+
+        totalProgress = game->max.y * 2;
 
         game->loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
         SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
-        SDL_RenderPresent(global->renderer);
-        SDL_DestroyTexture(game->loadingScreen);
 
         game->player = Setup_player(global->windowSize, global->renderer);
 
@@ -194,6 +206,8 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
         game->spawnRate = SPAWN_RATE;
 
+        SDL_RenderPresent(global->renderer);
+
         generalComplete = true;
     }
 
@@ -201,14 +215,40 @@ void Setup_Game(Game_t* game, Global_t* global)
         Setup_Noise_Map(game->max, game->noiseMap, game->randArray, &noiseMapComplete);
     } else if (!mapComplete) {
         Setup_Map_Png(game->mapBitmap, game->noiseMap, &mapComplete);
-    } 
+    }
+
+    if (!mapComplete) {
+        progress++;
+
+        progressPercent = ((progress * 100) / totalProgress);
+
+        if (progressPercent > progressPercentUpdate) {
+            SDL_RenderClear(global->renderer);
+            SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
+
+            progressPercentUpdate++;
+
+            sprintf(loadingText.text, "Loading: %d%%", progressPercent);
+            load_Text(&loadingText, global->renderer);
+
+            Draw_Text(&loadingText, global->renderer);
+            SDL_RenderPresent(global->renderer);
+        }
+    }
 
     if (mapComplete) {
         game->mapTexture = Load_Map_Texture(global->renderer);
+        SDL_DestroyTexture(game->loadingScreen);
         global->gameState = GAME;
+
         generalComplete = false;
         noiseMapComplete = false;
         mapComplete = false;
+
+        totalProgress = 0;
+        progress = 0;
+        progressPercent = 0;
+        progressPercentUpdate = 0;
     }
 }
 
@@ -312,7 +352,6 @@ int main(void)
             close_Game(&game, &global);
             global.gameState = MAIN_MENU;
         }
-
 
         switch (global.gameState) {
         case MAIN_MENU:
