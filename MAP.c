@@ -16,7 +16,7 @@ void generate_texture_map(int max_x, int max_y, float* randArray) {
     for (int y = 0; y < max_y; y++) {
         for (int x = 0; x < max_x; x++) {
             randArray[x + (max_x * y)] = (float)rand() / RAND_MAX;
-        } 
+        }
     }
     printf("Generated texture map\n");
 }
@@ -55,11 +55,17 @@ float noise(vec2_t p, float* noiseMap, int width) {
     return ((1.0 - fade_t1) * p0p1 + fade_t1 * p2p3);
 }
 
-void Setup_Noise_Map(vec2_t max, float* noiseMap, float* randArray)
+void Setup_Noise_Map(vec2_t max, float* noiseMap, float* randArray, bool* complete)
 {
     // Setup noise map
-    generate_texture_map(max.x, max.y, randArray);
-    for (int y = 0; y < (int)max.y; y++) {
+    static int y = 0;
+    static bool firstRun = true;
+    if (firstRun) {
+        generate_texture_map(max.x, max.y, randArray);
+        firstRun = false;
+    }
+
+    if (y < (int)max.y && !*complete) {
         for (int x = 0; x < (int)max.x; x++) {
             vec2_t i = (vec2_t){x, y};
             float n = noise(divide_vec2(i, FREQUENCY * 8), randArray, (int)max.x) * 1.0 +
@@ -68,15 +74,24 @@ void Setup_Noise_Map(vec2_t max, float* noiseMap, float* randArray)
             noise(divide_vec2(i, FREQUENCY), randArray, (int)max.x) * 0.125;
             noiseMap[x + ((int)max.x * y)] = n;
         }
+        y++;
+    } else {
+        *complete = true;
     }
-    free(randArray);
-    printf("Generated noise map\n");
+    
+    if (*complete) {
+        free(randArray);
+        printf("Generated noise map\n");
+        y = 0;
+        firstRun = true;
+    }
 }
 
-void Setup_Map_Png(bitmap_t map, float* noiseMap)
+void Setup_Map_Png(bitmap_t map, float* noiseMap, bool* complete)
 {
     // Setup map
-    for (size_t y = 0; y < map.height; y++) {
+    static size_t y = 0;
+    if (y < map.height && !*complete) {
         for (size_t x = 0; x < map.width; x++) {
             float n = noiseMap[x + (map.width * y)];
             if (n < -0.5) {
@@ -100,19 +115,29 @@ void Setup_Map_Png(bitmap_t map, float* noiseMap)
                 printf("Error: %f\n", n);
             }
         }
-    }
-    if (save_png_to_file(&map, "map.png") != 0) {
-        printf("Failed to save map.png\n");
+        y++;
     } else {
-        printf("Saved map.png\n");
+        *complete = true;
     }
     
+    if (*complete) {
+        if (save_png_to_file(&map, "map.png") != 0) {
+            printf("Failed to save map.png\n");
+        } else {
+            printf("Saved map.png\n");
+        }
+        y = 0;
+    }
 }
 
 SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer) 
 {
-    printf("Loaded map.png\n");
-    return (load_texture("map.png", renderer));
+    SDL_Texture* map_texture = NULL;
+    map_texture = load_texture("map.png", renderer);
+    if (map_texture == NULL) {
+        printf("Failed to load map.png\n");
+    }
+    return (map_texture);
 }
 
 void Draw_Map_Texture(SDL_Renderer* renderer, SDL_Texture* map_texture, Player_t* player, vec2_t windowSize)

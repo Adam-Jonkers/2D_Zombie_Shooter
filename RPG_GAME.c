@@ -25,8 +25,9 @@
 #define DIFFICULTY_INCREASE_RATE 1000
 
 #define MAIN_MENU 0
-#define GAME 1
-#define QUIT 2
+#define SETUP_GAME 1
+#define GAME 2
+#define QUIT 3
 
 Global_t Setup_Global(Game_t* game, MainMenu_t* mainMenu)
 {
@@ -119,8 +120,7 @@ void Display_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
     SDL_RenderPresent(global->renderer);
 
     if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->playButtonRect)) {
-        Setup_Game(global->game, global);
-        global->gameState = GAME;
+        global->gameState = SETUP_GAME;
     } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, mainMenu->quitButtonRect)) {
         global->gameState = QUIT;
     }
@@ -135,65 +135,81 @@ void Cleanup_Main_Menu(MainMenu_t* mainMenu)
 
 void Setup_Game(Game_t* game, Global_t* global)
 {
-    game->max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
+    static bool generalComplete = false;
+    static bool noiseMapComplete = false;
+    static bool mapComplete = false;
+    if (!generalComplete) {
+        game->max = (vec2_t){MAP_WIDTH, MAP_HEIGHT};
 
-    game->loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
-    SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
-    SDL_RenderPresent(global->renderer);
-    SDL_DestroyTexture(game->loadingScreen);
+        game->loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
+        SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
+        SDL_RenderPresent(global->renderer);
+        SDL_DestroyTexture(game->loadingScreen);
 
-    game->player = Setup_player(global->windowSize, global->renderer);
+        game->player = Setup_player(global->windowSize, global->renderer);
 
-    game->enemys.enemy = NULL;
-    game->enemys.num_enemys = 0;
-    game->enemys.max_enemys = MAX_ENEMYS;
+        game->enemys.enemy = NULL;
+        game->enemys.num_enemys = 0;
+        game->enemys.max_enemys = MAX_ENEMYS;
 
-    game->noiseMap = calloc((game->max.x * game->max.y), sizeof(float));
-    game->randArray = calloc((game->max.x * game->max.y), sizeof(float));
-    game->map = calloc((game->max.x * game->max.y), sizeof(char));
+        game->noiseMap = calloc((game->max.x * game->max.y), sizeof(float));
+        game->randArray = calloc((game->max.x * game->max.y), sizeof(float));
+        game->map = calloc((game->max.x * game->max.y), sizeof(char));
 
-    game->mapBitmap.height = game->max.y;
-    game->mapBitmap.width = game->max.x;
-    game->mapBitmap.pixels = calloc((game->max.x * game->max.y), sizeof(pixel_t));
+        game->mapBitmap.height = game->max.y;
+        game->mapBitmap.width = game->max.x;
+        game->mapBitmap.pixels = calloc((game->max.x * game->max.y), sizeof(pixel_t));
 
-    game->playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
-    load_Text(&game->playerHealthText, global->renderer);
+        game->playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
+        load_Text(&game->playerHealthText, global->renderer);
 
-    game->score.score = 0;
-    game->score.maxScore = 0;
-
-    game->score.scoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 50, 30, 50, 30}, "Score: 0");
-    load_Text(&game->score.scoreText, global->renderer);
-    game->score.scoreText.textBox.x = global->windowSize.x - game->score.scoreText.textBox.w;
-
-    game->score.maxScoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 80, 0, 80, 30}, "Highscore: ERROR");
-
-    game->highscoreFile = fopen("Highscore.txt", "r");
-    if (game->highscoreFile == NULL) {
-        printf("No highscore file found\n");
+        game->score.score = 0;
         game->score.maxScore = 0;
-        
-    } else {
-        fscanf(game->highscoreFile, "%d", &game->score.maxScore);
-        fclose(game->highscoreFile);
+
+        game->score.scoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 50, 30, 50, 30}, "Score: 0");
+        load_Text(&game->score.scoreText, global->renderer);
+        game->score.scoreText.textBox.x = global->windowSize.x - game->score.scoreText.textBox.w;
+
+        game->score.maxScoreText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){global->windowSize.x - 80, 0, 80, 30}, "Highscore: ERROR");
+
+        game->highscoreFile = fopen("Highscore.txt", "r");
+        if (game->highscoreFile == NULL) {
+            printf("No highscore file found\n");
+            game->score.maxScore = 0;
+            
+        } else {
+            fscanf(game->highscoreFile, "%d", &game->score.maxScore);
+            fclose(game->highscoreFile);
+        }
+
+        sprintf(game->score.maxScoreText.text, "Highscore: %d", game->score.maxScore);
+        load_Text(&game->score.maxScoreText, global->renderer);
+        game->score.maxScoreText.textBox.x = global->windowSize.x - game->score.maxScoreText.textBox.w;
+
+        game->enemySpawnTimer = create_timer();
+        start_timer(&game->enemySpawnTimer);
+
+        game->difficultyTimer = create_timer();
+        start_timer(&game->difficultyTimer);
+        game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
+        game->spawnRate = SPAWN_RATE;
+
+        generalComplete = true;
     }
 
-    sprintf(game->score.maxScoreText.text, "Highscore: %d", game->score.maxScore);
-    load_Text(&game->score.maxScoreText, global->renderer);
-    game->score.maxScoreText.textBox.x = global->windowSize.x - game->score.maxScoreText.textBox.w;
+    if (!noiseMapComplete) {
+        Setup_Noise_Map(game->max, game->noiseMap, game->randArray, &noiseMapComplete);
+    } else if (!mapComplete) {
+        Setup_Map_Png(game->mapBitmap, game->noiseMap, &mapComplete);
+    } 
 
-    Setup_Noise_Map(game->max, game->noiseMap, game->randArray);
-    Setup_Map_Png(game->mapBitmap, game->noiseMap);
-
-    game->mapTexture = Load_Map_Texture(global->renderer);
-
-    game->enemySpawnTimer = create_timer();
-    start_timer(&game->enemySpawnTimer);
-
-    game->difficultyTimer = create_timer();
-    start_timer(&game->difficultyTimer);
-    game->difficultyIncreaseRate = DIFFICULTY_INCREASE_RATE;
-    game->spawnRate = SPAWN_RATE;
+    if (mapComplete) {
+        game->mapTexture = Load_Map_Texture(global->renderer);
+        global->gameState = GAME;
+        generalComplete = false;
+        noiseMapComplete = false;
+        mapComplete = false;
+    }
 }
 
 void Run_Game(Game_t* game, Global_t* global)
@@ -300,6 +316,10 @@ int main(void)
         switch (global.gameState) {
         case MAIN_MENU:
             Display_Main_Menu(&mainMenu, &global);
+            break;
+
+        case SETUP_GAME:
+            Setup_Game(&game, &global);
             break;
         
         case GAME:

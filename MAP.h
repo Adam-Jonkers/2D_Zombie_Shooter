@@ -27,9 +27,9 @@ vec2_t grad(vec2_t p, float* noiseMap, int width);
 
 float noise(vec2_t p, float* noiseMap, int width);
 
-void Setup_Noise_Map(vec2_t max, float* noiseMap, float* randArray);
+void Setup_Noise_Map(vec2_t max, float* noiseMap, float* randArray, bool* complete);
 
-void Setup_Map_Png(bitmap_t map, float* noiseMap);
+void Setup_Map_Png(bitmap_t map, float* noiseMap, bool* complete);
 
 SDL_Texture* Load_Map_Texture(SDL_Renderer* renderer);
 
