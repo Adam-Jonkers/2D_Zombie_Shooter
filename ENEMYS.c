@@ -185,7 +185,7 @@ void Update_Enemy(Enemys_t* enemys, Player_t* player, float dt, vec2_t max, floa
     if (abs((int)Get_Distance(enemys->enemy[index]->position, player->position)) < enemys->enemy[index]->attackRange && get_time_ms(&enemys->enemy[index]->attackTimer) > enemys->enemy[index]->attackRate) {
         if (player->health > 0) {
             player->health -= 1;
-            sprintf(playerHealth->text, "HP: %d", player->health);
+            sprintf(playerHealth->text, "HP: %d", (int)player->health);
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 75);
             SDL_RenderFillRect(renderer, NULL);
             start_timer(&enemys->enemy[index]->attackTimer);

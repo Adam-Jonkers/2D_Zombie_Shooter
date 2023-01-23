@@ -25,9 +25,9 @@ typedef struct {
 } Bullets_t;
 
 typedef struct {
-    int health;
+    float health;
     bool alive;
-    int damage;
+    float damage;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
@@ -45,8 +45,8 @@ typedef struct {
 } Player_t;
 
 typedef struct {
-    int health;
-    int damage;
+    float health;
+    float damage;
     uint32_t attackRate;
     int attackRange;
     SDL_Texture* texture;

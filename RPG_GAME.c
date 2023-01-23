@@ -298,7 +298,7 @@ void Run_Game(Game_t* game, Global_t* global)
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[1].rect)) {
             game->upgradeChosen = true;
             game->player.health += 10;
-            sprintf(game->playerHealthText.text, "Health: %d", game->player.health);
+            sprintf(game->playerHealthText.text, "Health: %d", (int)game->player.health);
             load_Text(&game->playerHealthText, global->renderer);
             printf("\nHealth Upgraded\n");
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[2].rect)) {
