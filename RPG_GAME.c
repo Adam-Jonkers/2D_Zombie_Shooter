@@ -24,7 +24,7 @@
 #define SPAWN_RATE 200
 #define DIFFICULTY_INCREASE_RATE 1000
 
-#define NUM_ENEMYS_EQUATION floor((-exp(-((((float)game->level - 1381) / 200))) + 1000));
+#define NUM_ENEMYS_EQUATION floor(-exp(-((((float)game->level - 1381) / 200))) + 1000 + 2 * game->level)
 
 #define MAIN_MENU 0
 #define SETUP_GAME 1
