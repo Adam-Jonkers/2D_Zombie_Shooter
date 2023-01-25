@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "RPG_GAME.h"
 #include "MAP.h"
@@ -44,11 +45,13 @@ Global_t Setup_Global(Game_t* game, MainMenu_t* mainMenu)
     global.mainMenu = mainMenu;
 
     // initialize SDL
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     global.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     global.renderer = SDL_CreateRenderer(global.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 
     SDL_SetRenderDrawBlendMode(global.renderer, SDL_BLENDMODE_BLEND);
 
@@ -92,6 +95,7 @@ void Cleanup_Global(Global_t* global)
     TTF_Quit();
     SDL_DestroyRenderer(global->renderer);
     SDL_DestroyWindow(global->window);
+    Mix_CloseAudio();
     SDL_Quit();
 }
 
@@ -103,6 +107,10 @@ void Setup_Main_Menu(MainMenu_t* mainMenu, Global_t* global)
 
     mainMenu->quitButtonText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){50, 0, 50, 30}, "Quit");
     load_Text(&mainMenu->quitButtonText, global->renderer);
+
+    mainMenu->music = Mix_LoadMUS("Assets/Audio/Background/MainMenu.mp3");
+
+    Mix_PlayMusic(mainMenu->music, -1);
 
     mainMenu->playButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 - 100, 200, 100};
     mainMenu->quitButtonRect = (SDL_Rect){global->windowSize.x / 2 - 100, global->windowSize.y / 2 + 100, 200, 100};
@@ -135,6 +143,7 @@ void Cleanup_Main_Menu(MainMenu_t* mainMenu)
     SDL_DestroyTexture(mainMenu->backgroundTexture);
     SDL_DestroyTexture(mainMenu->playButtonText.texture);
     SDL_DestroyTexture(mainMenu->quitButtonText.texture);
+    Mix_FreeMusic(mainMenu->music);
 }
 
 void Setup_Game(Game_t* game, Global_t* global)
@@ -228,6 +237,10 @@ void Setup_Game(Game_t* game, Global_t* global)
 
         game->upgrades[2].texture = load_texture("Assets/Upgrades/Speed.png", global->renderer);
         game->upgrades[2].rect = (SDL_Rect){global->windowSize.x * 3 / 4 - 100, global->windowSize.y / 2 - 100, 200, 200};
+
+        game->music = Mix_LoadMUS("Assets/Audio/Background/Game.mp3");
+
+        Mix_PlayMusic(game->music, -1);
 
         SDL_RenderPresent(global->renderer);
 
@@ -385,6 +398,7 @@ void close_Game(Game_t* game, Global_t* global)
 
     free(game->noiseMap);
     free(game->map);
+    Mix_FreeMusic(game->music);
 
     if (remove("map.png")) {
         printf("Error deleting map file\n");

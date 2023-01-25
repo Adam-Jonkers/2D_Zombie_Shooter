@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <stdbool.h>
 
@@ -21,6 +22,7 @@ typedef struct {
     Text_t quitButtonText;
     SDL_Rect playButtonRect;
     SDL_Rect quitButtonRect;
+    Mix_Music* music;
 } MainMenu_t;
 
 typedef struct {
@@ -49,6 +51,7 @@ typedef struct {
     Timer_t difficultyTimer;
     u_int32_t difficultyIncreaseRate;
     u_int32_t spawnRate;
+    Mix_Music* music;
 } Game_t;
 
 typedef struct {
