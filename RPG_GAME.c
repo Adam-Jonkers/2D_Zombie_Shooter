@@ -24,7 +24,7 @@
 #define SPAWN_RATE 200
 #define DIFFICULTY_INCREASE_RATE 1000
 
-#define NUM_ENEMYS_EQUATION floor((-exp(-((((float)game->level - 1381) / 200))) + 1000));
+#define NUM_ENEMYS_EQUATION floor(-exp(-((((float)game->level - 1381) / 200))) + 1000 + 2 * game->level)
 
 #define MAIN_MENU 0
 #define SETUP_GAME 1
@@ -293,17 +293,17 @@ void Run_Game(Game_t* game, Global_t* global)
 
         if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[0].rect)) {
             game->upgradeChosen = true;
-            game->player.damage += 1;
+            game->player.damage += (game->player.damage * 0.1);
             printf("\nDamage Upgraded\n");
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[1].rect)) {
             game->upgradeChosen = true;
-            game->player.health += 10;
-            sprintf(game->playerHealthText.text, "Health: %d", game->player.health);
+            game->player.health += (game->player.health * 0.1);
+            sprintf(game->playerHealthText.text, "Health: %d", (int)game->player.health);
             load_Text(&game->playerHealthText, global->renderer);
             printf("\nHealth Upgraded\n");
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[2].rect)) {
             game->upgradeChosen = true;
-            game->player.maxSpeed += 10;
+            game->player.maxSpeed += (game->player.maxSpeed * 0.1);
             printf("\nSpeed Upgraded\n");
         }
 
