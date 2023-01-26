@@ -71,6 +71,12 @@ typedef struct {
     int max_enemys;
 } Enemys_t;
 
+typedef struct {
+    SDL_Texture* icon;
+    SDL_Rect position;
+    void (*upgrade)(Player_t* player, SDL_Renderer* renderer);
+} Upgrade_t;
+
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);
 
 void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap);
