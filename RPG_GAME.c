@@ -407,6 +407,7 @@ void close_Game(Game_t* game, Global_t* global)
 
 int main(void)
 {
+
     Game_t game;
 
     MainMenu_t mainMenu;
@@ -415,6 +416,8 @@ int main(void)
 
     Setup_Main_Menu(&mainMenu, &global);
 
+    int musicVolume = 64;
+
     while (global.running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -422,10 +425,20 @@ int main(void)
                 global.gameState = QUIT;
             }
         }
+
         if (global.keyboard_state[SDL_SCANCODE_ESCAPE] && global.gameState == GAME) {
             close_Game(&game, &global);
             global.gameState = MAIN_MENU;
         }
+
+        if (global.keyboard_state[SDL_SCANCODE_UP]) {
+            musicVolume += 1;
+            Mix_VolumeMusic(musicVolume);
+        } else if (global.keyboard_state[SDL_SCANCODE_DOWN]) {
+            musicVolume -= 1;
+            Mix_VolumeMusic(musicVolume);
+        }
+
 
         switch (global.gameState) {
         case MAIN_MENU:
