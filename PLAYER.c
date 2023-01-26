@@ -307,3 +307,72 @@ void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* pl
         }
     }
 }
+
+/*    UPGRADES    */
+
+void Upgrade_Health(Player_t* player)
+{
+    player->health += 20;
+}
+
+void Upgrade_Damage(Player_t* player)
+{
+    player->damage += 0.2;
+}
+
+void Upgrade_Speed(Player_t* player)
+{
+    player->maxSpeed += 10;
+}
+
+void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
+{
+    player->weapon = KNIFE;
+    
+    player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/knife/move/survivor-move_knife_", renderer);
+    player->moveAnimation.speed = 50;
+
+    player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
+    player->idleAnimation.speed = 50;
+}
+
+void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
+{
+    player->weapon = PISTOL;
+    
+    player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
+    player->moveAnimation.speed = 50;
+
+    player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
+    player->idleAnimation.speed = 50;
+}
+
+void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
+{
+    player->weapon = RIFLE;
+    
+    player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
+    player->moveAnimation.speed = 50;
+
+    player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
+    player->idleAnimation.speed = 50;
+}
+
+void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
+{
+    player->weapon = SHOTGUN;
+    
+    player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/shotgun/move/survivor-move_shotgun_", renderer);
+    player->moveAnimation.speed = 50;
+
+    player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/shotgun/idle/survivor-idle_shotgun_", renderer);
+    player->idleAnimation.speed = 50;
+}

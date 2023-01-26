@@ -24,9 +24,12 @@ typedef struct {
     int num_bullets;
 } Bullets_t;
 
+
+
 typedef struct {
     float health;
     bool alive;
+    enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
     float damage;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
@@ -89,5 +92,19 @@ void Remove_Bullet(Bullets_t* bullets, int index);
 void Remove_Bullets(Bullets_t* bullets);
 
 void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* player, SDL_Renderer* renderer);
+
+void Upgrade_Health(Player_t* player);
+
+void Upgrade_Damage(Player_t* player);
+
+void Upgrade_Speed(Player_t* player);
+
+void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer);
+
+void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer);
+
+void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer);
+
+void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer);
 
 #endif
