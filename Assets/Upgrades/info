@@ -1,0 +1,8 @@
+get icons from: 
+	https://game-icons.net/
+	
+make transperant:
+	https://onlinepngtools.com/create-transparent-png
+	
+combine with box: center horizontaly and verticaly and set scale to 50%
+	https://pinetools.com/overlay-images
