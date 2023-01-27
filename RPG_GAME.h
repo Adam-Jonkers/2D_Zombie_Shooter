@@ -14,7 +14,7 @@
 typedef struct {
     SDL_Texture* texture;
     SDL_Rect rect;
-} Upgrade_t;
+} PlayerUpgrade_t;
 
 typedef struct {
     SDL_Texture* backgroundTexture;
@@ -31,16 +31,13 @@ typedef struct {
     int enemysSpawned;
     bool levelComplete;
     bool upgradeChosen;
-
-    Upgrade_t upgrades[3];
-
+    PlayerUpgrade_t upgrades[3];
     vec2_t max;
     SDL_Texture* loadingScreen;
     Player_t player;
     Enemys_t enemys;
     float* noiseMap;
     float* randArray; 
-    char* map; // is this actually needed?
     bitmap_t mapBitmap;
     Text_t playerHealthText;
     Score_t score;
