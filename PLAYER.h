@@ -25,10 +25,24 @@ typedef struct {
 } Bullets_t;
 
 typedef struct {
+    SDL_Texture* icon;
+    SDL_Rect position;
+    void (*upgrade)(Player_t* player, SDL_Renderer* renderer);
+    bool deleteAfterUse;
+} Upgrade_t;
+
+typedef struct {
+    PlayerUpgrade_t** upgrades;
+    int numberOfUpgrades;
+} PossibleUpgrades_t;
+
+typedef struct {
     float health;
     bool alive;
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
     float damage;
+    Upgrade_t* upgrades[3];
+    Upgrade_t** possibleUpgrades;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
@@ -68,12 +82,6 @@ typedef struct {
     int num_enemys;
     int max_enemys;
 } Enemys_t;
-
-typedef struct {
-    SDL_Texture* icon;
-    SDL_Rect position;
-    void (*upgrade)(Player_t* player, SDL_Renderer* renderer);
-} Upgrade_t;
 
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);
 
