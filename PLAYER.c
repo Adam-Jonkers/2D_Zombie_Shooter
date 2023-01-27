@@ -366,3 +366,78 @@ void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/shotgun/idle/survivor-idle_shotgun_", renderer);
     player->idleAnimation.speed = 50;
 }
+
+Upgrade_t* Setup_Upgrade_Health(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Health.png", renderer);
+    upgrade.upgrade = Upgrade_Health;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Damage(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Damage.png", renderer);
+    upgrade.upgrade = Upgrade_Damage;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Speed(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Speed.png", renderer);
+    upgrade.upgrade = Upgrade_Speed;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Knife(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Knife.png", renderer);
+    upgrade.upgrade = Upgrade_Knife;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Pistol(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Pistol.png", renderer);
+    upgrade.upgrade = Upgrade_Pistol;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Rifle(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Rifle.png", renderer);
+    upgrade.upgrade = Upgrade_Rifle;
+    return &upgrade;
+}
+
+Upgrade_t* Setup_Upgrade_Shotgun(SDL_Renderer* renderer)
+{
+    Upgrade_t upgrade;
+    upgrade.icon = load_texture("Assets/Upgrades/Shotgun.png", renderer);
+    upgrade.upgrade = Upgrade_Shotgun;
+    return &upgrade;
+}
+
+void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer)
+{
+    Upgrade_t* health = Setup_Upgrade_Health(renderer);
+    Upgrade_t* damage = Setup_Upgrade_Damage(renderer);
+    Upgrade_t* speed = Setup_Upgrade_Speed(renderer);
+    Upgrade_t* knife = Setup_Upgrade_Knife(renderer);
+    Upgrade_t* pistol = Setup_Upgrade_Pistol(renderer);
+    Upgrade_t* rifle = Setup_Upgrade_Rifle(renderer);
+    Upgrade_t* shotgun = Setup_Upgrade_Shotgun(renderer);
+
+    upgrades->upgrades[0] = health;
+    upgrades->upgrades[1] = damage;
+    upgrades->upgrades[2] = speed;
+    upgrades->upgrades[3] = knife;
+    upgrades->upgrades[4] = pistol;
+    upgrades->upgrades[5] = rifle;
+    upgrades->upgrades[6] = shotgun;
+}
