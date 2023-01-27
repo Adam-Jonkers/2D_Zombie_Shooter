@@ -24,8 +24,6 @@ typedef struct {
     int num_bullets;
 } Bullets_t;
 
-
-
 typedef struct {
     float health;
     bool alive;
@@ -90,8 +88,6 @@ void Draw_Bullets(SDL_Renderer* renderer, Player_t* player);
 void Draw_Bullet(SDL_Renderer* renderer, Bullet_t* bullet, Player_t* player);
 
 void Destroy_Bullet(Bullet_t* bullet);
-
-void Destroy_Bullets(Bullets_t* bullets);
 
 void Remove_Bullet(Bullets_t* bullets, int index);
 

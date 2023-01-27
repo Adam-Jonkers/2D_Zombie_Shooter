@@ -232,16 +232,6 @@ void Destroy_Bullet(Bullet_t* bullet)
     bullet = NULL;
 }
 
-void Destroy_Bullets(Bullets_t* bullets)
-{
-    for (int i = 0; i < bullets->num_bullets; i++) {
-        Destroy_Bullet(bullets->bullet[i]);
-    }
-    free(bullets->bullet);
-    bullets->bullet = NULL;
-    bullets->num_bullets = 0;
-}
-
 void Remove_Bullet(Bullets_t* bullets, int index)
 {
     if (index < 0 || index > bullets->num_bullets) {
