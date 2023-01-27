@@ -441,3 +441,18 @@ void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer)
     upgrades->upgrades[5] = rifle;
     upgrades->upgrades[6] = shotgun;
 }
+
+void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades)
+{
+    for (int i = 0; i < 2; i++)
+    {
+        selectedUpgrades[i] = upgrades->upgrades[get_random_number(0, 6)];
+    }
+}
+
+
+// create function that checks through upgrades and checks which ones are available
+// void Update_Upgrades(Upgrades_t* upgrades, Player_t* player, SDL_Renderer* renderer)
+// {
+
+// }

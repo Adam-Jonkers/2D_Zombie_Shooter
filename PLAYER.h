@@ -26,15 +26,13 @@ typedef struct {
 
 typedef struct {
     SDL_Texture* icon;
-    SDL_Rect position;
     void (*upgrade)(Player_t* player, SDL_Renderer* renderer);
-    bool deleteAfterUse;
 } Upgrade_t;
 
 typedef struct {
-    PlayerUpgrade_t** upgrades;
+    Upgrade_t* upgrades[7];
     int numberOfUpgrades;
-} PossibleUpgrades_t;
+} Upgrades_t;
 
 typedef struct {
     float health;
@@ -42,7 +40,7 @@ typedef struct {
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
     float damage;
     Upgrade_t* upgrades[3];
-    Upgrade_t** possibleUpgrades;
+    Upgrades_t* upgrades;
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
@@ -116,5 +114,23 @@ void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer);
 void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer);
 
 void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Health(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Damage(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Speed(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Knife(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Pistol(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Rifle(SDL_Renderer* renderer);
+
+Upgrade_t* Setup_Upgrade_Shotgun(SDL_Renderer* renderer);
+
+void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer);
+
+void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades);
 
 #endif
