@@ -186,7 +186,6 @@ void Setup_Game(Game_t* game, Global_t* global)
 
         game->noiseMap = calloc((game->max.x * game->max.y), sizeof(float));
         game->randArray = calloc((game->max.x * game->max.y), sizeof(float));
-        game->map = calloc((game->max.x * game->max.y), sizeof(char));
 
         game->mapBitmap.height = game->max.y;
         game->mapBitmap.width = game->max.x;
@@ -229,6 +228,7 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->upgradeChosen = false;
 
         //create setup upgrades function
+
         game->upgrades[0].texture = load_texture("Assets/Upgrades/Damage.png", global->renderer);
         game->upgrades[0].rect = (SDL_Rect){global->windowSize.x / 4 - 100, global->windowSize.y / 2 - 100, 200, 200}; 
 
@@ -397,7 +397,6 @@ void close_Game(Game_t* game, Global_t* global)
     }
 
     free(game->noiseMap);
-    free(game->map);
     Mix_FreeMusic(game->music);
 
     if (remove("map.png")) {
