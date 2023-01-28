@@ -437,10 +437,10 @@ int main(void)
             global.gameState = MAIN_MENU;
         }
 
-        if (global.keyboard_state[SDL_SCANCODE_UP]) {
+        if (global.keyboard_state[SDL_SCANCODE_UP] && musicVolume < 128) {
             musicVolume += 1;
             Mix_VolumeMusic(musicVolume);
-        } else if (global.keyboard_state[SDL_SCANCODE_DOWN]) {
+        } else if (global.keyboard_state[SDL_SCANCODE_DOWN] && musicVolume > 0) {
             musicVolume -= 1;
             Mix_VolumeMusic(musicVolume);
         }
