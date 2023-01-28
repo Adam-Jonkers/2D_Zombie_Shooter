@@ -392,6 +392,9 @@ void close_Game(Game_t* game, Global_t* global)
     }
 
     free(game->noiseMap);
+
+    freeUpgrades(&game->player);
+
     Mix_FreeMusic(game->music);
 
     if (remove("map.png")) {

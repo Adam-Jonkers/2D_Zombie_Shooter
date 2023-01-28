@@ -137,4 +137,6 @@ void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer);
 
 void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer);
 
+void freeUpgrades(Player_t* player);
+
 #endif

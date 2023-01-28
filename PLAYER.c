@@ -542,6 +542,15 @@ void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t
 
 }
 
+void freeUpgrades(Player_t* player)
+{
+    for (int i = 0; i < player->allUpgrades.numberOfUpgrades; i++) {
+        free(player->allUpgrades.upgrades[i]);
+    }
+    free(player->allUpgrades.upgrades);
+    free(player->availableUpgrades);
+}
+
 // create function that checks through upgrades and checks which ones are available
 // void Update_Upgrades(Upgrades_t* upgrades, Player_t* player, SDL_Renderer* renderer)
 // {
