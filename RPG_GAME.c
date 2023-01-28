@@ -193,8 +193,8 @@ void Setup_Game(Game_t* game, Global_t* global)
         game->mapBitmap.width = game->max.x;
         game->mapBitmap.pixels = calloc((game->max.x * game->max.y), sizeof(pixel_t));
 
-        game->playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
-        load_Text(&game->playerHealthText, global->renderer);
+        game->player.playerHealthText = Setup_Text(global->font, (SDL_Color){255, 0, 0, 255}, NULL, (SDL_Rect){5, 0, 50, 30}, "HP: 100");
+        load_Text(&game->player.playerHealthText, global->renderer);
 
         game->score.score = 0;
         game->score.maxScore = 0;
@@ -315,18 +315,15 @@ void Run_Game(Game_t* game, Global_t* global)
 
         if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[0]->rect)) {
             game->upgradeChosen = true;
-            game->player.damage += (game->player.damage * 0.1);
+            game->player.availableUpgrades[0]->upgrade(&game->player, global->renderer);
             printf("\nDamage Upgraded\n");
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[1]->rect)) {
             game->upgradeChosen = true;
-            game->player.health += (game->player.health * 0.1);
-            sprintf(game->playerHealthText.text, "Health: %d", (int)game->player.health);
-            load_Text(&game->playerHealthText, global->renderer);
-            printf("\nHealth Upgraded\n");
+            game->player.availableUpgrades[1]->upgrade(&game->player, global->renderer);
+
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[2]->rect)) {
             game->upgradeChosen = true;
-            game->player.maxSpeed += (game->player.maxSpeed * 0.1);
-            printf("\nSpeed Upgraded\n");
+            game->player.availableUpgrades[2]->upgrade(&game->player, global->renderer);
         }
 
         if (game->upgradeChosen) {
@@ -353,13 +350,13 @@ void Run_Game(Game_t* game, Global_t* global)
 
         Draw_Bullets(global->renderer, &game->player);
 
-        Update_Enemys(&game->enemys, &game->player, global->dt, game->max, game->noiseMap, global->renderer, &game->score, global->windowSize, &game->playerHealthText, game->numberOfEnemys, &game->enemysSpawned, &game->levelComplete);
+        Update_Enemys(&game->enemys, &game->player, global->dt, game->max, game->noiseMap, global->renderer, &game->score, global->windowSize, &game->player.playerHealthText, game->numberOfEnemys, &game->enemysSpawned, &game->levelComplete);
 
         Draw_Enemys(global->renderer, &game->enemys, global->windowSize, &game->player);
 
         Draw_Player(global->renderer, &game->player, global->dt, global->windowSize, game->max);
 
-        Draw_Text(&game->playerHealthText, global->renderer);
+        Draw_Text(&game->player.playerHealthText, global->renderer);
 
         Draw_Text(&global->fpsText, global->renderer);
 

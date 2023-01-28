@@ -317,16 +317,21 @@ void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* pl
 void Upgrade_Health(Player_t* player, SDL_Renderer* renderer)
 {
     player->health += 20;
+    sprintf(player->playerHealthText.text, "Health: %d", (int)player->health);
+    load_Text(&player->playerHealthText, renderer);
+    printf("\nHealth Upgraded\n");
 }
 
 void Upgrade_Damage(Player_t* player, SDL_Renderer* renderer)
 {
     player->damage += 0.2;
+    printf("\nDamage Upgraded\n");
 }
 
 void Upgrade_Speed(Player_t* player, SDL_Renderer* renderer)
 {
     player->maxSpeed += 10;
+    printf("\nSpeed Upgraded\n");
 }
 
 void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
@@ -340,6 +345,7 @@ void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
     player->idleAnimation.speed = 50;
+    printf("\nKnife Upgraded\n");
 }
 
 void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
@@ -353,6 +359,7 @@ void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
     player->idleAnimation.speed = 50;
+    printf("\nPistol Upgraded\n");
 }
 
 void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
@@ -366,6 +373,7 @@ void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
     player->idleAnimation.speed = 50;
+    printf("\nRifle Upgraded\n");
 }
 
 void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
@@ -379,6 +387,7 @@ void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/shotgun/idle/survivor-idle_shotgun_", renderer);
     player->idleAnimation.speed = 50;
+    printf("\nShotgun Upgraded\n");
 }
 
 Upgrade_t* Setup_Upgrade_Health(SDL_Renderer* renderer)

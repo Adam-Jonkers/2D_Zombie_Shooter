@@ -34,7 +34,6 @@ typedef struct {
     float* noiseMap;
     float* randArray; 
     bitmap_t mapBitmap;
-    Text_t playerHealthText;
     Score_t score;
     FILE* highscoreFile;
     SDL_Texture* mapTexture;

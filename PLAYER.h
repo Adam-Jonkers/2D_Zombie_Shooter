@@ -33,19 +33,13 @@ typedef struct {
 } Upgrade_t;
 
 typedef struct {
-    // Upgrade_t healthUpgrade;
-    // Upgrade_t damageUpgrade;
-    // Upgrade_t speedUpgrade;
-    // Upgrade_t knifeUpgrade;
-    // Upgrade_t pistolUpgrade;
-    // Upgrade_t rifleUpgrade;
-    // Upgrade_t shotgunUpgrade;
     Upgrade_t** upgrades;
     int numberOfUpgrades;
 } Upgrades_t;
 
 typedef struct Player_t{
     float health;
+    Text_t playerHealthText;
     bool alive;
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
     float damage;
