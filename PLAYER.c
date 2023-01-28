@@ -527,7 +527,7 @@ void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t
     {
         upgradePointer = upgrades->upgrades[get_random_number(0,6)];
         selectedUpgrades[i] = upgradePointer;
-        (*selectedUpgrades[i]).rect = (SDL_Rect){windowSize.x * (i + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
+        selectedUpgrades[i]->rect = (SDL_Rect){windowSize.x * (i + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
     }
 
 }
