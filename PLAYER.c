@@ -58,6 +58,20 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.bullets.bullet = NULL;
     player.bullets.num_bullets = 0;
 
+    player.allUpgrades.upgrades = NULL;
+    player.allUpgrades.numberOfUpgrades = 0;
+
+    Setup_Upgrades(&player.allUpgrades, renderer);
+
+    player.availableUpgrades = NULL;
+
+    void* ptr = realloc(player.availableUpgrades, 3 * sizeof(Upgrade_t*));
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for bullet\n");
+    } else {
+        player.availableUpgrades = ptr;
+    }
+
     printf("Player setup complete\n");
 
     return player;
@@ -300,17 +314,17 @@ void Update_Bullets(Bullets_t* bullets, float dt, Enemys_t* enemys, Player_t* pl
 
 /*    UPGRADES    */
 
-void Upgrade_Health(Player_t* player)
+void Upgrade_Health(Player_t* player, SDL_Renderer* renderer)
 {
     player->health += 20;
 }
 
-void Upgrade_Damage(Player_t* player)
+void Upgrade_Damage(Player_t* player, SDL_Renderer* renderer)
 {
     player->damage += 0.2;
 }
 
-void Upgrade_Speed(Player_t* player)
+void Upgrade_Speed(Player_t* player, SDL_Renderer* renderer)
 {
     player->maxSpeed += 10;
 }
@@ -369,85 +383,154 @@ void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
 
 Upgrade_t* Setup_Upgrade_Health(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Health.png", renderer);
-    upgrade.upgrade = Upgrade_Health;
-    return &upgrade;
+    printf("Setup_Upgrade_Health\n");
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Health upgrade\n");
+    } else {
+        upgrade = ptr;
+        printf("Health worked\n");
+        upgrade->icon = load_texture("Assets/Upgrades/Health.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Health;
+    }
+    printf("Setup_Upgrade_Health end\n");
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Damage(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Damage.png", renderer);
-    upgrade.upgrade = Upgrade_Damage;
-    return &upgrade;
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Damage upgrade\n");
+    } else {
+        upgrade = ptr;
+        printf("Damage worked\n");
+        upgrade->icon = load_texture("Assets/Upgrades/Damage.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Damage;
+    }
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Speed(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Speed.png", renderer);
-    upgrade.upgrade = Upgrade_Speed;
-    return &upgrade;
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Speed upgrade\n");
+    } else {
+        upgrade = ptr;
+        printf("Speed worked\n");
+        upgrade->icon = load_texture("Assets/Upgrades/Speed.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Speed;
+    }
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Knife(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Knife.png", renderer);
-    upgrade.upgrade = Upgrade_Knife;
-    return &upgrade;
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Knife upgrade\n");
+    } else {
+    upgrade = ptr;
+    upgrade->icon = load_texture("Assets/Upgrades/Knife.png", renderer);
+    upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+    upgrade->upgrade = Upgrade_Knife;
+    }
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Pistol(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Pistol.png", renderer);
-    upgrade.upgrade = Upgrade_Pistol;
-    return &upgrade;
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Pistol upgrade\n");
+    } else {
+        upgrade = ptr;
+        upgrade->icon = load_texture("Assets/Upgrades/Pistol.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Pistol;
+    }
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Rifle(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Rifle.png", renderer);
-    upgrade.upgrade = Upgrade_Rifle;
-    return &upgrade;
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for rifle upgrade\n");
+    } else {
+        upgrade = ptr;
+        upgrade->icon = load_texture("Assets/Upgrades/Rifle.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Rifle;
+    }
+    return upgrade;
 }
 
 Upgrade_t* Setup_Upgrade_Shotgun(SDL_Renderer* renderer)
 {
-    Upgrade_t upgrade;
-    upgrade.icon = load_texture("Assets/Upgrades/Shotgun.png", renderer);
-    upgrade.upgrade = Upgrade_Shotgun;
-    return &upgrade;
-}
-
-void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer)
-{
-    Upgrade_t* health = Setup_Upgrade_Health(renderer);
-    Upgrade_t* damage = Setup_Upgrade_Damage(renderer);
-    Upgrade_t* speed = Setup_Upgrade_Speed(renderer);
-    Upgrade_t* knife = Setup_Upgrade_Knife(renderer);
-    Upgrade_t* pistol = Setup_Upgrade_Pistol(renderer);
-    Upgrade_t* rifle = Setup_Upgrade_Rifle(renderer);
-    Upgrade_t* shotgun = Setup_Upgrade_Shotgun(renderer);
-
-    upgrades->upgrades[0] = health;
-    upgrades->upgrades[1] = damage;
-    upgrades->upgrades[2] = speed;
-    upgrades->upgrades[3] = knife;
-    upgrades->upgrades[4] = pistol;
-    upgrades->upgrades[5] = rifle;
-    upgrades->upgrades[6] = shotgun;
-}
-
-void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades)
-{
-    for (int i = 0; i < 2; i++)
-    {
-        selectedUpgrades[i] = upgrades->upgrades[get_random_number(0, 6)];
+    void* ptr = calloc(1, sizeof(Upgrade_t));
+    Upgrade_t* upgrade = NULL;
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for Shotgun upgrade\n");
+    } else {
+        upgrade = ptr;
+        upgrade->icon = load_texture("Assets/Upgrades/Shotgun.png", renderer);
+        upgrade->rect = (SDL_Rect){0, 0, 0, 0};
+        upgrade->upgrade = Upgrade_Shotgun;
     }
+    return upgrade;
+}
+
+void Setup_Upgrades(Upgrades_t* allUpgrades ,SDL_Renderer* renderer)
+{
+    void* ptr = realloc(allUpgrades->upgrades, 7 * sizeof(Upgrade_t*));
+    if (ptr == NULL) {
+        printf("Error: Failed to allocate memory for upgrades\n");
+    } else {
+        allUpgrades->upgrades = ptr;
+
+        allUpgrades->upgrades[0] = Setup_Upgrade_Health(renderer);
+        allUpgrades->upgrades[1] = Setup_Upgrade_Damage(renderer);
+        allUpgrades->upgrades[2] = Setup_Upgrade_Speed(renderer);
+        allUpgrades->upgrades[3] = Setup_Upgrade_Knife(renderer);
+        allUpgrades->upgrades[4] = Setup_Upgrade_Pistol(renderer);
+        allUpgrades->upgrades[5] = Setup_Upgrade_Rifle(renderer);
+        allUpgrades->upgrades[6] = Setup_Upgrade_Shotgun(renderer);
+
+        printf("setup upgrade 0: x: %d, y: %d\n", allUpgrades->upgrades[0]->rect.x, allUpgrades->upgrades[0]->rect.y);
+        printf("setup upgrade 1: x: %d, y: %d\n", allUpgrades->upgrades[1]->rect.x, allUpgrades->upgrades[1]->rect.y);
+        printf("setup upgrade 2: x: %d, y: %d\n", allUpgrades->upgrades[2]->rect.x, allUpgrades->upgrades[2]->rect.y);
+        printf("setup upgrade 3: x: %d, y: %d\n", allUpgrades->upgrades[3]->rect.x, allUpgrades->upgrades[3]->rect.y);
+        printf("setup upgrade 4: x: %d, y: %d\n", allUpgrades->upgrades[4]->rect.x, allUpgrades->upgrades[4]->rect.y);
+        printf("setup upgrade 5: x: %d, y: %d\n", allUpgrades->upgrades[5]->rect.x, allUpgrades->upgrades[5]->rect.y);
+        printf("setup upgrade 6: x: %d, y: %d\n", allUpgrades->upgrades[6]->rect.x, allUpgrades->upgrades[6]->rect.y);
+
+        allUpgrades->numberOfUpgrades = 7;
+    }
+}
+
+void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer)
+{
+    Upgrade_t* upgradePointer = NULL;
+    for (int i = 0; i < 3; i++)
+    {
+        upgradePointer = upgrades->upgrades[get_random_number(0,6)];
+        printf("upgradePointer %d: x: %d, y: %d\n", i, upgradePointer->rect.x, upgradePointer->rect.y);
+        selectedUpgrades[i] = upgradePointer;
+        printf("upgrade %d: x: %d, y: %d\n", i,selectedUpgrades[i]->rect.x, selectedUpgrades[i]->rect.y);
+        (*selectedUpgrades[i]).rect = (SDL_Rect){windowSize.x * (i + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
+    }
+
 }
 
 

@@ -25,6 +25,7 @@ typedef struct {
     int numberOfEnemys;
     int enemysSpawned;
     bool levelComplete;
+    bool setupUpgradeScreen;
     bool upgradeChosen;
     vec2_t max;
     SDL_Texture* loadingScreen;

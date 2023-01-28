@@ -176,7 +176,9 @@ void Setup_Game(Game_t* game, Global_t* global)
         totalProgress = game->max.y * 2;
 
         game->loadingScreen = load_texture("Assets/Loading_Screen/LoadingScreen.png", global->renderer);
-        SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL);
+        if (SDL_RenderCopy(global->renderer, game->loadingScreen, NULL, NULL) != 0){
+            printf("Error: %s\n", SDL_GetError());
+        }
 
         game->player = Setup_player(global->windowSize, global->renderer);
 
@@ -227,16 +229,7 @@ void Setup_Game(Game_t* game, Global_t* global)
 
         game->upgradeChosen = false;
 
-        //create setup upgrades function
-
-        game->upgrades[0].texture = load_texture("Assets/Upgrades/Damage.png", global->renderer);
-        game->upgrades[0].rect = (SDL_Rect){global->windowSize.x / 4 - 100, global->windowSize.y / 2 - 100, 200, 200}; 
-
-        game->upgrades[1].texture = load_texture("Assets/Upgrades/Health.png", global->renderer);
-        game->upgrades[1].rect = (SDL_Rect){global->windowSize.x * 2 / 4 - 100, global->windowSize.y / 2 - 100, 200, 200};
-
-        game->upgrades[2].texture = load_texture("Assets/Upgrades/Speed.png", global->renderer);
-        game->upgrades[2].rect = (SDL_Rect){global->windowSize.x * 3 / 4 - 100, global->windowSize.y / 2 - 100, 200, 200};
+        game->setupUpgradeScreen = false;
 
         game->music = Mix_LoadMUS("Assets/Audio/Background/Game.mp3");
 
@@ -292,29 +285,45 @@ void Setup_Game(Game_t* game, Global_t* global)
 void Run_Game(Game_t* game, Global_t* global)
 {
     if (game->levelComplete) {
+        if (!game->setupUpgradeScreen) {
+            printf("Setup Upgrade Screen\n");
+            SelectUpgrades(game->player.availableUpgrades, &game->player.allUpgrades, global->windowSize, global->renderer);
+            printf("Upgrades Selected\n");
+            printf("Upgrade 0 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[0]->rect.x, game->player.allUpgrades.upgrades[0]->rect.y, game->player.allUpgrades.upgrades[0]);
+            printf("Upgrade 1 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[1]->rect.x, game->player.allUpgrades.upgrades[1]->rect.y, game->player.allUpgrades.upgrades[1]);
+            printf("Upgrade 2 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[2]->rect.x, game->player.allUpgrades.upgrades[2]->rect.y, game->player.allUpgrades.upgrades[2]);
+            printf("Upgrade 3 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[3]->rect.x, game->player.allUpgrades.upgrades[3]->rect.y, game->player.allUpgrades.upgrades[3]);
+            printf("Upgrade 4 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[4]->rect.x, game->player.allUpgrades.upgrades[4]->rect.y, game->player.allUpgrades.upgrades[4]);
+            printf("Upgrade 5 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[5]->rect.x, game->player.allUpgrades.upgrades[5]->rect.y, game->player.allUpgrades.upgrades[5]);
+            printf("Upgrade 6 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[6]->rect.x, game->player.allUpgrades.upgrades[6]->rect.y, game->player.allUpgrades.upgrades[6]);
+            printf("Upgrade 1 x:%d y=%d adr = %p\n", game->player.availableUpgrades[0]->rect.x, game->player.availableUpgrades[0]->rect.y, game->player.availableUpgrades[0]);
+            printf("Upgrade 2 x:%d y=%d adr = %p\n", game->player.availableUpgrades[1]->rect.x, game->player.availableUpgrades[1]->rect.y, game->player.availableUpgrades[1]);
+            printf("Upgrade 3 x:%d y=%d adr = %p\n", game->player.availableUpgrades[2]->rect.x, game->player.availableUpgrades[2]->rect.y, game->player.availableUpgrades[2]);
+            game->setupUpgradeScreen = true;
+        }
         SDL_RenderClear(global->renderer);
 
         Draw_Map_Texture(global->renderer, game->mapTexture, &game->player, global->windowSize);
 
         Draw_Player(global->renderer, &game->player, global->dt, global->windowSize, game->max);
 
-        SDL_RenderCopy(global->renderer, game->upgrades[0].texture, NULL, &game->upgrades[0].rect);
-        SDL_RenderCopy(global->renderer, game->upgrades[1].texture, NULL, &game->upgrades[1].rect);
-        SDL_RenderCopy(global->renderer, game->upgrades[2].texture, NULL, &game->upgrades[2].rect);
+        SDL_RenderCopy(global->renderer, game->player.availableUpgrades[0]->icon, NULL, &game->player.availableUpgrades[0]->rect);
+        SDL_RenderCopy(global->renderer, game->player.availableUpgrades[1]->icon, NULL, &game->player.availableUpgrades[1]->rect);
+        SDL_RenderCopy(global->renderer, game->player.availableUpgrades[2]->icon, NULL, &game->player.availableUpgrades[2]->rect);
 
         SDL_RenderPresent(global->renderer);
 
-        if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[0].rect)) {
+        if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[0]->rect)) {
             game->upgradeChosen = true;
             game->player.damage += (game->player.damage * 0.1);
             printf("\nDamage Upgraded\n");
-        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[1].rect)) {
+        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[1]->rect)) {
             game->upgradeChosen = true;
             game->player.health += (game->player.health * 0.1);
             sprintf(game->playerHealthText.text, "Health: %d", (int)game->player.health);
             load_Text(&game->playerHealthText, global->renderer);
             printf("\nHealth Upgraded\n");
-        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->upgrades[2].rect)) {
+        } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[2]->rect)) {
             game->upgradeChosen = true;
             game->player.maxSpeed += (game->player.maxSpeed * 0.1);
             printf("\nSpeed Upgraded\n");
@@ -326,6 +335,7 @@ void Run_Game(Game_t* game, Global_t* global)
             game->enemysSpawned = 0;
             game->upgradeChosen = false;
             game->levelComplete = false;
+            game->setupUpgradeScreen = false;
             printf("\nLEVEL: %d\n\n", game->level);
         }
     } else {
@@ -406,7 +416,7 @@ void close_Game(Game_t* game, Global_t* global)
 
 int main(void)
 {
-
+    printf("Start Program\n");
     Game_t game;
 
     MainMenu_t mainMenu;
