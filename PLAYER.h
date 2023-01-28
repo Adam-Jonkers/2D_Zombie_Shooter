@@ -88,7 +88,7 @@ typedef struct {
 
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer);
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap);
+void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap);
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t windowSize, vec2_t max);
 
@@ -140,7 +140,7 @@ void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t
 
 void freeUpgrades(Player_t* player);
 
-void knifeAttack(Player_t* player, SDL_Renderer* renderer);
+void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer);
 
 void pistolAttack(Player_t* player, SDL_Renderer* renderer);
 

@@ -79,7 +79,7 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     return player;
 }
 
-void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
+void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys, float dt, SDL_Renderer* renderer, Bullets_t* bullets, vec2_t windowSize, vec2_t max, mouse_t mouse, float* noiseMap) 
 {
     player->maxSpeed = 100.0f;
     player->acceleration = 20.0f;
@@ -119,7 +119,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
         switch (player->weapon)
         {
         case KNIFE:
-            knifeAttack(player, renderer);
+            knifeAttack(player, enemys, renderer);
             break;
         
         case PISTOL:
@@ -574,9 +574,18 @@ void freeUpgrades(Player_t* player)
     free(player->availableUpgrades);
 }
 
-void knifeAttack(Player_t* player, SDL_Renderer* renderer) 
+void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer) 
 {
-    Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage);
+    if (get_time_ms(&player->attackTimer) > 1500)
+    {
+        for (int i = 0; i < enemys->num_enemys; i++)
+        {
+            if (fabs((get_angle(player->position, enemys->enemy[i]->position) - player->rotation)) < 1.178 && Get_Distance(player->position, enemys->enemy[i]->position) < 200) {
+                enemys->enemy[i]->health -= player->damage * 50;
+            }
+        }
+        start_timer(&player->attackTimer);
+    }
 }
 
 void pistolAttack(Player_t* player, SDL_Renderer* renderer) 

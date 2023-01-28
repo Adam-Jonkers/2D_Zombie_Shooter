@@ -328,7 +328,7 @@ void Run_Game(Game_t* game, Global_t* global)
 
         Spawn_Enemys(&game->enemys, global->windowSize, global->renderer, game->max, &game->enemySpawnTimer, game->spawnRate, game->player.camera, game->numberOfEnemys, &game->enemysSpawned);
 
-        Move_player(global->keyboard_state, &game->player, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap);
+        Move_player(global->keyboard_state, &game->player, &game->enemys, global->dt, global->renderer, &game->player.bullets, global->windowSize, game->max, global->mouse, game->noiseMap);
 
         SDL_SetRenderDrawColor(global->renderer, 255, 0, 0, 255);
         SDL_RenderClear(global->renderer);
