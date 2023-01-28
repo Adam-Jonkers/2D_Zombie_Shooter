@@ -8,6 +8,8 @@
 
 #define PLAYER_MOVE_ANIMATION_LENGTH 19
 #define PLAYER_IDLE_ANIMATION_LENGTH 19
+#define PLAYER_SHOOT_ANIMATION_LENGTH 2
+#define PLAYER_MELEE_ANIMATION_LENGTH 14
 
 #define PLAYER_DAMAGE 2
 #define PLAYER_HEALTH 100
@@ -28,6 +30,10 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
     player.idleAnimation.speed = 50;
+
+    player.attackAnimation.length = PLAYER_MELEE_ANIMATION_LENGTH;
+    load_animation(&player.attackAnimation, "Assets/Top_Down_Survivor/knife/meleeattack/survivor-meleeattack_knife_", renderer);
+    player.attackAnimation.speed = 50;
 
     player.currentAnimation = &player.idleAnimation;
 
@@ -138,6 +144,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
             printf("Error: Weapon not found\n");
             break;
         }
+        player->currentAnimation = &player->attackAnimation;
     }
     speedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
     if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
@@ -209,15 +216,25 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
         player->sprite.y = player->position.y - player->sprite.h / 2 - player->camera.y;
     }
 
+    int w, h;
+
+    SDL_QueryTexture(player->currentAnimation->animation[0], NULL, NULL, &w, &h);
+
+    player->sprite.w = w/3.5;
+    player->sprite.h = h/3.5;
+
+    if (frame > player->currentAnimation->length - 1) {
+        frame = 0;
+    }
+
     SDL_RenderCopyExF(renderer, player->currentAnimation->animation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
 
     if (time > player->currentAnimation->speed) {
         time = 0;
+        printf("Frame: %d\n", frame);
         frame++;
     }
-    if (frame > player->currentAnimation->length - 1) {
-        frame = 0;
-    }
+
 }
 
 void Create_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, vec2_t position, SDL_FRect sprite, float rotation, vec2_t velocity, SDL_FPoint center, float damage)
@@ -368,6 +385,11 @@ void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
     player->idleAnimation.speed = 50;
+
+    player->attackAnimation.length = PLAYER_MELEE_ANIMATION_LENGTH;
+    load_animation(&player->attackAnimation, "Assets/Top_Down_Survivor/knife/meleeattack/survivor-meleeattack_knife_", renderer);
+    player->attackAnimation.speed = 50;
+
     printf("\nKnife Upgraded\n");
 }
 
@@ -382,6 +404,11 @@ void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_", renderer);
     player->idleAnimation.speed = 50;
+
+    player->attackAnimation.length = PLAYER_SHOOT_ANIMATION_LENGTH;
+    load_animation(&player->attackAnimation, "Assets/Top_Down_Survivor/handgun/shoot/survivor-shoot_handgun_", renderer);
+    player->attackAnimation.speed = 50;
+
     printf("\nPistol Upgraded\n");
 }
 
@@ -396,6 +423,11 @@ void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
     player->idleAnimation.speed = 50;
+
+    player->attackAnimation.length = PLAYER_SHOOT_ANIMATION_LENGTH;
+    load_animation(&player->attackAnimation, "Assets/Top_Down_Survivor/rifle/shoot/survivor-shoot_rifle_", renderer);
+    player->attackAnimation.speed = 50;
+
     printf("\nRifle Upgraded\n");
 }
 
@@ -410,6 +442,11 @@ void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
     load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/shotgun/idle/survivor-idle_shotgun_", renderer);
     player->idleAnimation.speed = 50;
+
+    player->attackAnimation.length = PLAYER_SHOOT_ANIMATION_LENGTH;
+    load_animation(&player->attackAnimation, "Assets/Top_Down_Survivor/shotgun/shoot/survivor-shoot_shotgun_", renderer);
+    player->attackAnimation.speed = 50;
+
     printf("\nShotgun Upgraded\n");
 }
 
@@ -576,12 +613,14 @@ void freeUpgrades(Player_t* player)
 
 void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer) 
 {
-    if (get_time_ms(&player->attackTimer) > 1500)
+    if (get_time_ms(&player->attackTimer) > 1000)
     {
+        bool hit = false;
         for (int i = 0; i < enemys->num_enemys; i++)
         {
-            if (fabs((get_angle(player->position, enemys->enemy[i]->position) - player->rotation)) < 1.178 && Get_Distance(player->position, enemys->enemy[i]->position) < 200) {
+            if (fabs((get_angle(player->position, enemys->enemy[i]->position) - player->rotation)) < 1.178 && Get_Distance(player->position, enemys->enemy[i]->position) < 200 && !hit) {
                 enemys->enemy[i]->health -= player->damage * 50;
+                hit = true;
             }
         }
         start_timer(&player->attackTimer);

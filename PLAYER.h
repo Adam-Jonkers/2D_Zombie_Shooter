@@ -49,6 +49,7 @@ typedef struct Player_t{
     Animation_t* currentAnimation;
     Animation_t moveAnimation;
     Animation_t idleAnimation;
+    Animation_t attackAnimation;
     SDL_FRect sprite;
     SDL_FPoint center;
     double rotation;
