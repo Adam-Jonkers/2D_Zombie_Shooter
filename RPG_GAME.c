@@ -306,11 +306,9 @@ void Run_Game(Game_t* game, Global_t* global)
         if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[0]->rect)) {
             game->upgradeChosen = true;
             game->player.availableUpgrades[0]->upgrade(&game->player, global->renderer);
-            printf("\nDamage Upgraded\n");
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[1]->rect)) {
             game->upgradeChosen = true;
             game->player.availableUpgrades[1]->upgrade(&game->player, global->renderer);
-
         } else if (global->mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT) && Mouse_Over(&global->mouse, game->player.availableUpgrades[2]->rect)) {
             game->upgradeChosen = true;
             game->player.availableUpgrades[2]->upgrade(&game->player, global->renderer);

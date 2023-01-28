@@ -353,11 +353,11 @@ void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
     player->weapon = PISTOL;
     
     player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
-    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
+    load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/handgun/move/survivor-move_handgun_", renderer);
     player->moveAnimation.speed = 50;
 
     player->idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
-    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
+    load_animation(&player->idleAnimation, "Assets/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_", renderer);
     player->idleAnimation.speed = 50;
     printf("\nPistol Upgraded\n");
 }
@@ -523,11 +523,21 @@ void Setup_Upgrades(Upgrades_t* allUpgrades ,SDL_Renderer* renderer)
 void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer)
 {
     Upgrade_t* upgradePointer = NULL;
-    for (int i = 0; i < 3; i++)
+    uint8_t upgradeSelected = 0;
+    int selectedCount = 0;
+    int randomIndex = 0;
+    while (selectedCount < 3)
     {
-        upgradePointer = upgrades->upgrades[get_random_number(0,6)];
-        selectedUpgrades[i] = upgradePointer;
-        selectedUpgrades[i]->rect = (SDL_Rect){windowSize.x * (i + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
+        randomIndex = get_random_number(0,6);
+        if ((upgradeSelected & (1 << randomIndex)) == 0) {
+            upgradePointer = upgrades->upgrades[randomIndex];
+            selectedUpgrades[selectedCount] = upgradePointer;
+            selectedUpgrades[selectedCount]->rect = (SDL_Rect){windowSize.x * (selectedCount + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
+            upgradeSelected = upgradeSelected | (1 << randomIndex);
+            selectedCount++;
+        } else {
+            printf("Upgrade already selected\n");
+        }
     }
 
 }
