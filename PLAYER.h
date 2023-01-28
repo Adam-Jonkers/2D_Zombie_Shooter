@@ -44,6 +44,7 @@ typedef struct Player_t{
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
     Timer_t attackTimer;
     float damage;
+    bool attacking;
     Upgrade_t** availableUpgrades;
     Upgrades_t allUpgrades;
     Animation_t* currentAnimation;

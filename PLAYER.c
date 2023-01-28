@@ -62,6 +62,8 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.sprintMultiplier = PLAYER_SPEED_MULTIPLIER;
 
     player.weapon = KNIFE;
+
+    player.attacking = false;
     
     player.bullets.bullet = NULL;
     player.bullets.num_bullets = 0;
@@ -90,7 +92,9 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
     player->maxSpeed = 100.0f;
     player->acceleration = 20.0f;
     player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 20.0f));
-    player->currentAnimation = &player->idleAnimation;
+    if (!player->attacking) {
+        player->currentAnimation = &player->idleAnimation;
+    }
     player->moveAnimation.speed = 50;
     float speedMultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
@@ -101,22 +105,30 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
     if (keyboard_state[SDL_SCANCODE_W]) {
         player->velocity.x += player->acceleration * cos(player->rotation);
         player->velocity.y += player->acceleration * sin(player->rotation);
-        player->currentAnimation = &player->moveAnimation;
+        if (!player->attacking) {
+            player->currentAnimation = &player->moveAnimation;
+        }
     }
     if (keyboard_state[SDL_SCANCODE_S]) {
         player->velocity.x += -player->acceleration * cos(player->rotation);
         player->velocity.y += -player->acceleration * sin(player->rotation);
-        player->currentAnimation = &player->moveAnimation;
+        if (!player->attacking) {
+            player->currentAnimation = &player->moveAnimation;
+        }
     }
     if (keyboard_state[SDL_SCANCODE_A]) {
         player->velocity.x += -player->acceleration * cos(player->rotation + 1.5708);
         player->velocity.y += -player->acceleration * sin(player->rotation + 1.5708);
-        player->currentAnimation = &player->moveAnimation;
+        if (!player->attacking) {
+            player->currentAnimation = &player->moveAnimation;
+        }
     }
     if (keyboard_state[SDL_SCANCODE_D]) {
         player->velocity.x += player->acceleration * cos(player->rotation + 1.5708);
         player->velocity.y += player->acceleration * sin(player->rotation + 1.5708);
-        player->currentAnimation = &player->moveAnimation;
+        if (!player->attacking) {
+            player->currentAnimation = &player->moveAnimation;
+        }
     }
     if (keyboard_state[SDL_SCANCODE_LCTRL]) {
         player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 4.0f));
@@ -144,7 +156,6 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
             printf("Error: Weapon not found\n");
             break;
         }
-        player->currentAnimation = &player->attackAnimation;
     }
     speedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
     if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
@@ -202,6 +213,13 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
 {
     static int frame = 0;
     static float time = 0;
+    static bool attacking = false;
+
+    if (!attacking && player->attacking) {
+        frame = 0;
+        time = 0;
+        attacking = true;
+    }
 
     time += dt;
 
@@ -223,15 +241,18 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
     player->sprite.w = w/3.5;
     player->sprite.h = h/3.5;
 
-    if (frame > player->currentAnimation->length - 1) {
+    if (frame > player->currentAnimation->length) {
         frame = 0;
+        if (player->attacking) {
+            player->attacking = false;
+            attacking = false;
+        }
     }
 
     SDL_RenderCopyExF(renderer, player->currentAnimation->animation[frame], NULL, &player->sprite, player->rotation * (180 / M_PI), &player->center, SDL_FLIP_NONE);
 
     if (time > player->currentAnimation->speed) {
         time = 0;
-        printf("Frame: %d\n", frame);
         frame++;
     }
 
@@ -615,6 +636,8 @@ void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer)
 {
     if (get_time_ms(&player->attackTimer) > 1000)
     {
+        player->currentAnimation = &player->attackAnimation;
+        player->attacking = true;
         bool hit = false;
         for (int i = 0; i < enemys->num_enemys; i++)
         {
@@ -631,6 +654,8 @@ void pistolAttack(Player_t* player, SDL_Renderer* renderer)
 {
     if (get_time_ms(&player->attackTimer) > 300)
     {
+        player->currentAnimation = &player->attackAnimation;
+        player->attacking = true;
         Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 5);
         start_timer(&player->attackTimer);
     }
@@ -640,6 +665,8 @@ void rifleAttack(Player_t* player, SDL_Renderer* renderer)
 {
     if (get_time_ms(&player->attackTimer) > 20)
     {
+        player->currentAnimation = &player->attackAnimation;
+        player->attacking = true;
         Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage);
         start_timer(&player->attackTimer);
     }
@@ -648,6 +675,8 @@ void rifleAttack(Player_t* player, SDL_Renderer* renderer)
 void shotgunAttack(Player_t* player, SDL_Renderer* renderer) 
 {
     if (get_time_ms(&player->attackTimer) > 600) {
+        player->currentAnimation = &player->attackAnimation;
+        player->attacking = true;
         Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.18, player->velocity, player->center, player->damage * 3);
         Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.09, player->velocity, player->center, player->damage * 3);
         Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 3);
