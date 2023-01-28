@@ -279,6 +279,7 @@ void Setup_Game(Game_t* game, Global_t* global)
         progress = 0;
         progressPercent = 0;
         progressPercentUpdate = 0;
+        start_timer(&game->player.attackTimer);
     }
 }
 

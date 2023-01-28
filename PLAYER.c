@@ -22,11 +22,11 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.alive = true;
 
     player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
-    load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
+    load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/knife/move/survivor-move_knife_", renderer);
     player.moveAnimation.speed = 50;
 
     player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
-    load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/rifle/idle/survivor-idle_rifle_", renderer);
+    load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
     player.idleAnimation.speed = 50;
 
     player.currentAnimation = &player.idleAnimation;
@@ -54,6 +54,8 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.damage = PLAYER_DAMAGE;
     player.sprinting = false;
     player.sprintMultiplier = PLAYER_SPEED_MULTIPLIER;
+
+    player.weapon = KNIFE;
     
     player.bullets.bullet = NULL;
     player.bullets.num_bullets = 0;
@@ -114,7 +116,28 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
         player->velocity = subtract_vec2(player->velocity, divide_vec2(player->velocity, 4.0f));
     }
     if (mouse.buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-        Create_Bullet(renderer, player, bullets);
+        switch (player->weapon)
+        {
+        case KNIFE:
+            knifeAttack(player, renderer);
+            break;
+        
+        case PISTOL:
+            pistolAttack(player, renderer);
+            break;
+
+        case RIFLE:
+            rifleAttack(player, renderer);
+            break;
+
+        case SHOTGUN:
+            shotgunAttack(player, renderer);
+            break;    
+        
+        default:
+            printf("Error: Weapon not found\n");
+            break;
+        }
     }
     speedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
     if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
@@ -197,7 +220,7 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
     }
 }
 
-void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
+void Create_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, vec2_t position, SDL_FRect sprite, float rotation, vec2_t velocity, SDL_FPoint center, float damage)
 {
     void* ptr = realloc(bullets->bullet, (bullets->num_bullets + 1) * sizeof(Bullet_t*));
     if (ptr == NULL) {
@@ -209,14 +232,14 @@ void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets)
     bullets->bullet[bullets->num_bullets] = calloc(1, sizeof(Bullet_t));
 
     bullets->bullet[bullets->num_bullets]->texture = load_texture("Assets/Bullet/Bullet.png", renderer);
-    bullets->bullet[bullets->num_bullets]->position.x = player->position.x + player->sprite.x + player->center.x + 32/3.5 * cos(player->rotation + 1.5708) + 180/3.5 * cos(player->rotation) - 4;
-    bullets->bullet[bullets->num_bullets]->position.y = player->position.y + player->sprite.y + player->center.y + 32/3.5 * sin(player->rotation + 1.5708) + 180/3.5 * sin(player->rotation) - 5;
-    bullets->bullet[bullets->num_bullets]->velocity =  add_vec2 ((vec2_t) {600 * cos(player->rotation), 600 * sin(player->rotation)}, player->velocity);
+    bullets->bullet[bullets->num_bullets]->position.x = position.x + sprite.x + center.x + 32/3.5 * cos(rotation + 1.5708) + 180/3.5 * cos(rotation) - 4;
+    bullets->bullet[bullets->num_bullets]->position.y = position.y + sprite.y + center.y + 32/3.5 * sin(rotation + 1.5708) + 180/3.5 * sin(rotation) - 5;
+    bullets->bullet[bullets->num_bullets]->velocity =  add_vec2 ((vec2_t) {600 * cos(rotation), 600 * sin(rotation)}, velocity);
     bullets->bullet[bullets->num_bullets]->index = bullets->num_bullets;
     bullets->bullet[bullets->num_bullets]->lifetime = 0;
     bullets->bullet[bullets->num_bullets]->max_lifetime = 5000;
     bullets->bullet[bullets->num_bullets]->hitBox = (HitBox_t) {15, 15};
-    bullets->bullet[bullets->num_bullets]->damage = player->damage;
+    bullets->bullet[bullets->num_bullets]->damage = damage;
 
     bullets->num_bullets++;
 }
@@ -549,6 +572,41 @@ void freeUpgrades(Player_t* player)
     }
     free(player->allUpgrades.upgrades);
     free(player->availableUpgrades);
+}
+
+void knifeAttack(Player_t* player, SDL_Renderer* renderer) 
+{
+    Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage);
+}
+
+void pistolAttack(Player_t* player, SDL_Renderer* renderer) 
+{
+    if (get_time_ms(&player->attackTimer) > 300)
+    {
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 5);
+        start_timer(&player->attackTimer);
+    }
+}
+
+void rifleAttack(Player_t* player, SDL_Renderer* renderer) 
+{
+    if (get_time_ms(&player->attackTimer) > 20)
+    {
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage);
+        start_timer(&player->attackTimer);
+    }
+}
+
+void shotgunAttack(Player_t* player, SDL_Renderer* renderer) 
+{
+    if (get_time_ms(&player->attackTimer) > 600) {
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.18, player->velocity, player->center, player->damage * 3);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.09, player->velocity, player->center, player->damage * 3);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 3);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.09, player->velocity, player->center, player->damage * 3);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.18, player->velocity, player->center, player->damage * 3);
+        start_timer(&player->attackTimer);
+    }
 }
 
 // create function that checks through upgrades and checks which ones are available

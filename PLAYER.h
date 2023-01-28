@@ -42,6 +42,7 @@ typedef struct Player_t{
     Text_t playerHealthText;
     bool alive;
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
+    Timer_t attackTimer;
     float damage;
     Upgrade_t** availableUpgrades;
     Upgrades_t allUpgrades;
@@ -91,7 +92,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, float dt, SDL_Re
 
 void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t windowSize, vec2_t max);
 
-void Create_Bullet(SDL_Renderer* renderer, Player_t* player, Bullets_t* bullets);
+void Create_Bullet(SDL_Renderer* renderer, Bullets_t* bullets, vec2_t position, SDL_FRect sprite, float rotation, vec2_t velocity, SDL_FPoint center, float damage);
 
 void Draw_Bullets(SDL_Renderer* renderer, Player_t* player);
 
@@ -138,5 +139,13 @@ void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer);
 void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer);
 
 void freeUpgrades(Player_t* player);
+
+void knifeAttack(Player_t* player, SDL_Renderer* renderer);
+
+void pistolAttack(Player_t* player, SDL_Renderer* renderer);
+
+void rifleAttack(Player_t* player, SDL_Renderer* renderer);
+
+void shotgunAttack(Player_t* player, SDL_Renderer* renderer);
 
 #endif
