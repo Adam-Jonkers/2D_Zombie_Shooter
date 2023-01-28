@@ -289,16 +289,6 @@ void Run_Game(Game_t* game, Global_t* global)
             printf("Setup Upgrade Screen\n");
             SelectUpgrades(game->player.availableUpgrades, &game->player.allUpgrades, global->windowSize, global->renderer);
             printf("Upgrades Selected\n");
-            printf("Upgrade 0 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[0]->rect.x, game->player.allUpgrades.upgrades[0]->rect.y, game->player.allUpgrades.upgrades[0]);
-            printf("Upgrade 1 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[1]->rect.x, game->player.allUpgrades.upgrades[1]->rect.y, game->player.allUpgrades.upgrades[1]);
-            printf("Upgrade 2 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[2]->rect.x, game->player.allUpgrades.upgrades[2]->rect.y, game->player.allUpgrades.upgrades[2]);
-            printf("Upgrade 3 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[3]->rect.x, game->player.allUpgrades.upgrades[3]->rect.y, game->player.allUpgrades.upgrades[3]);
-            printf("Upgrade 4 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[4]->rect.x, game->player.allUpgrades.upgrades[4]->rect.y, game->player.allUpgrades.upgrades[4]);
-            printf("Upgrade 5 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[5]->rect.x, game->player.allUpgrades.upgrades[5]->rect.y, game->player.allUpgrades.upgrades[5]);
-            printf("Upgrade 6 x:%d y=%d adr = %p\n", game->player.allUpgrades.upgrades[6]->rect.x, game->player.allUpgrades.upgrades[6]->rect.y, game->player.allUpgrades.upgrades[6]);
-            printf("Upgrade 1 x:%d y=%d adr = %p\n", game->player.availableUpgrades[0]->rect.x, game->player.availableUpgrades[0]->rect.y, game->player.availableUpgrades[0]);
-            printf("Upgrade 2 x:%d y=%d adr = %p\n", game->player.availableUpgrades[1]->rect.x, game->player.availableUpgrades[1]->rect.y, game->player.availableUpgrades[1]);
-            printf("Upgrade 3 x:%d y=%d adr = %p\n", game->player.availableUpgrades[2]->rect.x, game->player.availableUpgrades[2]->rect.y, game->player.availableUpgrades[2]);
             game->setupUpgradeScreen = true;
         }
         SDL_RenderClear(global->renderer);

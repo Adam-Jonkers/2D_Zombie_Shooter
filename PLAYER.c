@@ -516,14 +516,6 @@ void Setup_Upgrades(Upgrades_t* allUpgrades ,SDL_Renderer* renderer)
         allUpgrades->upgrades[5] = Setup_Upgrade_Rifle(renderer);
         allUpgrades->upgrades[6] = Setup_Upgrade_Shotgun(renderer);
 
-        printf("setup upgrade 0: x: %d, y: %d\n", allUpgrades->upgrades[0]->rect.x, allUpgrades->upgrades[0]->rect.y);
-        printf("setup upgrade 1: x: %d, y: %d\n", allUpgrades->upgrades[1]->rect.x, allUpgrades->upgrades[1]->rect.y);
-        printf("setup upgrade 2: x: %d, y: %d\n", allUpgrades->upgrades[2]->rect.x, allUpgrades->upgrades[2]->rect.y);
-        printf("setup upgrade 3: x: %d, y: %d\n", allUpgrades->upgrades[3]->rect.x, allUpgrades->upgrades[3]->rect.y);
-        printf("setup upgrade 4: x: %d, y: %d\n", allUpgrades->upgrades[4]->rect.x, allUpgrades->upgrades[4]->rect.y);
-        printf("setup upgrade 5: x: %d, y: %d\n", allUpgrades->upgrades[5]->rect.x, allUpgrades->upgrades[5]->rect.y);
-        printf("setup upgrade 6: x: %d, y: %d\n", allUpgrades->upgrades[6]->rect.x, allUpgrades->upgrades[6]->rect.y);
-
         allUpgrades->numberOfUpgrades = 7;
     }
 }
@@ -534,14 +526,11 @@ void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t
     for (int i = 0; i < 3; i++)
     {
         upgradePointer = upgrades->upgrades[get_random_number(0,6)];
-        printf("upgradePointer %d: x: %d, y: %d\n", i, upgradePointer->rect.x, upgradePointer->rect.y);
         selectedUpgrades[i] = upgradePointer;
-        printf("upgrade %d: x: %d, y: %d\n", i,selectedUpgrades[i]->rect.x, selectedUpgrades[i]->rect.y);
         (*selectedUpgrades[i]).rect = (SDL_Rect){windowSize.x * (i + 1) / 4 - 100, windowSize.y / 2 - 100, 200, 200};
     }
 
 }
-
 
 // create function that checks through upgrades and checks which ones are available
 // void Update_Upgrades(Upgrades_t* upgrades, Player_t* player, SDL_Renderer* renderer)
