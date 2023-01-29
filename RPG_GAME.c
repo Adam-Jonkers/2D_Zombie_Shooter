@@ -288,7 +288,7 @@ void Run_Game(Game_t* game, Global_t* global)
     if (game->levelComplete) {
         if (!game->setupUpgradeScreen) {
             printf("Setup Upgrade Screen\n");
-            SelectUpgrades(game->player.availableUpgrades, &game->player.allUpgrades, global->windowSize, global->renderer);
+            SelectUpgrades(game->player.availableUpgrades, &game->player.allUpgrades, global->windowSize, global->renderer, game->player.weapon);
             printf("Upgrades Selected\n");
             game->setupUpgradeScreen = true;
         }

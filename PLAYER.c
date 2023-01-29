@@ -17,6 +17,32 @@
 #define PLAYER_MAX_SPEED 100.0
 #define PLAYER_SPEED_MULTIPLIER 2.0
 
+// Weapon stats
+
+// Knife
+#define KINFE_DAMAGE 100
+#define KINFE_SPEED_MULTIPLIER 1.0
+#define KINFE_ATTACK_RATE 1000
+#define KINFE_RANGE 200
+
+// Pistol
+#define PISTOL_DAMAGE 10
+#define PISTOL_SPEED_MULTIPLIER 1.0
+#define PISTOL_ATTACK_RATE 300
+#define PISTOL_RANGE 100
+
+// Rifle
+#define RIFLE_DAMAGE 2
+#define RIFLE_SPEED_MULTIPLIER 1.0
+#define RIFLE_ATTACK_RATE 20
+#define RIFLE_RANGE 100
+
+// Shotgun
+#define SHOTGUN_DAMAGE 6
+#define SHOTGUN_SPEED_MULTIPLIER 1.0
+#define SHOTGUN_ATTACK_RATE 600
+#define SHOTGUN_RANGE 100
+
 Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 {
     Player_t player;
@@ -57,11 +83,31 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.velocity.y = 0.0;
     player.acceleration = PLAYER_ACCELERATION;
     player.health = PLAYER_HEALTH;
-    player.damage = PLAYER_DAMAGE;
     player.sprinting = false;
     player.sprintMultiplier = PLAYER_SPEED_MULTIPLIER;
 
+    player.knife.damage = KINFE_DAMAGE;
+    player.knife.speedMultiplier = KINFE_SPEED_MULTIPLIER;
+    player.knife.attackRate = KINFE_ATTACK_RATE;
+    player.knife.attackRange = KINFE_RANGE;
+
+    player.pistol.damage = PISTOL_DAMAGE;
+    player.pistol.speedMultiplier = PISTOL_SPEED_MULTIPLIER;
+    player.pistol.attackRate = PISTOL_ATTACK_RATE;
+    player.pistol.attackRange = PISTOL_RANGE;
+
+    player.rifle.damage = RIFLE_DAMAGE;
+    player.rifle.speedMultiplier = RIFLE_SPEED_MULTIPLIER;
+    player.rifle.attackRate = RIFLE_ATTACK_RATE;
+    player.rifle.attackRange = RIFLE_RANGE;
+
+    player.shotgun.damage = SHOTGUN_DAMAGE;
+    player.shotgun.speedMultiplier = SHOTGUN_SPEED_MULTIPLIER;
+    player.shotgun.attackRate = SHOTGUN_ATTACK_RATE;
+    player.shotgun.attackRange = SHOTGUN_RANGE;
+
     player.weapon = KNIFE;
+    player.currentWeapon = &player.knife;
 
     player.attacking = false;
     
@@ -385,7 +431,7 @@ void Upgrade_Health(Player_t* player, SDL_Renderer* renderer)
 
 void Upgrade_Damage(Player_t* player, SDL_Renderer* renderer)
 {
-    player->damage += 0.2;
+    player->currentWeapon->damage += 0.2;
     printf("\nDamage Upgraded\n");
 }
 
@@ -398,6 +444,7 @@ void Upgrade_Speed(Player_t* player, SDL_Renderer* renderer)
 void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
 {
     player->weapon = KNIFE;
+    player->currentWeapon = &player->knife;
     
     player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
     load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/knife/move/survivor-move_knife_", renderer);
@@ -417,6 +464,7 @@ void Upgrade_Knife(Player_t* player, SDL_Renderer* renderer)
 void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
 {
     player->weapon = PISTOL;
+    player->currentWeapon = &player->pistol;
     
     player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
     load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/handgun/move/survivor-move_handgun_", renderer);
@@ -436,6 +484,7 @@ void Upgrade_Pistol(Player_t* player, SDL_Renderer* renderer)
 void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
 {
     player->weapon = RIFLE;
+    player->currentWeapon = &player->rifle;
     
     player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
     load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/rifle/move/survivor-move_rifle_", renderer);
@@ -455,6 +504,7 @@ void Upgrade_Rifle(Player_t* player, SDL_Renderer* renderer)
 void Upgrade_Shotgun(Player_t* player, SDL_Renderer* renderer)
 {
     player->weapon = SHOTGUN;
+    player->currentWeapon = &player->shotgun;
     
     player->moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
     load_animation(&player->moveAnimation, "Assets/Top_Down_Survivor/shotgun/move/survivor-move_shotgun_", renderer);
@@ -589,22 +639,25 @@ void Setup_Upgrades(Upgrades_t* allUpgrades ,SDL_Renderer* renderer)
     } else {
         allUpgrades->upgrades = ptr;
 
-        allUpgrades->upgrades[0] = Setup_Upgrade_Health(renderer);
-        allUpgrades->upgrades[1] = Setup_Upgrade_Damage(renderer);
-        allUpgrades->upgrades[2] = Setup_Upgrade_Speed(renderer);
-        allUpgrades->upgrades[3] = Setup_Upgrade_Knife(renderer);
-        allUpgrades->upgrades[4] = Setup_Upgrade_Pistol(renderer);
-        allUpgrades->upgrades[5] = Setup_Upgrade_Rifle(renderer);
-        allUpgrades->upgrades[6] = Setup_Upgrade_Shotgun(renderer);
+        allUpgrades->upgrades[0] = Setup_Upgrade_Knife(renderer);
+        allUpgrades->upgrades[1] = Setup_Upgrade_Pistol(renderer);
+        allUpgrades->upgrades[2] = Setup_Upgrade_Rifle(renderer);
+        allUpgrades->upgrades[3] = Setup_Upgrade_Shotgun(renderer);
+        allUpgrades->upgrades[4] = Setup_Upgrade_Health(renderer);
+        allUpgrades->upgrades[5] = Setup_Upgrade_Damage(renderer);
+        allUpgrades->upgrades[6] = Setup_Upgrade_Speed(renderer);
 
         allUpgrades->numberOfUpgrades = 7;
     }
 }
 
-void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer)
+void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer, int currentWeapon)
 {
     Upgrade_t* upgradePointer = NULL;
     uint8_t upgradeSelected = 0;
+
+    upgradeSelected = upgradeSelected | (1 << currentWeapon);
+
     int selectedCount = 0;
     int randomIndex = 0;
     while (selectedCount < 3)
@@ -634,15 +687,15 @@ void freeUpgrades(Player_t* player)
 
 void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer) 
 {
-    if (get_time_ms(&player->attackTimer) > 1000)
+    if (get_time_ms(&player->attackTimer) > player->knife.attackRate)
     {
         player->currentAnimation = &player->attackAnimation;
         player->attacking = true;
         bool hit = false;
         for (int i = 0; i < enemys->num_enemys; i++)
         {
-            if (fabs((get_angle(player->position, enemys->enemy[i]->position) - player->rotation)) < 1.178 && Get_Distance(player->position, enemys->enemy[i]->position) < 200 && !hit) {
-                enemys->enemy[i]->health -= player->damage * 50;
+            if (fabs((get_angle(player->position, enemys->enemy[i]->position) - player->rotation)) < 1.178 && Get_Distance(player->position, enemys->enemy[i]->position) < player->knife.attackRange && !hit) {
+                enemys->enemy[i]->health -= player->knife.damage;
                 hit = true;
             }
         }
@@ -652,36 +705,36 @@ void knifeAttack(Player_t* player, Enemys_t* enemys, SDL_Renderer* renderer)
 
 void pistolAttack(Player_t* player, SDL_Renderer* renderer) 
 {
-    if (get_time_ms(&player->attackTimer) > 300)
+    if (get_time_ms(&player->attackTimer) > player->pistol.attackRate)
     {
         player->currentAnimation = &player->attackAnimation;
         player->attacking = true;
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 5);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->pistol.damage);
         start_timer(&player->attackTimer);
     }
 }
 
 void rifleAttack(Player_t* player, SDL_Renderer* renderer) 
 {
-    if (get_time_ms(&player->attackTimer) > 20)
+    if (get_time_ms(&player->attackTimer) > player->rifle.attackRate)
     {
         player->currentAnimation = &player->attackAnimation;
         player->attacking = true;
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->rifle.damage);
         start_timer(&player->attackTimer);
     }
 }
 
 void shotgunAttack(Player_t* player, SDL_Renderer* renderer) 
 {
-    if (get_time_ms(&player->attackTimer) > 600) {
+    if (get_time_ms(&player->attackTimer) > player->shotgun.attackRate) {
         player->currentAnimation = &player->attackAnimation;
         player->attacking = true;
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.18, player->velocity, player->center, player->damage * 3);
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.09, player->velocity, player->center, player->damage * 3);
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->damage * 3);
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.09, player->velocity, player->center, player->damage * 3);
-        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.18, player->velocity, player->center, player->damage * 3);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.18, player->velocity, player->center, player->shotgun.damage);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation - 0.09, player->velocity, player->center, player->shotgun.damage);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation, player->velocity, player->center, player->shotgun.damage);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.09, player->velocity, player->center, player->shotgun.damage);
+        Create_Bullet(renderer, &player->bullets, player->position, player->sprite, player->rotation + 0.18, player->velocity, player->center, player->shotgun.damage);
         start_timer(&player->attackTimer);
     }
 }

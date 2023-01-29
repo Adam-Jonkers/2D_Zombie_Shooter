@@ -37,13 +37,24 @@ typedef struct {
     int numberOfUpgrades;
 } Upgrades_t;
 
+typedef struct {
+    float damage;
+    float speedMultiplier;
+    uint32_t attackRate;
+    float attackRange;
+} Weapon_t;
+
 typedef struct Player_t{
     float health;
     Text_t playerHealthText;
     bool alive;
     enum {KNIFE, PISTOL, RIFLE, SHOTGUN} weapon;
+    Weapon_t knife;
+    Weapon_t pistol;
+    Weapon_t rifle;
+    Weapon_t shotgun;
+    Weapon_t* currentWeapon;
     Timer_t attackTimer;
-    float damage;
     bool attacking;
     Upgrade_t** availableUpgrades;
     Upgrades_t allUpgrades;
@@ -138,7 +149,7 @@ Upgrade_t* Setup_Upgrade_Shotgun(SDL_Renderer* renderer);
 
 void Setup_Upgrades(Upgrades_t* upgrades ,SDL_Renderer* renderer);
 
-void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer);
+void SelectUpgrades(Upgrade_t* selectedUpgrades[3], Upgrades_t* upgrades, vec2_t windowSize, SDL_Renderer* renderer, int currentWeapon);
 
 void freeUpgrades(Player_t* player);
 
