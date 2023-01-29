@@ -21,25 +21,25 @@
 
 // Knife
 #define KINFE_DAMAGE 100
-#define KINFE_SPEED_MULTIPLIER 1.0
+#define KINFE_SPEED_MULTIPLIER 1.5
 #define KINFE_ATTACK_RATE 1000
 #define KINFE_RANGE 200
 
 // Pistol
-#define PISTOL_DAMAGE 10
+#define PISTOL_DAMAGE 15
 #define PISTOL_SPEED_MULTIPLIER 1.0
 #define PISTOL_ATTACK_RATE 300
 #define PISTOL_RANGE 100
 
 // Rifle
 #define RIFLE_DAMAGE 2
-#define RIFLE_SPEED_MULTIPLIER 1.0
+#define RIFLE_SPEED_MULTIPLIER 0.8
 #define RIFLE_ATTACK_RATE 20
 #define RIFLE_RANGE 100
 
 // Shotgun
-#define SHOTGUN_DAMAGE 6
-#define SHOTGUN_SPEED_MULTIPLIER 1.0
+#define SHOTGUN_DAMAGE 12
+#define SHOTGUN_SPEED_MULTIPLIER 0.7
 #define SHOTGUN_ATTACK_RATE 600
 #define SHOTGUN_RANGE 100
 
@@ -142,7 +142,7 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
         player->currentAnimation = &player->idleAnimation;
     }
     player->moveAnimation.speed = 50;
-    float speedMultiplier;
+    float mapSpeedMultiplier;
     if (keyboard_state[SDL_SCANCODE_LSHIFT]) {
         player->sprinting = true;
     } else {
@@ -203,10 +203,10 @@ void Move_player(const Uint8* keyboard_state, Player_t* player, Enemys_t* enemys
             break;
         }
     }
-    speedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
-    if (length_vec2(player->velocity) > (player->maxSpeed * speedMultiplier)) {
+    mapSpeedMultiplier = Get_speed_multiplier(player->position, max, noiseMap);
+    if (length_vec2(player->velocity) > (player->maxSpeed * mapSpeedMultiplier * player->currentWeapon->speedMultiplier)) {
         player->velocity = normalize_vec2(player->velocity);
-        player->velocity = multiply_vec2(player->velocity, player->maxSpeed * speedMultiplier);
+        player->velocity = multiply_vec2(player->velocity, player->maxSpeed * mapSpeedMultiplier * player->currentWeapon->speedMultiplier);
     }
 
     float move_x = (player->velocity.x) * dt / 1000.0f;
