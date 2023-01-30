@@ -49,28 +49,28 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
 
     player.alive = true;
 
-    player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
-    load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/knife/move/survivor-move_knife_", renderer);
-    player.moveAnimation.speed = 50;
+    // player.moveAnimation.length = PLAYER_MOVE_ANIMATION_LENGTH;
+    // load_animation(&player.moveAnimation, "Assets/Top_Down_Survivor/knife/move/survivor-move_knife_", renderer);
+    // player.moveAnimation.speed = 50;
 
-    player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
-    load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
-    player.idleAnimation.speed = 50;
+    // player.idleAnimation.length = PLAYER_IDLE_ANIMATION_LENGTH;
+    // load_animation(&player.idleAnimation, "Assets/Top_Down_Survivor/knife/idle/survivor-idle_knife_", renderer);
+    // player.idleAnimation.speed = 50;
 
-    player.attackAnimation.length = PLAYER_MELEE_ANIMATION_LENGTH;
-    load_animation(&player.attackAnimation, "Assets/Top_Down_Survivor/knife/meleeattack/survivor-meleeattack_knife_", renderer);
-    player.attackAnimation.speed = 50;
+    // player.attackAnimation.length = PLAYER_MELEE_ANIMATION_LENGTH;
+    // load_animation(&player.attackAnimation, "Assets/Top_Down_Survivor/knife/meleeattack/survivor-meleeattack_knife_", renderer);
+    // player.attackAnimation.speed = 50;
 
     player.currentAnimation = &player.idleAnimation;
 
-    int w, h;
+    // int w, h;
 
-    SDL_QueryTexture(player.currentAnimation->animation[0], NULL, NULL, &w, &h);
+    // SDL_QueryTexture(player.currentAnimation->animation[0], NULL, NULL, &w, &h);
 
-    player.sprite.w = w/3.5;
-    player.sprite.h = h/3.5;
-    player.sprite.x = windowSize.x / 2 - player.sprite.w / 2;
-    player.sprite.y = windowSize.y / 2 - player.sprite.h / 2;
+    // player.sprite.w = w/3.5;
+    // player.sprite.h = h/3.5;
+    // player.sprite.x = windowSize.x / 2 - player.sprite.w / 2;
+    // player.sprite.y = windowSize.y / 2 - player.sprite.h / 2;
     player.center.x = 95/3.5;
     player.center.y = 120/3.5;
     player.rotation = 0.0;
@@ -106,8 +106,8 @@ Player_t Setup_player(vec2_t windowSize, SDL_Renderer* renderer)
     player.shotgun.attackRate = SHOTGUN_ATTACK_RATE;
     player.shotgun.attackRange = SHOTGUN_RANGE;
 
-    player.weapon = KNIFE;
-    player.currentWeapon = &player.knife;
+    // player.weapon = KNIFE;
+    // player.currentWeapon = &player.knife;
 
     player.attacking = false;
     
@@ -260,6 +260,14 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
     static int frame = 0;
     static float time = 0;
     static bool attacking = false;
+    int w, h;
+
+    SDL_QueryTexture(player->currentAnimation->animation[0], NULL, NULL, &w, &h);
+
+    player->sprite.w = w/3.5;
+    player->sprite.h = h/3.5;
+    player->sprite.x = windowSize.x / 2 - player->sprite.w / 2;
+    player->sprite.y = windowSize.y / 2 - player->sprite.h / 2;
 
     if (!attacking && player->attacking) {
         frame = 0;
@@ -279,13 +287,6 @@ void Draw_Player(SDL_Renderer* renderer, Player_t* player, float dt, vec2_t wind
     if (player->position.y - windowSize.y / 2 < 0 || player->position.y + windowSize.y > max.y) {
         player->sprite.y = player->position.y - player->sprite.h / 2 - player->camera.y;
     }
-
-    int w, h;
-
-    SDL_QueryTexture(player->currentAnimation->animation[0], NULL, NULL, &w, &h);
-
-    player->sprite.w = w/3.5;
-    player->sprite.h = h/3.5;
 
     if (frame > player->currentAnimation->length) {
         frame = 0;

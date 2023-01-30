@@ -182,6 +182,8 @@ void Setup_Game(Game_t* game, Global_t* global)
 
         game->player = Setup_player(global->windowSize, global->renderer);
 
+        Upgrade_Knife(&game->player, global->renderer);
+
         game->enemys.enemy = NULL;
         game->enemys.num_enemys = 0;
         game->enemys.max_enemys = MAX_ENEMYS;
