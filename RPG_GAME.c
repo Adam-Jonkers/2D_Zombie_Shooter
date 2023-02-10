@@ -13,8 +13,7 @@
 #include "RPG_GAME.h"
 #include "MAP.h"
 #include "CORE.h"
-#include "PLAYER.h"
-#include "ENEMYS.h"
+#include "ENTITIES.h"
 
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000

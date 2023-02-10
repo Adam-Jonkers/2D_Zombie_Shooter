@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 #include "CORE.h"
-#include "PLAYER.h"
+#include "ENTITIES.h"
 
 typedef struct {
     SDL_Texture* backgroundTexture;

@@ -15,24 +15,21 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-RPG_GAME.o: RPG_GAME.c RPG_GAME.h MAP.h CORE.h PLAYER.h ENEMYS.h
+RPG_GAME.o: RPG_GAME.c RPG_GAME.h MAP.h CORE.h ENTITIES.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
 CORE.o: CORE.c CORE.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
-MAP.o: MAP.c MAP.h CORE.h PLAYER.h
+MAP.o: MAP.c MAP.h CORE.h ENTITIES.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
-PLAYER.o: PLAYER.c PLAYER.h CORE.h ENEMYS.h MAP.h
-	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
-
-ENEMYS.o: ENEMYS.c ENEMYS.h CORE.h MAP.h PLAYER.h
+ENTITIES.o: ENTITIES.c ENTITIES.h CORE.h MAP.h
 	$(CC) -c $(CFLAGS) $< $(LINKS) -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: RPG_GAME.o CORE.o MAP.o PLAYER.o ENEMYS.o
+game.out: RPG_GAME.o CORE.o MAP.o ENTITIES.o
 	$(CC) $(CFLAGS) $^ $(LINKS) -o $@
 
 

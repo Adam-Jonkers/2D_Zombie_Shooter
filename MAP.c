@@ -8,7 +8,7 @@
 
 #include "MAP.h"
 #include "CORE.h"
-#include "PLAYER.h"
+#include "ENTITIES.h"
 
 #define FREQUENCY 75
 

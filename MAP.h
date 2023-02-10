@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "CORE.h"
-#include "PLAYER.h"
+#include "ENTITIES.h"
 
 typedef struct {
     char description[100];
