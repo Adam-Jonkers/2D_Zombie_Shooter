@@ -1,0 +1,5 @@
+# Ignore vs code folder
+.vscode
+
+# Ignore Highscore file
+Highscore.txt
